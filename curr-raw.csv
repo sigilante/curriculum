@@ -41,7 +41,7 @@
 234,Stdlib,Floating-point mathematics,,163
 235,Iris,Heuristic description of vane.,,201
 240,Jael,Heuristic description of vane.,,"112, 201"
-245,Kahn,Heuristic description of vane.,,201
+245,Khan,Heuristic description of vane.,,201
 250,Nock,Description of simple rules; derivation of compound rules; explanation of cores.,,115
 255,Ames,"Technical description of vane, including internals.",,"205, 180"
 260,Behn,"Technical description of vane, including internals.",,"210, 180"
@@ -99,7 +99,7 @@
 433,Stdlib,TBD advanced stuff,,360
 435,Iris,,,
 440,Jael,,,
-445,Kahn,,,
+445,Khan,,,
 450,Nock,Technical description of Hoon builder (AST→Nock); jet matching.,,350
 453,Runtime,Jet construction/u3; jet dashboard.,,"353, 400"
 460,,,,
