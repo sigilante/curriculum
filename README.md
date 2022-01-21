@@ -36,5 +36,6 @@ Next steps:
 - produce summative assessments for each objective
 - produce formative assessments for each lesson
 - collate/produce content
+  - mark every tutorial with Objectives/Key Points
 
 ---
