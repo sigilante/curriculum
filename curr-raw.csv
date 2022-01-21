@@ -1,0 +1,116 @@
+#,Topic,Competency Cluster,Current Resources,Antecedents
+100,Sysadmin,Administer ships manually; handle fakezods.,ZA's dev guide; ,0
+101,Aggregate,,,
+102,Azimuth,Description of address space structure.,https://davis68.github.io/martian-computing/lessons/lesson02-azimuth-1.html,0
+103,Hoon,Aural Hoon,,0
+110,Hoon,"Syntax, nouns, auras",https://hooniversity.org/beginning-hoon-introduction-2/,100
+112,Azimuth,Exploration of address space structure.,,"102, 110"
+113,Hoon,"Naked generator design, syncing, etc., control structures",,110
+115,Hoon,"Irregular forms, sugar syntax",,113
+120,Hoon,"Molds, typechecking",,115
+125,Hoon,Cores and gates,,120
+130,Hoon,"Traps, recursion",,125
+133,Hoon,"Basic cores, arms",,130
+135,Hoon,"Addressing, trees",,133
+140,Stdlib,"Lists, trees",,135
+145,Hoon,Libraries,,140
+150,Hoon,Doors,,145
+155,Hoon,Revisiting $,,150
+156,Hoon,Typechecking,,133
+160,Stdlib,Basic text transformations,,125
+163,Hoon,Producing textually rich %say generators.,,145
+165,Hoon,Subject-oriented programming,,155
+170,Testing,Basic debugging techniques,,135
+175,Hoon,Building code,,115
+180,Hoon,State: tisket etc.,,"165, 175"
+183,Stdlib,"Sets, maps, jars, jugs",,150
+184,Hoon,Loobean operations,,156
+185,Stdlib,"I/O: Tanks, tangs, wains, wangs, and whangdoodles",,"160, 170"
+190,Testing,Unit tests with -test thread.,,170
+195,Hoon,Nature of jammed nouns.,,113
+200,Arvo,State machine/event log,,0
+201,Arvo,Moves,,"115, 200"
+202,Azimuth,,,
+205,Ames,Heuristic description of vane.,,201
+210,Behn,Heuristic description of vane.,,201
+215,Clay,Heuristic description of vane; use of marks to convert data.,,"201, 115"
+220,Dill,Heuristic description of vane.,,201
+225,Eyre,Heuristic description of vane.,,201
+230,Gall,Heuristic description of vane.,,201
+233,Stdlib,Functional gates/doors,,"183, 184"
+234,Stdlib,Floating-point mathematics,,163
+235,Iris,Heuristic description of vane.,,201
+240,Jael,Heuristic description of vane.,,"112, 201"
+245,Kahn,Heuristic description of vane.,,201
+250,Nock,Description of simple rules; derivation of compound rules; explanation of cores.,,115
+255,Ames,"Technical description of vane, including internals.",,"205, 180"
+260,Behn,"Technical description of vane, including internals.",,"210, 180"
+263,%ask generators,Producing interactive generators.,,"163, 183"
+265,Clay,"Technical description of vane, including internals.",,"215, 180"
+270,Dill,"Technical description of vane, including internals.",,"220, 180"
+275,Eyre,"Technical description of vane, including internals.",,"235, 180, 225"
+280,Gall,"Technical description of vane, including internals.",,"230, 180"
+282,Gall agents,Production of a simple Gall agent.,,"180, 230"
+283,Stdlib,Basic text tokenization,,"180, 183"
+284,Stdlib,Randomness and hashing,,"180, 183"
+285,Iris,"Technical description of vane, including internals.",,"235, 180, 225"
+288,Hoon,Gate genericity (wet gates),,"233, 180"
+290,Jael,"Technical description of vane, including internals.",,"240, 284, 180"
+295,Kahn,"Technical description of vane, including internals.",,"245, 180"
+299,Hoon,"Core variadicity (gold, iron, lead, zinc)",,288
+300,Arvo,Moves and move traces,,"200, 299"
+301,Arvo,Technical description of boot process.,,"195, 200, 255, 260, 265, 270, 275, 280, 285, 290, 295, 299, 300"
+302,Azimuth,Management of system state; eth-watcher (also Jael).,,"102, 290"
+303,Testing,Advanced debugging techniques,,"185, 190, 288, 299, 300"
+304,Arvo,Describe the subject structure of Arvo and system components.,,301
+305,Ames,(room for specific case studies here),,
+310,Behn,,,
+315,Clay,Manage desks manually; convert data with tubes; access arbitrary revisions of data; produce simple marks.,,265
+320,Dill,Inject %belt events; use term/%herm.,,270
+325,Eyre,,,
+330,JSON,Parsing and reparsing of JSON inputs.,,"225, 235"
+331,Sail,Parsing and reparsing XML/HTML inputs.,,330
+332,Sail,Representing XML/HTML with Sail.,,331
+333,Stdlib,Parsing dates,,183
+335,Iris,,,
+340,Jael,,,
+345,Kahn,,,
+350,Nock,Technical description of Hoon builder (Hoon→AST).,,250
+353,Runtime,King/serf operations.,,300
+360,Hoon,Deep Hoon,,"288, 299, 350"
+365,,,,
+370,CLI,%shoe/%sole generators,,263
+375,Airlock,Simple front-end operations. (flavored by language),,"330, external"
+380,,,,
+382,Gall agents,Advanced agents without front-end interface.,,"282, 330"
+383,Stdlib,Parse text,,"283, 370"
+385,,,,
+390,Testing,CI integration of testing.,,"190, 282"
+395,,,,
+400,Arvo,Management of %unix interface; king/serf dynamics.,,304
+401,,(room for specific case studies here),,
+402,Azimuth,Ecliptic contract structure; programmatic Bridge activities; L2.,,"302, Solidity/EVM"
+405,Ames,"Technical description of network, packets, etc.",,255
+410,Behn,,,
+415,Clay,Produce full marks.,,315
+420,Dill,Manage terminal windows directly (e.g. %webterm).,,320
+425,Eyre,,,
+430,Gall (Spider),Thread composition and management.,,"280, 282"
+433,Stdlib,TBD advanced stuff,,360
+435,Iris,,,
+440,Jael,,,
+445,Kahn,,,
+450,Nock,Technical description of Hoon builder (AST→Nock); jet matching.,,350
+453,Runtime,Jet construction/u3; jet dashboard.,,"353, 400"
+460,,,,
+465,,,,
+470,CLI,Dojo/Helm/Hood internals.,,370
+475,,,,
+480,Gall (Spider),Technical description of Spider as thread handler.,,430
+482,Gall agents,Advanced agents with front-end interface.,,"375, 382"
+483,Stdlib,,,
+485,,,,
+490,,,,
+495,,,,
+500,Arvo,OTA production.,,"400, 302, 405, 260, 415, 420, 275, 280, 285, 290, 295, 390, 301"
+550,Runtime,Produce working runtime implementation of Arvo.,,"500, 450, 453"
