@@ -23,7 +23,23 @@ We organize curriculum into series which describe the target transformation:
 4. 400	Master→Wizard
 5. 500	Wizard++
 
-Particular paths can be traced through the competency cluster dependencies:
+Particular paths can be traced through the competency cluster dependencies.  The point isn't to make this overly complicated, it's to make sure that we know what you need to know to accomplish a particular task.
+
+A competency cluster looks like this:
+
+```
+#hoon
+Cores with Arms
+
+- Consider Hoon structures as cores.
+- Identify the special role of the `$` buc arm in many cores.
+- Order neighboring cores within the subject for addressibility.
+
+Runes introduced:  `|%`, `++`, `=<`, `=>`
+Irregular syntax introduced:
+```
+
+with some associated content from urbit.org tutorials and docs.  What we are aiming for is that each objective have a quantitative measurable outcome; that is, we should be able to definitively say that one can “identify the special role of the `$` buc arm in many cores.”  The whole chart looks complicated because some things (like how Jael works, 240 and 290) depend on different prerequisites (in this case, some Azimuth background and how `move`s work).
 
 ![](./img/curr.png)
 
