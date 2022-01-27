@@ -44,3 +44,7 @@ with some associated content from urbit.org tutorials and docs.  What we are aim
 ![](./img/curr.png)
 
 I am currently working on making this more legible, and ultimately will use this to rework Hoon School, Hoon 101, and organize access to recommended study materials and documentation.
+
+---
+
+WHEN CHANGING NODES, you need to update the `map.csv`, the node, and any prerequisite or postrequisite changes.
