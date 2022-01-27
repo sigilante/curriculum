@@ -44,14 +44,3 @@ with some associated content from urbit.org tutorials and docs.  What we are aim
 ![](./img/curr.png)
 
 I am currently working on making this more legible, and ultimately will use this to rework Hoon School, Hoon 101, and organize access to recommended study materials and documentation.
-
----
-
-Next steps:
-- map all runes into this scheme (mostly done, but some runes are never covered, need to decide on this)
-- produce summative assessments for each objective
-- produce formative assessments for each lesson
-- collate/produce content
-  - mark every tutorial with Objectives/Key Points
-
----
