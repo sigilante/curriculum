@@ -1,0 +1,23 @@
+uuid: 156
+layout: node
+title: "Typechecking"
+tags:
+ - "%hoon"
+prerequisites:
+  - "133"
+postrequisites:
+  - "184"
+objectives:
+  - "Use assertions to enforce type constraints."
+  - "Identify a `lest` (as opposed to a list)."
+  - "Produce a type arm."
+runes:
+  - "?>"
+  - "?<"
+  - "?~"
+  - "+$"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

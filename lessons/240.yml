@@ -1,0 +1,19 @@
+uuid: 240
+layout: node
+title: "Heuristic description of vane."
+tags:
+ - "%jael"
+prerequisites:
+  - "112"
+  - "201"
+postrequisites:
+  - "290"
+objectives:
+  - "Explain the services Jael provides to the system."
+  - "Enumerate the secrets Jael tracks."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

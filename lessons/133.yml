@@ -1,0 +1,24 @@
+uuid: 133
+layout: node
+title: "Basic cores, arms"
+tags:
+ - "%hoon"
+prerequisites:
+  - "130"
+postrequisites:
+  - "135"
+  - "156"
+objectives:
+  - "Consider Hoon structures as cores."
+  - "Identify the special role of the `$` buc arm in many cores."
+  - "Order neighboring cores within the subject for addressibility."
+runes:
+  - "|%"
+  - "++"
+  - "=<"
+  - "=>"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

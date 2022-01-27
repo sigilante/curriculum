@@ -1,0 +1,19 @@
+uuid: 350
+layout: node
+title: "Technical description of Hoon builder (Hoon→AST)."
+tags:
+ - "%nock"
+prerequisites:
+  - "250"
+postrequisites:
+  - "360"
+  - "450"
+objectives:
+  - "Build Hoon code into ASTs explicitly (`++ream`)."
+runes:
+  - "!,"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

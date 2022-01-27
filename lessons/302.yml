@@ -1,0 +1,20 @@
+uuid: 302
+layout: node
+title: "Management of system state; eth-watcher (also Jael)."
+tags:
+ - "%azimuth"
+prerequisites:
+  - "102"
+  - "290"
+postrequisites:
+  - "402"
+  - "500"
+objectives:
+  - "Query and manage Jael's internal system state."
+  - "Query the state of the Azimuth PKI from the Ethereum blockchain."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

@@ -1,0 +1,22 @@
+uuid: 300
+layout: node
+title: "Moves and move traces"
+tags:
+ - "%arvo"
+prerequisites:
+  - "200"
+  - "299"
+postrequisites:
+  - "301"
+  - "303"
+  - "353"
+  - "485"
+objectives:
+  - "Enumerate and dissect all `$move` types."
+  - "Follow a move trace."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

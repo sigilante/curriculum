@@ -1,0 +1,17 @@
+uuid: 220
+layout: node
+title: "Heuristic description of vane."
+tags:
+ - "%dill"
+prerequisites:
+  - "201"
+postrequisites:
+  - "270"
+objectives:
+  - "Explain the services Dill provides to the system."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

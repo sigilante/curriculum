@@ -1,0 +1,20 @@
+uuid: 275
+layout: node
+title: "Technical description of vane, including internals."
+tags:
+ - "%eyre"
+prerequisites:
+  - "235"
+  - "180"
+  - "225"
+postrequisites:
+  - "301"
+  - "500"
+objectives:
+  - "Describe internal operations and structures of Eyre."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

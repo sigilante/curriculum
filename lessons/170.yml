@@ -1,0 +1,23 @@
+uuid: 170
+layout: node
+title: "Basic debugging techniques"
+tags:
+ - "%testing"
+prerequisites:
+  - "135"
+postrequisites:
+  - "185"
+  - "190"
+objectives:
+  - "Distinguish errors, faults, and failures."
+  - "Distinguish latent, masked, and manifest errors."
+  - "Enumerate and identify common error messages."
+  - "Employ a debugging strategy to identify and correct errors in Hoon code."
+runes:
+  - "!:"
+  - "!."
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

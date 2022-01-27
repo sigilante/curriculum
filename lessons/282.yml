@@ -1,0 +1,22 @@
+uuid: 282
+layout: node
+title: "Production of a simple Gall agent."
+tags:
+ - "%gall"
+prerequisites:
+  - "180"
+  - "230"
+postrequisites:
+  - "382"
+  - "390"
+  - "430"
+objectives:
+  - "Produce a minimalist Gall agent."
+  - "Employ the `default-agent` library."
+  - "Employ the `%dbug` agent wrapper."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

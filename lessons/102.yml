@@ -1,0 +1,25 @@
+uuid: 102
+layout: node
+title: "Description of address space structure."
+tags:
+ - "%azimuth"
+prerequisites:
+  - "0"
+postrequisites:
+  - "112"
+  - "302"
+objectives:
+  - "Understand the role of the public-key infrastructure in Urbit."
+  - "Describe the high-level architecture of the Urbit ID address space and distinguish types of points."
+  - "Interpret and apply the Azimuth point naming scheme."
+  - "Identify point features such as activity."
+  - "List at least two services/roles provided by a galaxy for the network."
+  - "List at least two services provided by a star for its planets."
+runes:
+  - ""
+irregular:
+  - ""
+key_points: []
+assessments: []
+comments: ""
+content: ""

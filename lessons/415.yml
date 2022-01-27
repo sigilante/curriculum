@@ -1,0 +1,19 @@
+uuid: 415
+layout: node
+title: "Produce full marks."
+tags:
+ - "%clay"
+prerequisites:
+  - "315"
+postrequisites:
+  - "500"
+objectives:
+  - "Produce a mark with all arms defined."
+  - "Enumerate all remaining cares."
+runes:
+  - "/$"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

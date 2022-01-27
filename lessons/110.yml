@@ -1,0 +1,27 @@
+uuid: 110
+layout: node
+title: "Syntax, nouns, auras"
+tags:
+ - "%hoon"
+prerequisites:
+  - "100"
+postrequisites:
+  - "112"
+  - "113"
+objectives:
+  - "Distinguish nouns, cells, and atoms."
+  - "Apply auras to transform an atom."
+  - "Identify common Hoon molds, such as cells, lists, and tapes."
+  - "Annotate Hoon code with comments."
+runes:
+  - "::"
+irregular:
+  - "@"
+  - "[]"
+  - "~[]"
+  - "''"
+  - """"
+key_points: []
+assessments: []
+comments: ""
+content: ""

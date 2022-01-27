@@ -1,0 +1,17 @@
+uuid: 245
+layout: node
+title: "Heuristic description of vane."
+tags:
+ - "%khan"
+prerequisites:
+  - "201"
+postrequisites:
+  - "295"
+objectives:
+  - "Explain the services Khan provides to the system."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

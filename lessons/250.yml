@@ -1,0 +1,20 @@
+uuid: 250
+layout: node
+title: "Description of simple rules; derivation of compound rules; explanation of cores."
+tags:
+ - "%nock"
+prerequisites:
+  - "115"
+postrequisites:
+  - "350"
+objectives:
+  - "Compile Hoon code to Nock using `!=`."
+  - "Translate and annotate Nock like assembly language."
+  - "Derive the compound rules of Nock from the simpler rules."
+runes:
+  - "!="
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

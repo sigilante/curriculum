@@ -1,0 +1,19 @@
+uuid: 270
+layout: node
+title: "Technical description of vane, including internals."
+tags:
+ - "%dill"
+prerequisites:
+  - "220"
+  - "180"
+postrequisites:
+  - "301"
+  - "320"
+objectives:
+  - "Describe internal operations and structures of Dill."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

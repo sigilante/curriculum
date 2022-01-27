@@ -1,0 +1,20 @@
+uuid: 303
+layout: node
+title: "Advanced debugging techniques"
+tags:
+ - "%testing"
+prerequisites:
+  - "185"
+  - "190"
+  - "288"
+  - "299"
+  - "300"
+postrequisites: []
+objectives:
+  - "Enumerate and identify advanced error messages (`mull-grow`, etc.)."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

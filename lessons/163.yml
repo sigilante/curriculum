@@ -1,0 +1,22 @@
+uuid: 163
+layout: node
+title: "Producing textually rich %say generators."
+tags:
+ - "%hoon"
+prerequisites:
+  - "145"
+postrequisites:
+  - "234"
+  - "263"
+objectives:
+  - "Create a `%say` generator."
+  - "Identify how Dojo sees and interprets a generator as a cell with a head tag."
+  - "Identify the elements of a `sample` for a `%say` generator."
+  - "Produce a `%say` generator with optional arguments."
+runes:
+  - ":-"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

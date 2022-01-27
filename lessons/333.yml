@@ -1,0 +1,18 @@
+uuid: 333
+layout: node
+title: "Parsing dates"
+tags:
+ - "%stdlib"
+prerequisites:
+  - "183"
+postrequisites: []
+objectives:
+  - "Represent dates and times using specialized molds."
+  - "Convert between values."
+  - "Examine the range and granularity of Urbit time representations."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

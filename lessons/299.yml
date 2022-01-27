@@ -1,0 +1,29 @@
+uuid: 299
+layout: node
+title: "Core variadicity (gold, iron, lead, zinc)"
+tags:
+ - "%hoon"
+prerequisites:
+  - "288"
+postrequisites:
+  - "300"
+  - "301"
+  - "303"
+  - "360"
+objectives:
+  - "Enumerate and distinguish use cases for dry cores (using variance):"
+  - "- Covariant (`%zinc`)"
+  - "- Contravariant (`%iron`)"
+  - "- Bivariant (`%lead`)"
+  - "- Invariant (`%gold`)"
+runes:
+  - "^|"
+  - "^&"
+  - "^?"
+  - "|~"
+  - "|?"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

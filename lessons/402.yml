@@ -1,0 +1,19 @@
+uuid: 402
+layout: node
+title: "Ecliptic contract structure; programmatic Bridge activities; L2."
+tags:
+ - "%azimuth"
+prerequisites:
+  - "302"
+  - "Solidity/EVM"
+postrequisites: []
+objectives:
+  - "Examine Ecliptic contract structure."
+  - "Carry out Bridge activities programmatically."
+  - "Describe how L2 ships work."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

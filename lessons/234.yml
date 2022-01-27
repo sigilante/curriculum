@@ -1,0 +1,19 @@
+uuid: 234
+layout: node
+title: "Floating-point mathematics"
+tags:
+ - "%stdlib"
+prerequisites:
+  - "163"
+postrequisites: []
+objectives:
+  - "Review floating-point mathematics including IEEE-754."
+  - "Examine `fn` representation of floating-point values."
+  - "Examine `@r` atomic representation of floating-point values."
+  - "Manipulate and convert floating-point values using the `@r` operations."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

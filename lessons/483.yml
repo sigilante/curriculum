@@ -1,0 +1,27 @@
+uuid: 483
+layout: node
+title: "Advanced Molds"
+tags:
+ - "%hoon"
+prerequisites:
+  - "350"
+postrequisites: []
+objectives:
+  - "Describe advanced mold production with Hoon."
+runes:
+  - "$@"
+  - "$%"
+  - "$<"
+  - "$>"
+  - "$|"
+  - "$&"
+  - "$^"
+  - "$-"
+  - "$~"
+  - "$*"
+  - "$;"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

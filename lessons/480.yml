@@ -1,0 +1,16 @@
+uuid: 480
+layout: node
+title: "Technical description of Spider as thread handler."
+tags:
+ - "%gall"
+prerequisites:
+  - "430"
+postrequisites: []
+objectives:
+  - "Describe internal operations and structures of Spider."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

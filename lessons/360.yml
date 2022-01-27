@@ -1,0 +1,32 @@
+uuid: 360
+layout: node
+title: "Deep Hoon"
+tags:
+ - "%hoon"
+prerequisites:
+  - "288"
+  - "299"
+  - "350"
+postrequisites:
+  - "433"
+  - "483"
+objectives:
+  - "Distinguish spec and value modes (`$=` v. `^=`)."
+  - "Lift dynamic value into static context (`!<`)."
+  - "Expose a namespace with `=,`."
+  - "Produce arm chapters in a core."
+runes:
+  - "|;"
+  - "|^"
+  - "$."
+  - "$="
+  - "^="
+  - "="
+  - ""
+  - "!<"
+  - "+|"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

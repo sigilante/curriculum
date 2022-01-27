@@ -1,0 +1,18 @@
+uuid: 405
+layout: node
+title: "Technical description of network, packets, etc."
+tags:
+ - "%ames"
+prerequisites:
+  - "255"
+postrequisites:
+  - "500"
+objectives:
+  - "Describe Ames at a technical operating level, such as peer discovery and routing."
+  - "Diagram the structure of an Ames UDP packet."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

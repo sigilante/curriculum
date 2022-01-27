@@ -1,0 +1,20 @@
+uuid: 145
+layout: node
+title: "Libraries"
+tags:
+ - "%hoon"
+prerequisites:
+  - "140"
+postrequisites:
+  - "150"
+  - "163"
+objectives:
+  - "Import a library using `/+` faslus."
+  - "Create a new library in `/lib`."
+runes:
+  - "/+"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

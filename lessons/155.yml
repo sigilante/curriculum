@@ -1,0 +1,18 @@
+uuid: 155
+layout: node
+title: "Revisiting $"
+tags:
+ - "%hoon"
+prerequisites:
+  - "150"
+postrequisites:
+  - "165"
+objectives:
+  - "Identify the `$` buc arm in several structures and its role."
+runes:
+  - "|."
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""
