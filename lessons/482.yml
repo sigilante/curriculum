@@ -9,6 +9,7 @@ prerequisites:
 postrequisites: []
 objectives:
   - "Produce an advanced agent with a front-end interface."
+  - "Explain the role of a %glob and produce one."
 runes: []
 irregular: []
 key_points: []
