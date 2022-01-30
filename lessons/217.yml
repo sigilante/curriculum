@@ -1,0 +1,21 @@
+uuid: 217
+layout: node
+title: "Distribution of software using Grid."
+tags:
+ - "%clay"
+prerequisites:
+  - "190"
+  - "215"
+postrequisites:
+  - "382"
+  - "390"
+objectives:
+  - "Produce a desk suitable for distribution."
+  - "Install and distribute software using Grid."
+  - "Explain elements of a docket file."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""
