@@ -28,22 +28,38 @@ Particular paths can be traced through the competency cluster dependencies.  The
 A competency cluster looks like this:
 
 ```
-#hoon
-Cores with Arms
-
-- Consider Hoon structures as cores.
-- Identify the special role of the `$` buc arm in many cores.
-- Order neighboring cores within the subject for addressibility.
-
-Runes introduced:  `|%`, `++`, `=<`, `=>`
-Irregular syntax introduced:
+uuid: 110
+layout: node
+title: "Syntax, nouns, auras"
+tags:
+ - "%hoon"
+prerequisites:
+  - "100"
+postrequisites:
+  - "112"
+  - "113"
+objectives:
+  - "Distinguish nouns, cells, and atoms."
+  - "Apply auras to transform an atom."
+  - "Identify common Hoon molds, such as cells, lists, and tapes."
+  - "Annotate Hoon code with comments."
+runes:
+  - "::"
+irregular:
+  - "@"
+  - "[]"
+  - "~[]"
+  - "''"
+  - """"
+key_points: []
+assessments: []
+comments: ""
+content: ""
 ```
 
-with some associated content from urbit.org tutorials and docs.  What we are aiming for is that each objective have a quantitative measurable outcome; that is, we should be able to definitively say that one can “identify the special role of the `$` buc arm in many cores.”  The whole chart looks complicated because some things (like how Jael works, 240 and 290) depend on different prerequisites (in this case, some Azimuth background and how `move`s work).
+with some associated `content` from [urbit.org](https://urbit.org/docs) tutorials and docs.  What we are aiming for is that each objective have a quantitative measurable outcome; that is, we should be able to definitively say that one can “identify the special role of the `$` buc arm in many cores.”  The whole chart looks complicated because some things (like how Jael works, 240 and 290) depend on different prerequisites (in this case, some Azimuth background and how `move`s work).
 
 ![](./img/curr.png)
-
-I am currently working on making this more legible, and ultimately will use this to rework Hoon School, Hoon 101, and organize access to recommended study materials and documentation.
 
 ---
 
