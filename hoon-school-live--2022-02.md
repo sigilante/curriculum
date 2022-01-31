@@ -1,3 +1,5 @@
+![](../img/curr-marked.svg)
+
 After Lesson 0, you should be able to:
 
 - Explain what an Urbit ship is.
