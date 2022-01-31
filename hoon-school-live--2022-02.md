@@ -119,17 +119,12 @@ After Lesson 5, you should be able to:
 - Pull an arm in a door.
 - Identify the `$` buc arm in several structures and its role.
 - Review Unicode text structure.
-- Distinguish cords and tapes and their characteristics.
-- Transform and manipulate text using text conversion arms: - `++crip`: convert `tape` to `cord` (`tape`→`cord`) - `++trip`: convert `cord` to `tape` (`cord`→`tape`) - `++cass`: convert upper-case text to lower-case (`tape`→`tape`) - `++cuss`: convert lower-case text to upper-case (`tape`→`tape`) - [`++scot`](https://urbit.org/docs/reference/library/4m/#scot): render `dime` as `cord` (`dime`→`cord`) - [`++scow`](https://urbit.org/docs/reference/library/4m/#scow): render `dime` as `tape` (`dime`→`tape`)
-- Interpolate text.
-- Employ sigpam logging levels.
 
 You will know the runes:
 
 - `|_`
 - `%~`
 - `|.`
-- `~&  >>>`
 
 ---
 
