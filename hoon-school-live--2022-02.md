@@ -1,4 +1,4 @@
-![](../img/curr-marked.svg)
+![](./img/curr-marked.svg)
 
 After Lesson 0, you should be able to:
 
