@@ -22,7 +22,7 @@ objectives:
 runes:
   - "~&  >>>"
 irregular:
-  - ""{<>}""
+  - "\"{<>}\""
 key_points: []
 assessments: []
 comments: |

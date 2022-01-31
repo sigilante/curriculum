@@ -20,7 +20,7 @@ irregular:
   - "[]"
   - "~[]"
   - "''"
-  - """"
+  - "\"\""
 key_points: []
 assessments: []
 comments: ""
