@@ -59,6 +59,8 @@ content: ""
 
 with some associated `content` from [urbit.org](https://urbit.org/docs) tutorials and docs.  What we are aiming for is that each objective have a quantitative measurable outcome; that is, we should be able to definitively say that one can “identify the special role of the `$` buc arm in many cores.”  The whole chart looks complicated because some things (like how Jael works, 240 and 290) depend on different prerequisites (in this case, some Azimuth background and how `move`s work).
 
+This charts shows the General Mathemic Inventory (GMI):
+
 ![](./img/curr.png)
 
 ---
