@@ -12,8 +12,7 @@ objectives:
   - "Explain how Hoon manages the subject and wing search paths."
   - "Explain how to skip to particular matches in a wing search path through the subject."
   - "Identify common Hoon patterns: batteries, and doors, arms, wings, and legs."
-runes:
-  - ":-"
+runes: []
 irregular: []
 key_points: []
 assessments: []
