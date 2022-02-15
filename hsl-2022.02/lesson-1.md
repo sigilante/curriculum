@@ -24,6 +24,8 @@ keypoints:
 
 ##  Numeric Representation
 
+- How do we represent numbers?
+
 1. Base-1:  tally marks as most primitive number
 2. Base-60:  highly divisible
 3. Base-10
@@ -47,10 +49,11 @@ Babylonian mathematics, base-60, was considered very sophisticated and presaged 
 
 Greek mathematics were based on geometry, and in large part on calculations using the chord of a circle rather than the sine.  This is an equivalent formulation, and makes some calculations easier and others harder.
 
+- Why prefer chords to sines?  For one thing, it's easier to do with string and pegs.
+
 Greeks were also very concerned with the notion of proof, as Euclid's _Elements_ demonstrated and left a legacy for all subsequent mathematicians to follow.
 
-Pythagoras' insight was that number was magical
-(ratios, musical notes, etc.)
+Pythagoras' insight was that number was magical.  He realized the mystical unity of ratios, musical notes, geometric forms, etc.  This was incredibly important and actually true:  the perfect abstraction, the perfect move to understand the nature of reality more deeply.
 
 2. Any computation requires a representation.
 
@@ -59,7 +62,8 @@ Pythagoras' insight was that number was magical
 
 This multiplication procedure, described in an early Egyptian papyrus, is one of the first general-purpose tools.  Most early mathematical handbooks demonstrate how to solve specific concrete problems and leave it to the reader to decide how to extend or adapt the method.  This procedure, however, is phrased completely generally and works for any two numbers.  We call such a general statement of a problem-solving approach an _algorithm_.
 
-What are the kinds of things in this algorithm?
+What are the kinds of things we have to use and keep track of in this process or algorithm?
+
 - values
 - operations
 - state or steps
@@ -73,12 +77,14 @@ Given a formal language for writing down propositions, we can convert the terms 
 
 Given a rule for conversion, we can write down any proposal from the formal language as a number and subject it to mathematical proofs and reasoning.
 
+_This is not obvious, and it's a major component of Kurt Gödel's proof of his incompleteness theorems._
+
 4. All of these can be represented unambiguously on the machine.
 
 
 ##  Programming Languages
 
-Computers use assembler (or assembly) language as their fundamental binary language.
+We do something similar on computers today.  Computers use assembler (or assembly) language as their fundamental binary language.  What binary _is_ to the machine is a sequence of 0s and 1s, but they can have many different representations (magnetic charge, electric signal strength, changes in light reflectivity, holes in a punch card, etc.).
 
 Each instruction has a determinate length.  The bitness of the machine determines the number and to some extent the range of values:
 
@@ -111,3 +117,13 @@ Other (equivalent) logic systems exist; Urbit’s Nock language is most closely 
 4. All of these can be represented unambiguously on the machine.
 5. Higher-level languages map to lower-level representations for the machine.
 
+
+##  Urbit
+
+Urbit consists of these parts:
+- Nock is a virtual machine, a computational behavior specification (like assembler).
+- Hoon is a high-level language which compiles to Nock (like C or Python).
+- Arvo is the Urbit OS, the event handler and event log which together define system state.
+- Azimuth is the identity system.
+
+How do each of these map to the computational principles?
