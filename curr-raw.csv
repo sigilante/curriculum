@@ -3,7 +3,7 @@
 101,Aggregate,,,
 102,Azimuth,Description of address space structure.,https://davis68.github.io/martian-computing/lessons/lesson02-azimuth-1.html,0
 103,Hoon,Aural Hoon,,0
-110,Hoon,"Syntax, nouns, auras",https://hooniversity.org/beginning-hoon-introduction-2/,100
+110,Hoon,"Syntax, nouns, auras",https://hooniversity.org/beginning-hoon-introduction-2/,"100, 103"
 112,Azimuth,Exploration of address space structure.,,"102, 110"
 113,Hoon,"Naked generator design, syncing, etc., control structures",,110
 115,Hoon,"Irregular forms, sugar syntax",,113
@@ -33,7 +33,7 @@
 202,Azimuth,,,
 205,Ames,Heuristic description of vane.,,201
 210,Behn,Heuristic description of vane.,,201
-215,Clay,Heuristic description of vane; use of marks to convert data.,,"201, 115"
+215,Clay,Heuristic description of vane; use of marks to convert data.,,"115, 201"
 217,Distribution,Distribution of software using Grid,,"190, 215"
 220,Dill,Heuristic description of vane.,,201
 225,Eyre,Heuristic description of vane.,,201
@@ -42,22 +42,22 @@
 234,Stdlib,Floating-point mathematics,,163
 235,Iris,Heuristic description of vane.,,201
 240,Jael,Heuristic description of vane.,,"112, 201"
-245,khan,Heuristic description of vane.,,201
+245,Khan,Heuristic description of vane.,,201
 250,Nock,Description of simple rules; derivation of compound rules; explanation of cores.,,115
-255,Ames,"Technical description of vane, including internals.",,"205, 180"
-260,Behn,"Technical description of vane, including internals.",,"210, 180"
+255,Ames,"Technical description of vane, including internals.",,"180, 205"
+260,Behn,"Technical description of vane, including internals.",,"180, 210"
 263,%ask generators,Producing interactive generators.,,"163, 183"
-265,Clay,"Technical description of vane, including internals.",,"215, 180"
-270,Dill,"Technical description of vane, including internals.",,"220, 180"
-275,Eyre,"Technical description of vane, including internals.",,"235, 180, 225"
-280,Gall,"Technical description of vane, including internals.",,"230, 180"
+265,Clay,"Technical description of vane, including internals.",,"180, 215"
+270,Dill,"Technical description of vane, including internals.",,"180, 220"
+275,Eyre,"Technical description of vane, including internals.",,"180, 225, 235"
+280,Gall,"Technical description of vane, including internals.",,"180, 230"
 282,Gall agents,Production of a simple Gall agent.,,"180, 230"
 283,Stdlib,Basic text tokenization,,"180, 183"
 284,Stdlib,Randomness and hashing,,"180, 183"
-285,Iris,"Technical description of vane, including internals.",,"235, 180, 225"
-288,Hoon,Gate genericity (wet gates),,"233, 180"
-290,Jael,"Technical description of vane, including internals.",,"240, 284, 180"
-295,Khan,"Technical description of vane, including internals.",,"245, 180"
+285,Iris,"Technical description of vane, including internals.",,"180, 225, 235"
+288,Hoon,Gate genericity (wet gates),,"180, 233"
+290,Jael,"Technical description of vane, including internals.",,"180, 240, 284"
+295,Khan,"Technical description of vane, including internals.",,"180, 245"
 299,Hoon,"Core variadicity (gold, iron, lead, zinc)",,288
 300,Arvo,Moves and move traces,,"200, 299"
 301,Arvo,Technical description of boot process.,,"195, 200, 255, 260, 265, 270, 275, 280, 285, 290, 295, 299, 300"
@@ -90,7 +90,7 @@
 395,,,,
 400,Arvo,Management of %unix interface; king/serf dynamics.,,304
 401,,(room for specific case studies here),,
-402,Azimuth,Ecliptic contract structure; programmatic Bridge activities; L2.,,"302, Solidity/EVM"
+402,Azimuth,Ecliptic contract structure; programmatic Bridge activities; L2.,,Solidity/EVM
 405,Ames,"Technical description of network, packets, etc.",,255
 410,Behn,,,
 415,Clay,Produce full marks.,,315
@@ -102,6 +102,7 @@
 440,Jael,,,
 445,Khan,,,
 450,Nock,Technical description of Hoon builder (AST→Nock); jet matching.,,350
+452,Azimuth,Azimuth/ETH manipulation in Urbit (claz etc.),,"302, 402"
 453,Runtime,Jet construction/u3; jet dashboard.,,"353, 400, 450"
 460,,,,
 465,,,,
@@ -113,5 +114,5 @@
 485,Arvo,Aqua,,300
 490,,,,
 495,,,,
-500,Arvo,OTA production.,,"400, 302, 405, 415, 420, 275, 390, 301"
-550,Runtime,Produce working runtime implementation of Arvo.,,"500, 450, 453"
+500,Arvo,OTA production.,,"275, 301, 302, 390, 400, 405, 415, 420"
+550,Runtime,Produce working runtime implementation of Arvo.,,"450, 453, 500"
