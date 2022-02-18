@@ -4,7 +4,7 @@
 102,Azimuth,Description of address space structure.,https://davis68.github.io/martian-computing/lessons/lesson02-azimuth-1.html,0
 103,Hoon,Aural Hoon,,0
 110,Hoon,"Syntax, nouns, auras",https://hooniversity.org/beginning-hoon-introduction-2/,"100, 103"
-112,Azimuth,Exploration of address space structure.,,"102, 110"
+112,Azimuth,Azimuth,,"102, 110"
 113,Hoon,"Naked generator design, syncing, etc., control structures",,110
 115,Hoon,"Irregular forms, sugar syntax",,113
 120,Hoon,"Molds, typechecking",,115
@@ -15,7 +15,8 @@
 140,Stdlib,"Lists, trees",,135
 145,Hoon,Libraries,,140
 150,Hoon,Doors,,145
-155,Hoon,Revisiting $,,150
+153,Hoon,The beak,,145
+155,Hoon,Revisiting $,,"150, 153"
 156,Hoon,Typechecking,,133
 160,Stdlib,Basic text transformations,,125
 163,Hoon,Producing textually rich %say generators.,,145
@@ -42,7 +43,7 @@
 234,Stdlib,Floating-point mathematics,,163
 235,Iris,Heuristic description of vane.,,201
 240,Jael,Heuristic description of vane.,,"112, 201"
-245,Khan,Heuristic description of vane.,,201
+245,khan,Heuristic description of vane.,,201
 250,Nock,Description of simple rules; derivation of compound rules; explanation of cores.,,115
 255,Ames,"Technical description of vane, including internals.",,"180, 205"
 260,Behn,"Technical description of vane, including internals.",,"180, 210"

@@ -1,0 +1,22 @@
+uuid: 153
+layout: node
+title: "The beak"
+tags:
+ - "%hoon"
+prerequisites:
+  - "145"
+postrequisites:
+  - "155"
+objectives:
+  - "Identify the role of a desk in the Clay filesystem."
+  - "Identify the components of a beak."
+  - "Identify filesystem locations (including desks)."
+  - "Identify the components of a path."
+runes: []
+irregular:
+  - "%"
+  - "/==="
+key_points: []
+assessments: []
+comments: ""
+content: ""
