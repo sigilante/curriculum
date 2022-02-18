@@ -1,6 +1,6 @@
 uuid: 125
 layout: node
-title: "Cores and gates"
+title: "Basic dry gates"
 tags:
  - "%hoon"
 prerequisites:
@@ -9,8 +9,7 @@ postrequisites:
   - "130"
   - "160"
 objectives:
-  - "Identify common Hoon patterns: atoms, cells, cores, faces, and traps."
-  - "Identify cores as `[battery payload]` cells."
+  - "Employ a gate to defer a computation."
   - "Produce a gate as a generator."
 runes:
   - "|="
