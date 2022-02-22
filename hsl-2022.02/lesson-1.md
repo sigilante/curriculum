@@ -2,6 +2,7 @@
 title: "Introduction to Computing"
 teaching: 60
 exercises: 0
+nodes: []
 objectives:
 - "Identify fundamental principles common to all computing (manual, analog, and digital)."
 - "Explain how representations of value are interchangeable."
@@ -22,9 +23,11 @@ keypoints:
 #   Introduction to Computing
 ##  Hoon School Lesson –1
 
+Our objective in this lesson is to motivate why computers generally (and Urbit specifically) have the structure they do, and how to think about computation as an activity.
+
 ##  Numeric Representation
 
-- How do we represent numbers?
+From early in history, humans found the need to represent events and observations with number.  One imagines our deep ancestors counting antelope, or days, or moons.  Later, they found themselves enumerating things that weren't stacks of discrete single units (like area, or fractions, or volume).
 
 1. Base-1:  tally marks as most primitive number
 2. Base-60:  highly divisible
@@ -38,6 +41,8 @@ You are in fact comfortable with switching between bases of representation in yo
 - time
 - 1-2-3-4, 2-2-3-4, 3-2-3-4, 4-2-3-4
 
+The magician Pythagoras saw through number as a convention to a deeper reality, relating string vibrations, the chords of a circle, and counting numbers to each other.  Written numbers are merely a signpost to the underlying idea of number.
+
 1. Representations are interchangeable.
 
 
@@ -49,11 +54,10 @@ Babylonian mathematics, base-60, was considered very sophisticated and presaged 
 
 Greek mathematics were based on geometry, and in large part on calculations using the chord of a circle rather than the sine.  This is an equivalent formulation, and makes some calculations easier and others harder.
 
-- Why prefer chords to sines?  For one thing, it's easier to do with string and pegs.
-
 Greeks were also very concerned with the notion of proof, as Euclid's _Elements_ demonstrated and left a legacy for all subsequent mathematicians to follow.
 
-Pythagoras' insight was that number was magical.  He realized the mystical unity of ratios, musical notes, geometric forms, etc.  This was incredibly important and actually true:  the perfect abstraction, the perfect move to understand the nature of reality more deeply.
+Pythagoras' insight was that number was magical
+(ratios, musical notes, etc.)
 
 2. Any computation requires a representation.
 
@@ -62,8 +66,7 @@ Pythagoras' insight was that number was magical.  He realized the mystical unity
 
 This multiplication procedure, described in an early Egyptian papyrus, is one of the first general-purpose tools.  Most early mathematical handbooks demonstrate how to solve specific concrete problems and leave it to the reader to decide how to extend or adapt the method.  This procedure, however, is phrased completely generally and works for any two numbers.  We call such a general statement of a problem-solving approach an _algorithm_.
 
-What are the kinds of things we have to use and keep track of in this process or algorithm?
-
+What are the kinds of things in this algorithm?
 - values
 - operations
 - state or steps
@@ -77,14 +80,12 @@ Given a formal language for writing down propositions, we can convert the terms 
 
 Given a rule for conversion, we can write down any proposal from the formal language as a number and subject it to mathematical proofs and reasoning.
 
-_This is not obvious, and it's a major component of Kurt Gödel's proof of his incompleteness theorems._
-
 4. All of these can be represented unambiguously on the machine.
 
 
 ##  Programming Languages
 
-We do something similar on computers today.  Computers use assembler (or assembly) language as their fundamental binary language.  What binary _is_ to the machine is a sequence of 0s and 1s, but they can have many different representations (magnetic charge, electric signal strength, changes in light reflectivity, holes in a punch card, etc.).
+Computers use assembler (or assembly) language as their fundamental binary language.
 
 Each instruction has a determinate length.  The bitness of the machine determines the number and to some extent the range of values:
 
@@ -118,12 +119,66 @@ Other (equivalent) logic systems exist; Urbit’s Nock language is most closely 
 5. Higher-level languages map to lower-level representations for the machine.
 
 
-##  Urbit
+#   Hoon Syntax
+math v. mechanical model of coding
+turing, gödel
+history of computation story, drill more into Llull etc., Borges
+https://publicacions.iec.cat/Front/repository/pdf/00000244/00000095.pdf
 
-Urbit consists of these parts:
-- Nock is a virtual machine, a computational behavior specification (like assembler).
-- Hoon is a high-level language which compiles to Nock (like C or Python).
-- Arvo is the Urbit OS, the event handler and event log which together define system state.
-- Azimuth is the identity system.
+https://gist.github.com/sigilante/e059ad83d15bc69557ddae715d4dce1b
 
-How do each of these map to the computational principles?
+#   Lesson –1:  Introducing Computation
+
+##  Objectives
+
+- Discuss the history of computational concepts, including number, approximation, and algorithm.
+- Enumerate some principles of computation:
+  - Any calculation requires a representation.
+  - Representations can be interchangeable.
+  - 
+- Identify the sources of the major components of modern von Neumann-based computing:  memory, CPU, computer language, I/O.
+- Interpret a Turing machine via a state diagram.
+
+
+##  Agenda
+
+1. Computing in Antiquity
+  1. Number
+    1. Writing, abacus, quipu
+    2. Fractions (eye of Horus; Rhind Papyrus 2/n)
+      1. https://discoveringegypt.com/egyptian-hieroglyphic-writing/egyptian-mathematics-numbers-hieroglyphs/
+      2. https://en.wikipedia.org/wiki/Rhind_Mathematical_Papyrus
+  2. Astronomy, calendars
+    1. Epheremis, epicycles
+  3. Areas, chords, bases, integration
+    1. YBC 7289
+    2. Calculation of pi by circumference/area (chord thought?)
+  4. Linear algebra
+    1. Chinese
+  5. Series
+    1. Chinese
+    2. Arabic
+2. Aside on Numeric Bases/Representations
+  1. https://en.wikipedia.org/wiki/Bagua#Fu_Xi_%22Earlier_Heaven%22
+  2. https://en.wikipedia.org/wiki/Vigesimal
+  3. https://en.wikipedia.org/wiki/Kaktovik_numerals
+  4. 
+3. Computing in Modernity
+  1. Babbage
+    1. Punched cards from Jacquard looms
+    2. Analytical Engines
+    3. https://ei.cs.vt.edu/~history/Babbage.html
+  2. Hollerith
+    1. https://en.wikipedia.org/wiki/Unit_record_equipment
+  3. Gödel
+    1. https://en.wikipedia.org/wiki/G%C3%B6del_numbering
+  4. Turing
+    1. Turing machine
+      1. https://www.ics.uci.edu/~goodrich/teach/cs162/notes/turing2.pdf
+      2. state diagram
+  5. Church
+    1. Lambda calculus
+      1. https://en.wikipedia.org/wiki/Lambda_calculus#Arithmetic_in_lambda_calculus
+  6. Computer architecture
+      1. http://ds-wordpress.haverford.edu/bitbybit/bit-by-bit-contents/chapter-five/5-7-patent-quarrel-at-the-moore-school/
+      2. Languages & compilation
