@@ -59,6 +59,8 @@ Greeks were also very concerned with the notion of proof, as Euclid's _Elements_
 Pythagoras' insight was that number was magical
 (ratios, musical notes, etc.)
 
+John Conway's WINNIE:  https://twitter.com/fermatslibrary/status/1495391552394383362
+
 2. Any computation requires a representation.
 
 
