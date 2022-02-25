@@ -23,11 +23,31 @@ keypoints:
 #   Introduction to Computing
 ##  Hoon School Lesson –1
 
+---
+_Instructor notes:_
+- This lesson intends to get students excited about the arc and foundations of Urbit-style computing.  Tell the historical parts with anecdotes.
+- There are many other examples of representation that can be brought forward, and you can engage the students in this.
+- Emphasize that they don't need to deeply understand the _mechanics_ of binary mathematics, Gödel numbering, assembler language, lambda calculus, etc., just how these concepts matter to the overall picture.
+
+---
+
+How does a machine “reason”?  “Thou shalt not make a machine in the likeness of a human mind,” as _Dune_ has it.  But the act of calculation, of computation, is universal to human experience, and it is only at strange extrema such as machine learning that we find representations beyond our grasp.
+
 Our objective in this lesson is to motivate why computers generally (and Urbit specifically) have the structure they do, and how to think about computation as an activity.
+
+1. Representations are interchangeable.
+2. Any computation requires a representation.
+3. Computation requires values, operations, and state.
+4. All of these can be represented unambiguously on the machine.
+5. Higher-level languages map to lower-level representations for the machine.
+
+Let's discuss what each of these principles means in practical terms.
+
+Computation = calculation
 
 ##  Numeric Representation
 
-From early in history, humans found the need to represent events and observations with number.  One imagines our deep ancestors counting antelope, or days, or moons.  Later, they found themselves enumerating things that weren't stacks of discrete single units (like area, or fractions, or volume).
+From early in history, humans found the need to represent events and observations with number.  One imagines our deep ancestors counting antelope, or days, or moons.  The earliest physical structures remaining today are temples with alignment to solstices, physically embodying a computation.  Later, they found themselves enumerating things that weren't stacks of discrete single units (like area, or fractions, or volume).
 
 1. Base-1:  tally marks as most primitive number
 2. Base-60:  highly divisible
@@ -36,8 +56,10 @@ From early in history, humans found the need to represent events and observation
 5. Base-2
 6. Base-16
 
+A counting base is the “tens” place, the unit you use to mark the “rollover”.
+
 You are in fact comfortable with switching between bases of representation in your regular life, as when you count with your fingers to track something.  Other examples include:
-- money/change
+- money/change (quarters)
 - time
 - 1-2-3-4, 2-2-3-4, 3-2-3-4, 4-2-3-4
 
@@ -59,7 +81,14 @@ Greeks were also very concerned with the notion of proof, as Euclid's _Elements_
 Pythagoras' insight was that number was magical
 (ratios, musical notes, etc.)
 
-John Conway's WINNIE:  https://twitter.com/fermatslibrary/status/1495391552394383362
+So other computing media can work:
+- Soviet water computer
+- John Conway's WINNIE:  https://twitter.com/fermatslibrary/status/1495391552394383362
+- Pneumatic machines
+- Analog computers
+- Decimal computers (like Babbage's engines)
+
+These are a particular representation, or instantiation, or embodiment:  realizing the universal abstraction in a concrete form.
 
 2. Any computation requires a representation.
 
@@ -73,10 +102,14 @@ What are the kinds of things in this algorithm?
 - operations
 - state or steps
 
+Charles Babbage drew on the idea of Jacquard looms using physical cards with holes to store the thread patterns in a physical embodiment.
+
 3. Computation requires values, operations, and state.
 
 
 ##  Gödel Numbers
+
+Early modern philosophers became fascinated by the idea of writing down and proving propositions:  Llull, Wilkins, Leibniz.  Ultimately the mathematicians figured out how to nail down the kinds of statements for which this reasoning is effective.  En route to proving his famous incompleteness theorems, Kurt Gödel developed a way of writing propositions as numbers (and thus rendering them susceptible of certain kinds of numerical reasoning).
 
 Given a formal language for writing down propositions, we can convert the terms of the proposition to a numeric representation.  Each part still corresponds to a value, an operation, or a part of the state, but now the entire expression or proposition is written down as an number.  As a result, we can apply algorithmic reasoning to carefully treat the proposition mathematically and arrive at a judgment about its truth or falsity.
 
@@ -119,68 +152,3 @@ Other (equivalent) logic systems exist; Urbit’s Nock language is most closely 
 3. Computation requires values, operations, and state.
 4. All of these can be represented unambiguously on the machine.
 5. Higher-level languages map to lower-level representations for the machine.
-
-
-#   Hoon Syntax
-math v. mechanical model of coding
-turing, gödel
-history of computation story, drill more into Llull etc., Borges
-https://publicacions.iec.cat/Front/repository/pdf/00000244/00000095.pdf
-
-https://gist.github.com/sigilante/e059ad83d15bc69557ddae715d4dce1b
-
-#   Lesson –1:  Introducing Computation
-
-##  Objectives
-
-- Discuss the history of computational concepts, including number, approximation, and algorithm.
-- Enumerate some principles of computation:
-  - Any calculation requires a representation.
-  - Representations can be interchangeable.
-  - 
-- Identify the sources of the major components of modern von Neumann-based computing:  memory, CPU, computer language, I/O.
-- Interpret a Turing machine via a state diagram.
-
-
-##  Agenda
-
-1. Computing in Antiquity
-  1. Number
-    1. Writing, abacus, quipu
-    2. Fractions (eye of Horus; Rhind Papyrus 2/n)
-      1. https://discoveringegypt.com/egyptian-hieroglyphic-writing/egyptian-mathematics-numbers-hieroglyphs/
-      2. https://en.wikipedia.org/wiki/Rhind_Mathematical_Papyrus
-  2. Astronomy, calendars
-    1. Epheremis, epicycles
-  3. Areas, chords, bases, integration
-    1. YBC 7289
-    2. Calculation of pi by circumference/area (chord thought?)
-  4. Linear algebra
-    1. Chinese
-  5. Series
-    1. Chinese
-    2. Arabic
-2. Aside on Numeric Bases/Representations
-  1. https://en.wikipedia.org/wiki/Bagua#Fu_Xi_%22Earlier_Heaven%22
-  2. https://en.wikipedia.org/wiki/Vigesimal
-  3. https://en.wikipedia.org/wiki/Kaktovik_numerals
-  4. 
-3. Computing in Modernity
-  1. Babbage
-    1. Punched cards from Jacquard looms
-    2. Analytical Engines
-    3. https://ei.cs.vt.edu/~history/Babbage.html
-  2. Hollerith
-    1. https://en.wikipedia.org/wiki/Unit_record_equipment
-  3. Gödel
-    1. https://en.wikipedia.org/wiki/G%C3%B6del_numbering
-  4. Turing
-    1. Turing machine
-      1. https://www.ics.uci.edu/~goodrich/teach/cs162/notes/turing2.pdf
-      2. state diagram
-  5. Church
-    1. Lambda calculus
-      1. https://en.wikipedia.org/wiki/Lambda_calculus#Arithmetic_in_lambda_calculus
-  6. Computer architecture
-      1. http://ds-wordpress.haverford.edu/bitbybit/bit-by-bit-contents/chapter-five/5-7-patent-quarrel-at-the-moore-school/
-      2. Languages & compilation
