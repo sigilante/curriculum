@@ -1,7 +1,7 @@
 ---
 title: "Development Preliminaries"
-teaching: 15
-exercises: 15
+teaching: 20
+exercises: 20
 nodes:
 - "100"
 - "103"
@@ -21,9 +21,46 @@ keypoints:
 #   Hoon Development Preliminaries
 ##  Hoon School Lesson 0
 
+There have been several guides put out on how to set up efficiently to develop on Urbit.  The most recent guide targets macOS development and is in preparation by Tlon:
+
+- [“Tlon Dev Guide”](https://github.com/urbit/tlon.io/blob/5b5ab41d506fbc9fe8eda59f73db1254a048c9a2/content/dev/dev-guide.md)
+
+It's a good summary, but more than we need at this point in Hoon School Live.
+
+
+##  Text Editors
+
+There are many fine development environments and text editors to choose from.  While it doesn't do much good, starting out, to just tell you to pick one you like, you can check out the most popular text editors and integrated developer environments (IDEs) as a reasonable proxy of usefulness.  [By popularity in 2021](https://insights.stackoverflow.com/survey/2021#most-popular-technologies-new-collab-tools), the following are the most popular IDEs (stripping out single-platform IDEs):
+
+- [Visual Studio Code](https://code.visualstudio.com/) (if you don't have a strong opinion, use this one or the open-source [VSCodium](https://vscodium.com/))
+- [Notepad++](https://notepad-plus-plus.org/)
+- [Vim](https://www.vim.org/)/[Neovim](https://neovim.io/) (hard for beginners but very powerful)
+- [Sublime Text](https://www.sublimetext.com/)
+- [Atom](https://atom.io/) (good GitHub integration)
+- [Xcode](https://developer.apple.com/xcode/)
+- [Emacs](https://www.gnu.org/software/emacs/) (hard for beginners but very powerful)
+- [TextMate](https://macromates.com/)
+
+
 ##  Urbit Ships
 
 Azimuth provides the identity.  Nock and Hoon define the operations.  Arvo provides the state.  But all of these must intersect in a particular instance of reality.  An Urbit ship is that instantiation of identity.
+
+> ### Operating Systems
+>
+> If you are working on a Linux or macOS system, then you are
+> already well-equipped.
+>
+> For Windows, you need to either set up the [MinGW build](https://github.com/urbit/urbit/releases)
+> of Urbit, or install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
+> Windows has a different way of representing line breaks
+> in text files, and this can lead to some incompatibility with
+> Clay.  (Your text editor should have an option for Unix-style
+> or Windows-style line breaks or newlines; select Unix-style.)
+>
+> You won't be able to use Port currently for fakeships, although
+> a future update promises this feature.
+{:callout .challenge}
 
 ### Fakeships v. Liveships
 
