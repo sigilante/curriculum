@@ -1,7 +1,7 @@
 ---
 title: "Development Preliminaries"
-teaching: 20
-exercises: 20
+teaching: 15
+exercises: 15
 nodes:
 - "100"
 - "103"
@@ -18,28 +18,16 @@ keypoints:
 - "Earth and Mars must synchronize their filesystems."
 ---
 
-#   Hoon Development Preliminaries
+#   Development Preliminaries
 ##  Hoon School Lesson 0
+
+What is an Urbit ship?  What does it mean to create one?  If we riff off of the Lesson -1 ideas, an Urbit ship has operations, state, and values that conform to the Nock and Arvo specifications.  In particular, identity is required.
 
 There have been several guides put out on how to set up efficiently to develop on Urbit.  The most recent guide targets macOS development and is in preparation by Tlon:
 
 - [“Tlon Dev Guide”](https://github.com/urbit/tlon.io/blob/5b5ab41d506fbc9fe8eda59f73db1254a048c9a2/content/dev/dev-guide.md)
 
 It's a good summary, but more than we need at this point in Hoon School Live.
-
-
-##  Text Editors
-
-There are many fine development environments and text editors to choose from.  While it doesn't do much good, starting out, to just tell you to pick one you like, you can check out the most popular text editors and integrated developer environments (IDEs) as a reasonable proxy of usefulness.  [By popularity in 2021](https://insights.stackoverflow.com/survey/2021#most-popular-technologies-new-collab-tools), the following are the most popular IDEs (stripping out single-platform IDEs):
-
-- [Visual Studio Code](https://code.visualstudio.com/) (if you don't have a strong opinion, use this one or the open-source [VSCodium](https://vscodium.com/))
-- [Notepad++](https://notepad-plus-plus.org/)
-- [Vim](https://www.vim.org/)/[Neovim](https://neovim.io/) (hard for beginners but very powerful)
-- [Sublime Text](https://www.sublimetext.com/)
-- [Atom](https://atom.io/) (good GitHub integration)
-- [Xcode](https://developer.apple.com/xcode/)
-- [Emacs](https://www.gnu.org/software/emacs/) (hard for beginners but very powerful)
-- [TextMate](https://macromates.com/)
 
 
 ##  Urbit Ships
@@ -150,6 +138,37 @@ docket: fetching %http glob for %garden desk
 ames: metamorphosis  
 ```
 
+One way to think of it: Arvo is merely an event log, but to do anything nontrivial it dispatches the events to vanes. Jael must have the identity (either livenet credentials or a fakeship) to boot, and other parts of the system cannot boot until Jael boots.
+
+To quote 
+
+~master-morzod
+
+:
+
+A brass pill is a recipe for a complete bootstrap sequence, starting with a bootstrap Hoon compiler as a Nock formula. It compiles a Hoon compiler from source, then uses it to compile everything else in the kernel.
+
+The main sequence is concerned with getting the entire system in good nick before Arvo runs.
+
+pier: replaying events 1-18
+
+Arvo is going to play the pill’s events to configure itself.
+
+1-b 1-c (compiling compiler, wait a few minutes) ride: parsing ride: compiling ride: compiled 1-d 1-e ride: parsing ride: compiling ride: compiled 1-f ride: parsing ride: compiling ride: compiled 1-g arvo: assembly arvo: assembled
+
+- 1-b: activate the compiler gate  
+- 1-c: compile the compiler source  
+- 1-d: recompile the compiler (enabling reflection)  
+- 1-e: get the type of the kernel core  
+- 1-f: compile Arvo source against the kernel core  
+- 1-g: create the Arvo kernel with subject of the kernel core
+
+After this, Arvo has been assembled. The lifecycle evaluation of the bootstrap sequence has been completed now.
+
+Later, Arvo refers to itself as metamorphosed. Arvo now sheds its larval form. This means that it has acquired a single home in the kernel and has identity, entropy, and the standard library. At this point, the kernel and userspace have been built.
+
+- [https://groups.google.com/a/urbit.org/g/dev/c/ESrqJb3Ol54/m/bns0S1QkBAAJ?pli=1](https://groups.google.com/a/urbit.org/g/dev/c/ESrqJb3Ol54/m/bns0S1QkBAAJ?pli=1)
+
 Once you have a `dojo>` prompt, the system is ready to go and waiting on input.
 
 Two fakeships can communicate with each other on the same machine, but have no awareness of the broader Urbit network.  We won't need to use this capability in Hoon School Live, but it can be helpful when developing networked apps on Gall later.
@@ -239,6 +258,20 @@ $ cp -r zod zod-backup
 ```
 
 Finally, to close your ship at any time, either type `|exit` or `Ctrl`+`D` to send the stop signal.  When you start your ship again (with `urbit zod` only), it will resume at the exact event from which you left off.
+
+
+##  Text Editors
+
+There are many fine development environments and text editors to choose from.  While it doesn't do much good, starting out, to just tell you to pick one you like, you can check out the most popular text editors and integrated developer environments (IDEs) as a reasonable proxy of usefulness.  [By popularity in 2021](https://insights.stackoverflow.com/survey/2021#most-popular-technologies-new-collab-tools), the following are the most popular IDEs (stripping out single-platform IDEs):
+
+- [Visual Studio Code](https://code.visualstudio.com/) (if you don't have a strong opinion, use this one or the open-source [VSCodium](https://vscodium.com/))
+- [Notepad++](https://notepad-plus-plus.org/)
+- [Vim](https://www.vim.org/)/[Neovim](https://neovim.io/) (hard for beginners but very powerful)
+- [Sublime Text](https://www.sublimetext.com/)
+- [Atom](https://atom.io/) (good GitHub integration)
+- [Xcode](https://developer.apple.com/xcode/)
+- [Emacs](https://www.gnu.org/software/emacs/) (hard for beginners but very powerful)
+- [TextMate](https://macromates.com/)
 
 
 ##  Pronouncing Hoon
