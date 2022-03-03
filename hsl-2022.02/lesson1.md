@@ -16,6 +16,7 @@ objectives:
 runes:
 - "`::`"
 - "`%-`"
+- "`:-`"
 - "`=/`"
 - "`?:`"
 - "`^-`"
@@ -161,6 +162,20 @@ A cell is a pair of two nouns.  Cells are traditionally written using square bra
 [@p @t]
 [[1 2] [3 4]]
 ```
+
+This is actually a shorthand for a rune as well:
+
+```
+:-  1  2
+```
+
+produces a cell `[1 2]`.  You can chain these together:
+
+```
+:-  1  :-  2  3
+```
+
+to produce `[1 [2 3]]` or `[1 2 3]`.
 
 We deal with cells in more detail below.
 
@@ -411,13 +426,13 @@ Essentially, we have to be able to decide whether or not some value or expressio
 If we supply these with a pair of numbers to a `%-` cenhep call, we can see if the expression is considered `%.y` true or `%.n` false.
 
 ```
-> %-  gth  [5 6]  
-%.n  
-> %-  gth  [7 6]  
-%.y  
-> %-  gte  [7 6]  
-%.y  
-> %-  lte  [7 7]  
+> %-  gth  [5 6]
+%.n
+> %-  lth  [7 6]
+%.n
+> %-  gte  [7 6]
+%.y
+> %-  lte  [7 7]
 %.y
 ```
 
