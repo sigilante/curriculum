@@ -19,7 +19,6 @@ runes:
 - "`=/`"
 - "`?:`"
 - "`^-`"
-- "`~&`"
 keypoints:
 - "A noun is an atom or a cell.  A noun is an unsigned integer.  A cell is a pair of two nouns."
 - "An aura is a metadata “interpretation” of an atom."
@@ -67,6 +66,8 @@ Hoon serves as Urbit's practical programming language.  Everything in Urbit OS i
 
 Any operation in Urbit ultimately results in a value.  Much like machine language designates any value as a command, an address, or a number, a Hoon value is interpreted per the Nock rules and results in a basic data value at the end.  So what are our data values in Hoon?  How does it _work_?
 
+-   [Ted Blackman ~rovnys-ricfer, “Why Hoon?”](https://urbit.org/blog/why-hoon/)
+
 
 ##  Nouns and Verbs
 
@@ -108,7 +109,7 @@ For instance, to change the representation of a regular decimal number like `32`
 0b10.0000
 ```
 
-(The tic marks are shorthand and we'll explain more later.)
+(The tic marks are a shorthand which we'll explain later.)
 
 While there are dozens of auras for specialized applications, here are the most important ones for you to know:
 
@@ -124,6 +125,16 @@ While there are dozens of auras for specialized applications, here are the most 
 | `@ux` | Hexadecimal value | `0x1f.3c4b` |  |
 
 (In our chemical metaphor, these are rather like different elements.  Unlike chemical elements, however, these are completely interconvertible.)
+
+Hearkening back to our discussion of interchangeable representations in Lesson -1, you can see that these are all different-but-equivalent ways of representing the same underlying data values.
+
+The `^-` kethep rune is useful for ensuring that everything in the second child matches the type (aura) of the first, e.g.
+
+```
+^-  @ux  0x1ab4
+```
+
+We will use `^-` kethep extensively to enforce type constraints, a very useful tool in Hoon code.
 
 > Convert between some of these at the command line, e.g.:
 >
@@ -143,20 +154,15 @@ While there are dozens of auras for specialized applications, here are the most 
 
 ### Cells
 
-A cell is a pair of two nouns.  Cells are traditionally written using square brackets:  `[]`.  There's some subtlety to this, but mostly these read to the right, i.e. `[1 2 3]` is the same as `[1 [2 3]]`.
+A cell is a pair of two nouns.  Cells are traditionally written using square brackets:  `[]`.  For now, just recall the square brackets and that cells are always _pairs_ of values.
 
-> Enter the following cells:
->
-> ```
-> [1 2 3]
-> [1 [2 3]]
-> [[1 2] 3]
-> [[1 2 3]]
-> [1 [2 [3]]]
-> ```
-{: .challenge}
+```
+[1 2]
+[@p @t]
+[[1 2] [3 4]]
+```
 
-Are they all the same?  We'll look at cell structure in greater detail in Session 3 and see why not.
+We deal with cells in more detail below.
 
 > ### Hoon as Noun
 > 
@@ -168,7 +174,7 @@ Are they all the same?  We'll look at cell structure in greater detail in Sessio
 
 ##  The Phylum _Chordata_
 
-The backbone of any Hoon expression is a scaffolding of _runes_, which are essentially mathematical relationships between daughter components.
+The backbone of any Hoon expression is a scaffolding of _runes_, which are essentially mathematical relationships between daughter components.  If nouns are nouns, then runes are verbs:  they describe what nouns do.
 
 For instance, when we called a function earlier (or, in Hoon parlance, _slammed a gate_), we needed to provide the [`%-` cenhep](https://urbit.org/docs/hoon/reference/rune/cen#-cenhep) rune with two bits of information, a function name and the values to associate with it:
 
@@ -192,15 +198,15 @@ For instance, when we called a function earlier (or, in Hoon parlance, _slammed 
 
 For instance, here are some of the standard library functions which have a similar architecture:
 
-- `++add` (addition)
-- `++sub` (subtraction, positive results only)
-- `++mul` (multiplication)
-- `++div` (integer division, no remainder)
-- `++pow` (power or exponentiation)
-- `++mod` (remainder after integer division)
-- `++dvr` (integer division with remainder)
-- `++max` (maximum of two numbers)
-- `++min` (minimum of two numbers)
+- [`++add`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (addition)
+- [`++sub`](https://urbit.org/docs/hoon/reference/stdlib/1a#sub) (subtraction, positive results only—what happens if you subtract past zero?)
+- [`++mul`](https://urbit.org/docs/hoon/reference/stdlib/1a#mul) (multiplication)
+- [`++div`](https://urbit.org/docs/hoon/reference/stdlib/1a#div) (integer division, no remainder)
+- [`++pow`](https://urbit.org/docs/hoon/reference/stdlib/1a#pow) (power or exponentiation)
+- [`++mod`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (modulus, remainder after integer division)
+- [`++dvr`](https://urbit.org/docs/hoon/reference/stdlib/1a#dvr) (integer division with remainder)
+- [`++max`](https://urbit.org/docs/hoon/reference/stdlib/1a#max) (maximum of two numbers)
+- [`++min`](https://urbit.org/docs/hoon/reference/stdlib/1a#min) (minimum of two numbers)
 
 
 > ### Writing Incorrect Code
@@ -275,7 +281,7 @@ We are only going to introduce a handful of runes in this lesson, but by the tim
 
 ##  Preserving Values with Faces
 
-Unlike many procedural programming languages, a Hoon expression only knows what it has been told.  This means that as soon as we calculate a value, it falls back into the ether.
+Unlike many procedural programming languages, a Hoon expression only knows what it has been told.  This means that as soon as we calculate a value, it returns and falls back into the ether.
 
 ```
 %-  sub  [5 1]
@@ -299,27 +305,162 @@ This is a little bit strange in the Dojo because subsequent expressions, althoug
 %-  add  [perfect-number 10]
 ```
 
-> ### 
+The difference is that the Dojo “pin” is permanent until deleted:
+
+```
+=perfect-number
+```
+
+rather than only effective for the daughter expressions of a `=/` tisfas rune.  (We also won't be able to use this Dojo pin in a regular Hoon program.)
+
+> ### A Large Power of Two
 >
+> Create two numbers named `two` and `twenty`, with appropriate values, using the `=/` tisfas rune.
+> 
+> Then use these values to calculate 2²⁰ with `++pow` and `%-` cenhep.
 {: .challenge}
 
 
 ##  Holding Things
 
-- "Identify common Hoon molds, such as cells, lists, and tapes."
+Atoms are well and fine for relatively simple data, but we already know about cells as pairs of nouns.  How else can we think of collections of data?
 
-> ### 
+### Cells
+
+A cell is formally a pair of two objects, but as long as the second (right-hand) object is a cell, these can be written stacked together:
+
+```
+> [1 [2 3]]
+[1 2 3]
+> [1 [2 [3 4]]]
+[1 2 3 4]
+```
+
+This convention keeps the notation from getting too cluttered.  For now, let's call this a “running cell” because it consists of several cells run together.
+
+There's some subtlety to this, but mostly these read to the right, i.e. `[1 2 3]` is the same as `[1 [2 3]]`.
+
+> Enter the following cells:
 >
+> ```
+> [1 2 3]
+> [1 [2 3]]
+> [[1 2] 3]
+> [[1 2 3]]
+> [1 [2 [3]]]
+> [[1 2] [3 4]]
+> [[[1 2] [3 4]] [[5 6] [7 8]]]
+> ```
 {: .challenge}
+
+Are they all the same?  We'll revisit cell structure in Lesson 3 and see why not.
+
+
+### Lists
+
+A running cell which terminates in a `~` atom is a list.
+
+- What is `~`'s value?  Try casting it to another aura.
+
+  `~` is the null value, and here acts as a list terminator.
+  
+Lists are ubiquitous in Hoon, and many specialized tools exist to work with them.  (For instance, to apply a gate to each value in a list, or to sum up the values in a list, etc.)
+  
+You can apply an aura to explicitly designate a null-terminated running cell as a list containing particular types of data.
+
+```
+> `(list @ud)`[1 2 3 ~]  
+~[1 2 3]  
+> `(list @ux)`[1 2 3 ~]  
+mint-nice  
+-need.?(%~ [i=@ux t=it(@ux)])  
+-have.[@ud @ud @ud %~]  
+nest-fail  
+dojo: hoon expression failed  
+> `(list @)`[1 2 3 ~]  
+~[1 2 3]  
+> `(list @ux)``(list @)`[1 2 3 ~]  
+~[0x1 0x2 0x3]
+```
+
+### Text
+
+There are two ways to represent text in Urbit:  cords (`@t` aura atoms) and tapes (lists of individual characters).
+
+Why represent text?  What does that mean?  We have to have a way of distinguishing words that mean something to Hoon (like `list`) from words that mean something to a human or a process (like `'hello world'`).
+
+Right now, all you need to know is that there are (at least) two valid ways to write text:
+
+- `'with single quotes'` as a cord.
+- `"with double quotes"` as text.
+
+We will use these incidentally for now and explain their characteristics in Lesson 3.
 
 
 ##  Make a Decision
 
-- "Make a decision at a branch point."
-- "Distinguish loobean from boolean operations."
+The final rune we will use today will allow us to select between two different Hoon expressions, like picking a fork in a road.  Any computational process requires the ability to distinguish options.  For this, we first require a basis for discrimination:  truthness (_not_ “truthiness”).
 
+Essentially, we have to be able to decide whether or not some value or expression evaluates as `%.y` _true_ (in which case we will do one thing) or `%.n` _false_ (in which case we do another).  At this point, our basic expressions are always mathematical; later on we will check for existence, for equality of two values, etc.
 
-> ### 
+- [`++gth`](https://urbit.org/docs/hoon/reference/stdlib/1a#gth) (greater than `>`)
+- [`++lth`](https://urbit.org/docs/hoon/reference/stdlib/1a#lth) (less than `<`)
+- [`++gte`](https://urbit.org/docs/hoon/reference/stdlib/1a#gte) (greater than or equal to `≥`)
+- [`++lte`](https://urbit.org/docs/hoon/reference/stdlib/1a#lte) (less than or equal to `≤`)
+
+If we supply these with a pair of numbers to a `%-` cenhep call, we can see if the expression is considered `%.y` true or `%.n` false.
+
+```
+> %-  gth  [5 6]  
+%.n  
+> %-  gth  [7 6]  
+%.y  
+> %-  gte  [7 6]  
+%.y  
+> %-  lte  [7 7]  
+%.y
+```
+
+Given a test expression like those above, we can use the `?:` wutcol rune to decide between the two possible alternatives.  `?:` wutcol accepts three children:  a true/false statement, an expression for the `%.y` true case, and an expression for the `%.n` false case.
+
+[Piecewise mathematical functions](https://en.wikipedia.org/wiki/Piecewise) require precisely this functionality.  For instance, the Heaviside function is a piecewise mathematical function which is equal to zero for inputs less than zero and one for inputs greater than or equal to zero.
+
+$$
+H(x)
+:=
+\begin{cases} 1, & x > 0 \\ 0, & x \le 0 \end{cases}
+$$
+
+_However_, we don't yet know how to represent a negative value!  All of the decimal values we have used thus far are unsigned (non-negative) values, `@ud`.  For now, the easiest solution is to just translate the Heaviside function so it activates at a different value:
+
+$$
+H_{10}(x)
+:=
+\begin{cases} 1, & x > 10 \\ 0, & x \le 10 \end{cases}
+$$
+
+Thus equipped, we can evaluate the Heaviside function for particular values of `x`:
+
+```
+=/  x  10
+?:  %-  gte  [x 10]
+  1
+0
+```
+
+(Notably, we don't know yet how to store this capability for future use on as-yet-unknown values of `x`; we'll see how to do that in Lesson 2.)
+
+Carefully map how the runes in that statement relate to each other, and notice how the taller structure makes it relatively easier to read and understand what's going on.
+
+> ### “Absolute” Value
 >
+> Implement a version of the absolute value function, $|x|$, similar to the Heaviside implementation above.  (Translate it to 10 as well since we still can't deal with negative numbers; call this $|x|_{10}$.)
+> 
+> $$
+> |x|_{10}
+> :=
+> \begin{cases} x-10, & x > 10 \\ 0, & 10-x \le 10 \end{cases}
+> $$
+> 
+> Test it on a few values like 8, 9, 10, 11, and 12.
 {: .challenge}
-
