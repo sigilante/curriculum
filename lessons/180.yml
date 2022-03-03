@@ -27,6 +27,7 @@ objectives:
 runes:
   - "=."
   - "=^"
+  - "=~"
   - ";<"
   - ";~"
 irregular: []
