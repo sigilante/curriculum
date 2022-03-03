@@ -1,0 +1,19 @@
+uuid: 236
+layout: node
+title: "Other mathematics"
+tags:
+ - "%stdlib"
+prerequisites:
+  - "150"
+  - "163"
+postrequisites: []
+objectives:
+  - "Examine `@s` atomic representation of signed integer values."
+  - "Use `+si` to manipulate `@s` signed integer values."
+  - "Examine the rest of the modular arithmetic library, `+fo` and `++egcd`."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""
