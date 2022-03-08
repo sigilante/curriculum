@@ -17,20 +17,12 @@ postrequisites:
   - "295"
   - "299"
 objectives:
-  - "Produce loobean expressions."
-  - "Reorder conditional arms."
-  - "Switch against a union with or without default."
+  - "Produce mold builder arms."
+  - "Convert arbitrary nouns between molds using `;;` micmic."
 runes:
-  - "?|"
-  - "?&"
-  - "?!"
-  - "?."
-  - "?-"
-  - "?+"
-irregular:
-  - "&"
-  - "|"
-  - "!"
+  - "|$"
+  - ";;"
+irregular: []
 key_points: []
 assessments: []
 comments: ""

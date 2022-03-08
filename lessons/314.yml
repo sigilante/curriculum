@@ -9,6 +9,8 @@ postrequisites:
   - "315"
   - "382"
 objectives:
+  - "Diagram how marks convert nouns."
+  - "Explain the use of the `++grab`, `++grow`, and `++grad` arms."
   - "Produce a simple mark."
 runes:
   - "/*"
