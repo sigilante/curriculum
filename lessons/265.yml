@@ -6,9 +6,10 @@ tags:
 prerequisites:
   - "215"
   - "180"
+  - "222"
 postrequisites:
   - "301"
-  - "315"
+  - "314"
 objectives:
   - "Describe internal operations and structures of Clay."
 runes: []

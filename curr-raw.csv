@@ -7,8 +7,8 @@
 112,Azimuth,Azimuth,,"102, 110"
 113,Hoon,"Naked generator design, syncing, etc., control structures",,110
 115,Hoon,"Irregular forms, sugar syntax",,113
-120,Hoon,"Molds, typechecking",,115
-125,Hoon,Cores and gates,,120
+120,Hoon,Cores and gates,,115
+125,Hoon,"Molds, typechecking",,120
 130,Hoon,"Traps, recursion",,125
 133,Hoon,"Basic cores, arms",,130
 135,Hoon,"Addressing, trees",,133
@@ -37,29 +37,32 @@
 215,Clay,Heuristic description of vane; use of marks to convert data.,,"115, 201"
 217,Distribution,Distribution of software using Grid,,"190, 215"
 220,Dill,Heuristic description of vane.,,201
+222,Hoon,Molds and mold builders,,150
 225,Eyre,Heuristic description of vane.,,201
 230,Gall,Heuristic description of vane.,,201
 233,Stdlib,Functional gates/doors,,"183, 184"
-234,Stdlib,Floating-point mathematics,,163
+234,Stdlib,Floating-point mathematics,,"150, 163"
 235,Iris,Heuristic description of vane.,,201
+236,Stdlib,Other mathematics,,"150, 163"
+238,Stdlib,Linear algebra (Lagoon),,234
 240,Jael,Heuristic description of vane.,,"112, 201"
 245,khan,Heuristic description of vane.,,201
 250,Nock,Description of simple rules; derivation of compound rules; explanation of cores.,,115
-255,Ames,"Technical description of vane, including internals.",,"180, 205"
-260,Behn,"Technical description of vane, including internals.",,"180, 210"
+255,Ames,"Technical description of vane, including internals.",,"180, 205, 222"
+260,Behn,"Technical description of vane, including internals.",,"180, 210, 222"
 263,%ask generators,Producing interactive generators.,,"163, 183"
-265,Clay,"Technical description of vane, including internals.",,"180, 215"
-270,Dill,"Technical description of vane, including internals.",,"180, 220"
-275,Eyre,"Technical description of vane, including internals.",,"180, 225, 235"
-280,Gall,"Technical description of vane, including internals.",,"180, 230"
+265,Clay,"Technical description of vane, including internals.",,"180, 215, 222"
+270,Dill,"Technical description of vane, including internals.",,"180, 220, 222"
+275,Eyre,"Technical description of vane, including internals.",,"180, 225, 235, 222"
+280,Gall,"Technical description of vane, including internals.",,"180, 222, 230"
 282,Gall agents,Production of a simple Gall agent.,,"180, 230"
 283,Stdlib,Basic text tokenization,,"180, 183"
 284,Stdlib,Randomness and hashing,,"180, 183"
-285,Iris,"Technical description of vane, including internals.",,"180, 225, 235"
+285,Iris,"Technical description of vane, including internals.",,"180, 222, 225, 235"
 288,Hoon,Gate genericity (wet gates),,"180, 233"
-290,Jael,"Technical description of vane, including internals.",,"180, 240, 284"
-295,Khan,"Technical description of vane, including internals.",,"180, 245"
-299,Hoon,"Core variadicity (gold, iron, lead, zinc)",,288
+290,Jael,"Technical description of vane, including internals.",,"180, 222, 240, 284"
+295,Khan,"Technical description of vane, including internals.",,"180, 222, 245"
+299,Hoon,"Core variadicity (gold, iron, lead, zinc)",,"222, 288"
 300,Arvo,Moves and move traces,,"200, 299"
 301,Arvo,Technical description of boot process.,,"195, 200, 255, 260, 265, 270, 275, 280, 285, 290, 295, 299, 300"
 302,Azimuth,Management of system state; eth-watcher (also Jael).,,"102, 290"
@@ -67,7 +70,8 @@
 304,Arvo,Describe the subject structure of Arvo and system components.,,301
 305,Ames,(room for specific case studies here),,
 310,Behn,,,
-315,Clay,Manage desks manually; convert data with tubes; access arbitrary revisions of data; produce simple marks.,,265
+314,Clay,Simple marks,,265
+315,Clay,Manage desks manually; convert data with tubes; access arbitrary revisions of data; produce simple marks.,,314
 320,Dill,Inject %belt events; use term/%herm.,,270
 325,Eyre,,,
 330,API,Parsing and reparsing of JSON inputs.,,"225, 235"
@@ -84,7 +88,7 @@
 370,CLI,%shoe/%sole generators,,263
 375,API,Simple front-end operations. (flavored by language),,"330, external"
 380,,,,
-382,Gall agents,Advanced agents without front-end interface.,,"217, 282, 330"
+382,Gall agents,Advanced agents without front-end interface.,,"217, 282, 314, 330"
 383,Stdlib,Parse text,,"283, 370"
 385,,,,
 390,Testing,CI integration of testing.,,"190, 217, 282"

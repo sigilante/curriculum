@@ -1,6 +1,6 @@
 uuid: 120
 layout: node
-title: "Molds, typechecking"
+title: "Basic dry gates"
 tags:
  - "%hoon"
 prerequisites:
@@ -8,21 +8,12 @@ prerequisites:
 postrequisites:
   - "125"
 objectives:
-  - "Identify a mold in the hierarchy of Urbit types (nouns, molds, marks)."
-  - "Understand how type inference and type checking takes place."
-  - "Bunt a mold."
-  - "Produce a type union."
-  - "Produce a named tuple."
-  - "Identify type using `!>`."
+  - "Employ a gate to defer a computation."
+  - "Produce a gate as a generator."
 runes:
-  - "^+"
-  - "$?"
-  - "$_"
-  - "$:"
-  - "^*"
-  - "!>"
-irregular:
-  - "*"
+  - "|="
+  - "!!"
+irregular: []
 key_points: []
 assessments: []
 comments: ""

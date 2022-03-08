@@ -1,0 +1,37 @@
+uuid: 184
+layout: node
+title: "Molds and mold builders"
+tags:
+ - "%hoon"
+prerequisites:
+  - "150"
+postrequisites:
+  - "255"
+  - "260"
+  - "265"
+  - "270"
+  - "275"
+  - "280"
+  - "285"
+  - "290"
+  - "295"
+  - "299"
+objectives:
+  - "Produce loobean expressions."
+  - "Reorder conditional arms."
+  - "Switch against a union with or without default."
+runes:
+  - "?|"
+  - "?&"
+  - "?!"
+  - "?."
+  - "?-"
+  - "?+"
+irregular:
+  - "&"
+  - "|"
+  - "!"
+key_points: []
+assessments: []
+comments: ""
+content: ""

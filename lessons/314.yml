@@ -1,13 +1,13 @@
-uuid: 315
+uuid: 314
 layout: node
-title: "Manage desks manually; convert data with tubes; access arbitrary revisions of data."
+title: "Work with marks."
 tags:
  - "%clay"
 prerequisites:
   - "265"
-  - "314"
 postrequisites:
-  - "415"
+  - "315"
+  - "382"
 objectives:
   - "Produce a simple mark."
 runes:
