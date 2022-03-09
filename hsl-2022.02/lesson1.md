@@ -313,7 +313,7 @@ When we used `++add` or `++sub`, we basically wanted an immediate answer.  There
 %-  add  [perfect-number 10]
 ```
 
-This is a little bit strange in the Dojo because subsequent expressions, although it works quite well in long-form code.  The Dojo offers a workaround to retain named values:
+Although it works quite well in long-form code, using this rune in the Dojo is little bit counter-intuitive because the assignment is not preserved in subsequent expressions. The Dojo offers a workaround to retain named values:
 
 ```
 =perfect-number 28
@@ -407,7 +407,7 @@ Why represent text?  What does that mean?  We have to have a way of distinguishi
 Right now, all you need to know is that there are (at least) two valid ways to write text:
 
 - `'with single quotes'` as a cord.
-- `"with double quotes"` as text.
+- `"with double quotes"` as a tape.
 
 We will use these incidentally for now and explain their characteristics in Lesson 3.
 
