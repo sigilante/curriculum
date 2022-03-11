@@ -39,6 +39,7 @@ keypoints:
 - "You can store a gate as a standalone reusable file called a generator."
 - "You can build code from a file directly with `-build-file` or import its contents with `/+` from `/lib`."
 ---
+
 #   Hoon Conventions
 ##  Hoon School Lesson 2
 
@@ -79,16 +80,26 @@ You should get used to reading and interpreting these forms and we will start to
 
 So far, every time we have calculated something, we have had to build it from scratch in Dojo.  This is completely untenable for nontrivial calculations, and clearly the Urbit OS itself is built on persistent files defining its behavior.
 
+```
+::  Confirm whether a value is greater than one.
+=/  a  5
+?:  (gth a 1)
+  'yes'
+'no'
+```
+
+This has no flexibility:  if we want to change `a` we have to rewrite the whole thing every time!
+
 Hoon uses _gates_ as deferred computations.  What this means is that we can build a Hoon expression now and use it at will later on, perhaps many times.  More than that, we can also use it on different data values.  A gate is the Hoon analogue of a function or subroutine in other programming languages.
 
-Structurally, a gate is a [`|=` bartis](https://urbit.org/docs/hoon/reference/rune/bar#-bartis) rune with two children:  a `spec` (specification of input) and a `hoon` (body). 
+Structurally, a gate is a [`|=` bartis](https://urbit.org/docs/hoon/reference/rune/bar#-bartis) rune with two children:  a `spec` (specification of input) and a `hoon` (body).  Think of just replacing the `=/` tisfas with the `|=` bartis:
 
 ```
 ::  Confirm whether a value is greater than one.
 |=  a=@ud
 ?:  (gth a 1)
-  %.n
-%.y
+  'yes'
+'no'
 ```
 
 Compare this to other programming languages, if you know any:
@@ -99,7 +110,16 @@ Beyond those, what is the purpose of each line?
 
 The [`spec`](https://urbit.org/docs/hoon/reference/stdlib/4o#spec) gives the type as a mold and attaches a face to it for use in the gate.
 
-The body evaluates and returns its result, ultimately to the call site.
+The body evaluates and returns its result, ultimately to the call site.  Frequently it is wise to explicitly require a particular return value type using `^-` kethep:
+
+```
+::  Confirm whether a value is greater than one.
+|=  a=@ud
+^-  @t
+?:  (gth a 1)
+  'yes'
+'no'
+```
 
 The input value, what is included in the `spec`, is sometimes called the argument or parameter in mathematics and other programming languages.  It's basically the input value.  Hoon prefers to call it the _sample_.
 
@@ -139,13 +159,6 @@ In technical language, we describe Hoon as a _statically typed_ language.  This 
 
 
 ##  Mold Essentials
-
-- "Identify current known irregular syntax."
-- "Convert between regular and irregular forms of runes to date."
-- "Identify a mold in the hierarchy of Urbit types (nouns, molds, marks)."
-- "Understand how type inference and type checking takes place."
-- "Bunt a mold."
-- "Identify type using `!>`."
 
 Programming languages use data types to distinguish different kinds of data and associated rules.  For instance, what does it mean to add 3 to the letter A?  Depending on your programming language, you could see `A3`, `D`, or an error.
 
@@ -187,7 +200,7 @@ One more way to validate against type is to use an example instead of the extrac
 ^+  1.000  100
 ```
 
-(This is what `^-` is actually doing:  `^-  p  q` reduces to `^+  ^*  p  q`.  Many runes we use actually reduce to other rune forms, and have been introduced for ease of use.)
+(This is what `^-` is actually doing:  `6-  p  q` reduces to `^+  ^*  p  q`.  Many runes we use actually reduce to other rune forms, and have been introduced for ease of use.)
 
 Technically, we can say that a mold is a function from a noun to a noun.  What this means is that we can use a mold to map any noun to a typed value—if this fails, then the mold crashes.
 
@@ -323,7 +336,7 @@ Any generator can be run the same way, beginning with the `+` lus character and 
 
 > ## Triangular Function
 > 
-> In `%hw1`, you implement the triangular function.
+> In `%hw1`, you implemented the triangular function.
 > 
 > ![](https://lh4.googleusercontent.com/zdauTDEWvhhOkFEb6VcDEJ4SITsHOgcStf4NYFQSIVjTDPjaCqYGdin9TDCCeTG3OyMrUUdq-JtViiu_c9wuojim_mHpV6-DoTNwZzYz5_6qVVvN5fc3hEuSna2GwY15RQ=w740)
 > 
@@ -363,4 +376,3 @@ For simplicity, everything we do will take place on the `%base` desk for now.  W
 > Use this to produce a gate which accepts an unsigned decimal
 > integer and returns the text interpretation of its increment.
 {: .challenge}
-
