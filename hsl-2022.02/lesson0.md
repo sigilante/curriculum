@@ -273,6 +273,8 @@ There are many fine development environments and text editors to choose from.  W
 - [Emacs](https://www.gnu.org/software/emacs/) (hard for beginners but very powerful)
 - [TextMate](https://macromates.com/)
 
+Windows and Unix-derived systems treat [line breaks](https://frameboxxindore.com/windows/does-linux-use-lf-or-crlf.html) a little differently.  You should make sure that you have set your text editor to use Unix-style line breaks, as these are what Urbit expects.
+
 
 ##  Pronouncing Hoon
 
