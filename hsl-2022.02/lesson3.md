@@ -359,7 +359,7 @@ Typically, one would write a tree branching _upwards_ from its trunk.  However, 
 
 Each _node_ in the tree is either an atom or a cell.  Each node also has a unique numeric address:
 
-![](./binary-tree-tape.png)
+![](./binary-tree.png)
 
 - What is at address 1?
 - What is at address 2?
