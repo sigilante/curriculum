@@ -38,8 +38,6 @@ keypoints:
 
 # Repeating Yourself & Addressing
 ##  Repeating Yourself (Recursion)
-- "Employ a trap to produce a reentrant block of code."
-- "Produce a recursive gate."
 
 > "My formula for greatness in a human being is _amor fati_: that one wants nothing to be different, not forward, not backward, not in all eternity. Not merely bear what is necessary, still less conceal it—all idealism is mendacity in the face of what is necessary—but _love_ it."  (Nietzsche, _Ecce Homo_)
 
@@ -223,6 +221,34 @@ As we move on from this lesson, we are going to revert to the irregular form.  I
 > them at each step using `~&` sigpam and return the final value.
 {: .challenge}
 
+> ##  Output each letter in a `tape`
+>
+> Produce a gate (generator) which accepts a `tape` value and
+> prints out each letter in order on a separate line.
+>
+> For example, given the `tape` `"hello"`, the generator should 
+> print out
+> 
+> 'h'
+> 'e'
+> 'l'
+> 'l'
+> 'o'
+>
+> You do not need to store these values in a list; simply output
+> them at each step using `~&` sigpam and return the final value.
+> 
+> You can retrieve the _n_-th element in a `tape` using the 
+> `++snag` gate:
+> 
+> ```
+> > =/  n  0  (snag n "hello")
+> 'h'
+> ```
+> 
+> (Note that `++snag` counts starting at zero, not one.)
+{: .challenge}
+
 
 ##  Cores
 
@@ -241,31 +267,79 @@ A core is a cell pairing operations to data.  (Think back to Lesson -1:  we have
 
 **Cores are the most important structural concept for you to grasp in Hoon.**  Everything nontrivial is a core.  Some of the runes you have used already produce cores, like the gate.  That is, a gate marries a `battery` (the operating code) to the `payload` (the input values AND the “subject” or operating context).
 
+Urbit adopts an innovative programming paradigm called “subject-oriented programming.”  By and large, Hoon (and Nock) is a functional programming language in that
+However, Hoon also very carefully bounds the known context of any part of the program as the _subject_.  Basically, the subject is the noun against which any arbitrary Hoon code is evaluated.
 
+For instance, when we first composed generators, we made what are called “naked generators”:  that is, they do not have access to any information outside of the base subject (Arvo, Hoon, and `%zuse`) and their sample (arguments).  Other generators (such as `%say` generators, described below) can have more contextual information, including random number generators and optional arguments, passed to them to form part of their subject.
 
-Cores have two kinds of values attached:  arms and legs, both called limbs.
+Cores have two kinds of values attached:  arms and legs, both called limbs.  Arms describe known labeled address (with `++` luslus or `+$` lusbuc) which carry out computations.  Legs are limbs which store data.
 
-
-- "Consider Hoon structures as cores."
-- "Compose and import a core from a library."
-
-- "Identify the special role of the `$` buc arm in many cores."
-- "Order neighboring cores within the subject for addressibility."
-
-
-https://urbit.org/docs/hoon/hoon-school/arms-and-cores#dissecting-a-core
-
+![](https://davis68.github.io/martian-computing/img/08-nubret.png)
 
 ### Arms
 
+An [_arm_](https://urbit.org/docs/glossary/arm) is a Hoon expression to be evaluated against the core subject (i.e. its parent core is its subject).
+
+Within a core, we label arms as Hoon expressions (frequently `|=` bartis gates) using the [`++` luslus](https://urbit.org/docs/hoon/reference/rune/lus#-luslus) digraph.  (`++` isn't formally a rune because it doesn't actually change the structure of a Hoon expression.)
+
+```hoon
+|%
+++  add-one
+  |=  a=@ud
+  ^-  @ud
+  (add a 1)
+++  sub-one
+  |=  a=@ud
+  ^-  @ud
+  (sub a 1)
+--
+```
+
+(The `--` hephep limiter is used because `|%` barcen can have any number of arms attached.)
+
+We can also define custom types using [`+$` lusbuc](https://urbit.org/docs/hoon/reference/rune/lus#-lusbuc) digraphs.  We won't do much with these yet but they will come in handy for custom types later on.
+
+This core defines a set of types intended to work with playing cards:
+
+```hoon
+|%
++$  suit  ?(%hearts %spades %clubs %diamonds)
++$  rank  ?(1 2 3 4 5 6 7 8 9 10 11 12 13)
++$  card  [sut=suit val=rank]
++$  deck  (list card)
+---
+```
+
+When we write generators, we can include helpful tools as arms either before the main code (with `=<` tisgal) or after the main code (with `=>` tisgar):
+
+```hoon
+|=  n=@ud
+=<
+(add-one n)
+|%
+++  add-one
+  |=  a=@ud
+  ^-  @ud
+  (add a 1)
+--
+```
+
+A library is typically structured as a `|%` barcen core.
+
 ### Legs
 
+A [_leg_](https://urbit.org/docs/hoon/hoon-school/the-subject-and-its-legs) is a data value.  They tend to be rather trivial but useful ways to pin constants.
+
+For instance, to pin the value of π to a core:
+
+```hoon
+|%
+++  pi  .3.1415926535
+--
+```
+
+
 ##  Addressing Limbs
-- "Address nodes in a tree using numeric notation."
-- "Address nodes in a tree using lark notation."
-- "Address data in a tree using faces."
-- "Distinguish `.` and `:` notation."
-- "Diagram Hoon structures such as gates into the corresponding abstract syntax tree."
 
 Everything in Urbit is a binary tree.  And all code in Urbit is also represented as data.  One corollary of these facts is that we can access any arbitrary part of an expression, gate, core, whatever, via addressing (assuming proper permissions, of course).  (In fact, we can even hot-swap parts of cores; this is beyond Hoon School Live but you'll eventually encounter it.)
 
@@ -281,11 +355,11 @@ Everything is an atom or a cell (pair).  By the same token, everything in Hoon (
 
 Typically, one would write a tree branching _upwards_ from its trunk.  However, in computer science generally trees are drawn upside-down.
 
-TODO tree diagrams
+![](./binary-tree-upside-down.png)
 
 Each _node_ in the tree is either an atom or a cell.  Each node also has a unique numeric address:
 
-
+![](./binary-tree-tape.png)
 
 - What is at address 1?
 - What is at address 2?
@@ -293,28 +367,62 @@ Each _node_ in the tree is either an atom or a cell.  Each node also has a uniqu
 
 Since a node is _either_ an atom (value) _or_ a cell (fork), you never have to decide if the contents of a node is a direct value or a tree:  it just happens.
 
+> ## Addressing the Fruit Tree
+>
+> Produce the numeric and lark-notated equivalent addresses for each of the following nodes in the binary fruit tree:
+>
+> ![A fruit tree](https://raw.githubusercontent.com/natareo/assembly-workshop-2021/gh-pages/img/binary-tree-fruit.png)
+>
+> - 🍇
+> - 🍌
+> - 🍉
+> - 🍏
+> - 🍋
+> - 🍑
+> - 🍊
+> - 🍍
+> - 🍒
+>
+> > ### Solution
+> >
+> > - 🍇 `9` or `-<+`
+> > - 🍌 `11` or `->+`
+> > - 🍉 `12` or `+<-`
+> > - 🍏 `16` or `-<-<`
+> > - 🍋 `27` or `+<+>`
+> > - 🍑 `42` or `->->-`
+> > - 🍊 `62` or `+>+>-`
+> > - 🍍 `87` or `->->+>`  # heuristic for these mathematically
+> > - 🍒 `126` or `+>+>+<`
+> {: .solution}
+{: .challenge}
+
 > ##  Tapes for Text
 > 
 > A `tape` is one way of representing a text message in Hoon.
 > It is written with double quotes:
 > 
 > ```hoon
-> "I am the very image of a modern major general"
+> "I am the very model of a modern Major-General"
 > ```
 >
-> A `tape` is actually a list, a binary tree which only branches
-> rightwards and ends in a `~`:
+> Recall that a `tape` is actually a list, a binary tree which 
+> only branches rightwards and ends in a `~`:
 > 
-> TODO image
+> ![](./binary-tree-tape.png)
 > 
-> What are the addresses of each letter in the tree? 
+> What are the addresses of each letter in the tree for the Gilbert & Sullivan quote above?  Can you see a pattern?
 {: .challenge}
+
+#### Reference
+
+- [“The Subject and its Legs”](https://urbit.org/docs/hoon/hoon-school/the-subject-and-its-legs)
 
 ### Positional Addressing
 
 Much like relative directions, one can also state “left, left, right, left” or similar to locate a particular node in the tree.  These are written using `-` (left) and `+` (right) alternating with `<` (left) and `<` (right).
 
-TODO images
+![](binary-tree-lark.png)
 
 Lark notation can be very complicated and locate any position in a tree of any size.  However, it is most commonly used to grab the head or tail of a cell, e.g. in the type spear:
 
@@ -322,22 +430,48 @@ Lark notation can be very complicated and locate any position in a tree of any s
 -:!>('hello Mars')
 ```
 
-It is not preferred to use lark notation in modern Hoon for more than one or two branches, but it can be helpful when working interactively with a complicated data structure like a JSON data object.
+Lark notation is not preferred in modern Hoon for more than one or two elements deep, but it can be helpful when working interactively with a complicated data structure like a JSON data object.
 
 ### Wings
 
 One can also identify a resource by a label, called a wing.  A wing represents a depth-first search into the current subject (context).
 
-https://urbit.org/docs/hoon/reference/limbs/limb
+A [_wing_](https://urbit.org/docs/hoon/reference/limbs/wing) is a resolution path pointing to a limb.  It's a search path, like an index to a particular labeled part of the subject.
 
-There are two symbols we use to search for a value:
+E.g. to locate a value in a named tuple data structure:
 
-TODO
+```hoon
+> =data [a=[aa=[aaa=[1 2] bbb=[3 4]] bb=[5 6]] b=[7 8]]
+> -:aaa.aa.a.data
+1
+```
 
-- `.`
-- `:`
+Notice that these read left-to-right!
 
-These are subtly different from each other and can mostly be used interchangeably.
+> ## Limb Resolution Paths
+>
+> There are two symbols we use to search for a value:
+>
+> - `.`
+> - `:`
+>
+> These are subtly different from each other and sometimes be
+> used interchangeably.
+>
+> While [the docs on limbs](https://urbit.org/docs/hoon/reference/limbs/limb) contain a wealth of information on how limbs are resolved by the Hoon compiler, it is worth addressing in brief the two common resolution tools you will encounter today:  `.` dot and `:` col.
+>
+> - `.` dot resolves the wing path into the current subject.
+> - `:` col resolves the wing path with the right-hand-side as the subject.
+{: .callout}
+
+> ## Shadowing Names (Optional)
+>
+> In any programming paradigm, good names are valuable and collisions are likely.  In Hoon, if you need to catch an outer-context label that has the same name as an inner-context value, use `^` ket to skip the depth-first match.
+>
+> ```
+> ^^json
+> ```
+{: .callout}
 
 ---
 
@@ -366,3 +500,18 @@ Now, we noted that `$` buc is the default arm for the trap.  It turns out that `
 ```
 
 It's far more common to just use a trap, but you will see `$` buc used to manipulate a core in many in-depth code instances.
+
+> ##  Expanding the Runes
+> 
+> `|=` bartis produces a gate.  It actually expands to
+> 
+> ```hoon
+> =|  a=spec
+> |%  ++  $  b=hoon
+> --
+> ``` 
+> 
+> where `=|` tisbar means to add the gate to the current subject.
+> 
+> Similarly, `|-` barhep produces a core with one arm `$`.
+{: .callout}
