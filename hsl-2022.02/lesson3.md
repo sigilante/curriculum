@@ -57,8 +57,8 @@ This program adds 1+2+3+4+5 and returns the sum:
 ?:  (gth counter 5)
   sum
 %=  $
-  counter  (add counter 1),
-  sum      (add sum counter))
+  counter  (add counter 1)
+  sum      (add sum counter)
 ==
 ```
 
