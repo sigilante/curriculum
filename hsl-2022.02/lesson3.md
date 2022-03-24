@@ -86,7 +86,7 @@ Let's unroll it:
 
 (And thus `sum` has the final value of `15`.)
 
-It is frequently helpful, when constructing these, to be able to output the values at each step of the process.  Use the [`~&~` sigpam](https://urbit.org/docs/hoon/reference/rune/sig#-sigpam) rune to create output without changing any values:
+It is frequently helpful, when constructing these, to be able to output the values at each step of the process.  Use the [`~&` sigpam](https://urbit.org/docs/hoon/reference/rune/sig#-sigpam) rune to create output without changing any values:
 
 ```hoon
 =/  counter  1
@@ -137,7 +137,7 @@ n
 
 - We are using the `=` irregular syntax for `.=` dottis, test for equality of two values.
 - We are using the `+` irregular syntax for `.+` dotlus, increment a value (add one to a value).
-- Why do we start the result `product` at 1 instead of 0?
+- Why do we return the result (`product` in Hoon parlance) at 1 instead of 0?
 
 One more thing:  as we write more complicated programs, it is helpful to learn to read the runes:
 
@@ -267,12 +267,13 @@ A core is a cell pairing operations to data.  (Think back to Lesson -1:  we have
 
 **Cores are the most important structural concept for you to grasp in Hoon.**  Everything nontrivial is a core.  Some of the runes you have used already produce cores, like the gate.  That is, a gate marries a `battery` (the operating code) to the `payload` (the input values AND the “subject” or operating context).
 
-Urbit adopts an innovative programming paradigm called “subject-oriented programming.”  By and large, Hoon (and Nock) is a functional programming language in that
+Urbit adopts an innovative programming paradigm called “subject-oriented programming.”  By and large, Hoon (and Nock) is a functional programming language in that running a piece of code twice will always yield the same result.
+
 However, Hoon also very carefully bounds the known context of any part of the program as the _subject_.  Basically, the subject is the noun against which any arbitrary Hoon code is evaluated.
 
 For instance, when we first composed generators, we made what are called “naked generators”:  that is, they do not have access to any information outside of the base subject (Arvo, Hoon, and `%zuse`) and their sample (arguments).  Other generators (such as `%say` generators, described below) can have more contextual information, including random number generators and optional arguments, passed to them to form part of their subject.
 
-Cores have two kinds of values attached:  arms and legs, both called limbs.  Arms describe known labeled address (with `++` luslus or `+$` lusbuc) which carry out computations.  Legs are limbs which store data.
+Cores have two kinds of values attached:  arms and legs, both called limbs.  Arms describe known labeled addresses (with `++` luslus or `+$` lusbuc) which carry out computations.  Legs are limbs which store data.
 
 ![](https://davis68.github.io/martian-computing/img/08-nubret.png)
 
@@ -310,7 +311,7 @@ This core defines a set of types intended to work with playing cards:
 ---
 ```
 
-When we write generators, we can include helpful tools as arms either before the main code (with `=<` tisgal) or after the main code (with `=>` tisgar):
+When we write generators, we can include helpful tools as arms either before the main code (with `=>` tisgar) or after the main code (with `=<` tisgal):
 
 ```hoon
 |=  n=@ud
@@ -353,7 +354,7 @@ There are three different ways to access values:
 
 Everything is an atom or a cell (pair).  By the same token, everything in Hoon (and in Urbit) can be represented as a binary tree.  This means a tree which only branches into two branches at each fork.
 
-Typically, one would write a tree branching _upwards_ from its trunk.  However, in computer science generally trees are drawn upside-down.
+Typically, one would draw a tree branching _upwards_ from its trunk.  However, in computer science generally trees are drawn upside-down.
 
 ![](./binary-tree-upside-down.png)
 
@@ -366,36 +367,6 @@ Each _node_ in the tree is either an atom or a cell.  Each node also has a uniqu
 - What is at address 3?
 
 Since a node is _either_ an atom (value) _or_ a cell (fork), you never have to decide if the contents of a node is a direct value or a tree:  it just happens.
-
-> ## Addressing the Fruit Tree
->
-> Produce the numeric and lark-notated equivalent addresses for each of the following nodes in the binary fruit tree:
->
-> ![A fruit tree](https://raw.githubusercontent.com/natareo/assembly-workshop-2021/gh-pages/img/binary-tree-fruit.png)
->
-> - 🍇
-> - 🍌
-> - 🍉
-> - 🍏
-> - 🍋
-> - 🍑
-> - 🍊
-> - 🍍
-> - 🍒
->
-> > ### Solution
-> >
-> > - 🍇 `9` or `-<+`
-> > - 🍌 `11` or `->+`
-> > - 🍉 `12` or `+<-`
-> > - 🍏 `16` or `-<-<`
-> > - 🍋 `27` or `+<+>`
-> > - 🍑 `42` or `->->-`
-> > - 🍊 `62` or `+>+>-`
-> > - 🍍 `87` or `->->+>`  # heuristic for these mathematically
-> > - 🍒 `126` or `+>+>+<`
-> {: .solution}
-{: .challenge}
 
 > ##  Tapes for Text
 > 
@@ -431,6 +402,36 @@ Lark notation can be very complicated and locate any position in a tree of any s
 ```
 
 Lark notation is not preferred in modern Hoon for more than one or two elements deep, but it can be helpful when working interactively with a complicated data structure like a JSON data object.
+
+> ## Addressing the Fruit Tree
+>
+> Produce the numeric and lark-notated equivalent addresses for each of the following nodes in the binary fruit tree:
+>
+> ![A fruit tree](https://raw.githubusercontent.com/natareo/assembly-workshop-2021/gh-pages/img/binary-tree-fruit.png)
+>
+> - 🍇
+> - 🍌
+> - 🍉
+> - 🍏
+> - 🍋
+> - 🍑
+> - 🍊
+> - 🍍
+> - 🍒
+>
+> > ### Solution
+> >
+> > - 🍇 `9` or `-<+`
+> > - 🍌 `11` or `->+`
+> > - 🍉 `12` or `+<-`
+> > - 🍏 `16` or `-<-<`
+> > - 🍋 `27` or `+<+>`
+> > - 🍑 `42` or `->->-`
+> > - 🍊 `62` or `+>+>-`
+> > - 🍍 `87` or `->->+>`  # heuristic for these mathematically
+> > - 🍒 `126` or `+>+>+<`
+> {: .solution}
+{: .challenge}
 
 ### Wings
 
@@ -475,7 +476,7 @@ Notice that these read left-to-right!
 
 ---
 
-Now we're equipped to go back and examine the syntax of the `%=` cenhep rune up above:  it _resolves a wing with changes_, which means that it takes the `$` (default) arm of the trap core, applies certain changes, and re-evaluates the expression.
+Now we're equipped to go back and examine the syntax of the `%=` centis rune up above:  it _resolves a wing with changes_, which in this particular case means that it takes the `$` (default) arm of the trap core, applies certain changes, and re-evaluates the expression.
 
 ```hoon
 |=  n=@ud
@@ -511,7 +512,7 @@ It's far more common to just use a trap, but you will see `$` buc used to manipu
 > --
 > ``` 
 > 
-> where `=|` tisbar means to add the gate to the current subject.
+> where `=|` tisbar means to add the sample to the current subject.
 > 
 > Similarly, `|-` barhep produces a core with one arm `$`.
 {: .callout}
