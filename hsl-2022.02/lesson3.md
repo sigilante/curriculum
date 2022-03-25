@@ -332,14 +332,6 @@ A library is typically structured as a `|%` barcen core.
 
 A [_leg_](https://urbit.org/docs/hoon/hoon-school/the-subject-and-its-legs) is a data value.  They tend to be rather trivial but useful ways to pin constants.
 
-For instance, to pin the value of π to a core:
-
-```hoon
-|%
-++  pi  .3.1415926535
---
-```
-
 
 ##  Addressing Limbs
 
