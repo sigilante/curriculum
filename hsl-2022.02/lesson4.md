@@ -394,6 +394,16 @@ Using `~[]` still doesn't mark it as a `list`, unfortunately, which can lead to 
 
 Notice that the type from the type spear `-:!>` shows up as `it()`, short for an “iterator”, or type that can potentially continue as long as the pattern matches.
 
+> ### What is the Structure of a `list` of `list`s?
+>
+> Draw a binary tree representing the actual tree location of
+> values in this data structure:
+> 
+> ```hoon
+> `(list (list @ud))`~[~[1 2 3] ~[4 5 6] ~[7 8 9]]
+> ```
+{: .challenge}
+
 Once you have your data in the form of a `list`, there are a lot of tools to manipulate and analyze them:
 
 - [`++flop`](https://urbit.org/docs/hoon/hoon-school/lists#flop) reverses the order of the elements (exclusive of the `~`):
@@ -449,39 +459,79 @@ There are a couple of sometimes-useful `list` builders:
     ~[~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10]]  
     ```
 
-A list
+Once you have a `list` (including a `tape`), there are a lot of manipulation tools you can use to extract data from it or modify it:
 
-flop
-sort
+- [`++find`](https://urbit.org/docs/hoon/reference/stdlib/2b#find) `[nedl=(list) hstk=(list)]` locates a sublist (`nedl`, needle) in the list (`hstk`, haystack)
+- [`++snag`](https://urbit.org/docs/hoon/reference/stdlib/2b#snag) `[a=@ b=(list)]` produces the element at an index in the list (zero-indexed)
+- [`++snap`](https://urbit.org/docs/hoon/reference/stdlib/2b#snap) `[a=(list) b=@ c=*]` replaces the element at an index in the list (zero-indexed) with something else
+- [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) `[a=@ b=(list)]` produces the first _a_ elements from the front of the list
+- [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b#slag) `[a=@ b=(list)]` produces the last _a_ elements from the end of the list
+- [`++weld`](https://urbit.org/docs/hoon/reference/stdlib/2b#weld) `[a=(list) b=(list)]` glues two `list`s together (_not_ a single item to the end)
 
-snag
-find
-weld welp etc.
+There are a few more that you should pick up eventually, but these are enough to get you started.
 
 Using what we know to date, most operations that we would do on a collection of data require a trap.  However, there are some cool aggregators and applicators:
 
-roll
-turn
+- [`++roll`](https://urbit.org/docs/hoon/reference/stdlib/2b#roll) `[a=(list) b=gate]` slams a two-argument gate from left to right across a list.
 
-> ### What is the Structure of a `list` of `list`s?
->
-> Draw a binary tree representing the actual tree location of
-> values in this data structure:
-> 
-> ```hoon
-> `(list (list @ud))`~[~[1 2 3] ~[4 5 6] ~[7 8 9]]
-> ```
-{: .challenge}
+    For instance, to obtain the sum of a list of numbers, use it with `++add`:
+    
+    ```hoon
+    (roll (gulf 1 5) add)
+    ```
+    
+    You could even build a factorial this way:
+    
+    ```hoon
+    |=  n=@ud
+    (roll (gulf 1 n) mul)
+    ```
+    
+    (Due to internal optimizations, this is actually much faster than the ones we have written to date!)
+
+- [`++turn`](https://urbit.org/docs/hoon/reference/stdlib/2b#turn) `[a=(list) b=gate]` produces a new list with the gate applied to each element of the original.
+
+    ```hoon
+    (turn (gulf 65 90) @t)
+    ```
+    
+    Include the factorial function from a moment ago:
+    
+    ```hoon
+    (turn (gulf 1 20) factorial)
+    ```
 
 A few operations in Hoon actually require a `lest`, a `list` guaranteed to be non-null (that is, `~[]` is excluded).
-
-TODO
 
 > ### Break Text at a Space
 >
 > Let's build a parser to split a long `tape` into smaller
-> `tape`s at single spaces.
-> https://urbit.org/docs/hoon/reference/stdlib/2b#slag
+> `tape`s at single spaces.  That is, given a `tape`
+> 
+> ```
+> "the sky above the port was the color of television tuned to a dead channel"
+> ```
+> 
+> the gate should yield
+> 
+> ```
+> ~["the" "sky" "above" "the"]
+> ```
+> 
+> To complete this, you'll need [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) and [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b#slag) (who sound like
+> villainous henchmen from a children's cartoon.
+> > ### Solution
+> >
+> > ```hoon
+> > =/  ex  "the sky above the port was the color of television tuned to a dead channel"  
+> > =/  index  0  
+> > =/  result  *(list tape)  
+> > |-  ^-  (list tape)  
+> > ?:  =(index (lent ex))  
+> >   result  
+> > ?:  =((snag index ex) ' ')  
+> >   $(index 0, ex `tape`(slag +(index) ex), result (weld result ~[`tape`(scag index ex)]))    
+> > $(index +(index))
 {: .challenge}
 
 
@@ -489,26 +539,34 @@ TODO
 
 As an addendum to our discussion about cores last week, let's take some of the code we've built above for processing text and turn them into a library we can use in another generator.
 
-> ### 
+> ### Build a Library
 >
+> Take the space-breaking code and the character-counting code 
+> gates from above and include them in a `|%` barcen core.  Save
+> this file as `lib/text.hoon` in the `%base` desk and commit.
+>
+> Produce a generator `gen/text-user.hoon` which accepts a `tape`
+> and returns the number of words in the text (separated by 
+> spaces).  (How would you obtain this from those two 
+> operations?)
 {: .challenge}
 
-If we wanted to build a Sieve of Eratosthenes, how would we proceed?
-
 ### Logging
+
+The most time-honored method of debugging is to simply output relevant values at key points throughout a program in order to make sure they are doing what you think they are doing.  For this, we introduced `~&` sigpam recently.
 
 The `~&` sigpam rune offers some finer-grained output options than just printing a simple value to the screen.  For instance, you can use it with string interpolation to produce detailed error messages.
 
 There are also `>` modifiers which can be included to mark “debugging levels”, really just color-coding the output:
 
-1.  No `>`:  regular standard output
+1.  No `>`:  regular
 2.  `>`:  information
 3.  `>>`:  warning
 4.  `>>>`:  error
 
-(Since all `~&` sigpam output is a side effect of the compiler, it doesn't map to the Unix [`stdout`/`stderr` streams](https://en.wikipedia.org/wiki/Standard_streams).)
+(Since all `~&` sigpam output is a side effect of the compiler, it doesn't map to the Unix [`stdout`/`stderr` streams](https://en.wikipedia.org/wiki/Standard_streams) separately; it's all `stdout`.)
 
-You can use these to differentiate messages when debugging or otherwise auditing the behavior of a generator or library.
+You can use these to differentiate messages when debugging or otherwise auditing the behavior of a generator or library.  Try these in your own Dojo:
 
 ```hoon
 > ~&  'Hello Mars!'  ~  
