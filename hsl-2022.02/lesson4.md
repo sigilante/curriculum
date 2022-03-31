@@ -28,8 +28,10 @@ runes:
 - "`/+`"
 - "~& >>>"
 keypoints:
+- "There are four basic representations of text in Urbit:  cords, knots, terms, and tapes."
 - "Lists organize data for collective analysis or application."
-- ""
+- "There is a suite of tools for working with lists."
+- "A library is an importable core of code."
 ---
 
 
@@ -232,17 +234,19 @@ The most common needs for text-based data in programming are to _produce_ text, 
 
 ### Producing Text
 
-Producing text requires 
-
-interpolation
-
-`++weld` can be used to glue two `tape`s together.
+String interpolation puts the result of an expression into a `tape`:
 
 ```hoon
-
+> "{<(add 5 6)>} is the answer."
+"11 is the answer."
 ```
 
-Text can be much more advanced than this.  If you are interested, you can look into `wain`, ``
+`++weld` can be used to glue two `tape`s together:
+
+```hoon
+> (weld "Hello" "Mars!")
+"HelloMars!"
+```
 
 ### Manipulating Text
 
@@ -264,28 +268,22 @@ You can:
 
 #### Search
 
+- [`++find`](https://urbit.org/docs/hoon/reference/stdlib/2b#find) `[nedl=(list) hstk=(list)]` locates a sublist (`nedl`, needle) in the list (`hstk`, haystack)
 
 > ### Count the Number of Characters in Text
 >
-> There is a built-in `++lent` function that 
-> 
-> 
+> There is a built-in `++lent` function that counts the number
+> of characters in a `tape`.  Build your own `tape`-length
+> character counting function without using `++lent`. 
 > 
 > You may find the [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutsig) rune to be helpful.  It tells you whether a value is `~` or not.  (How would you do this with a regular `?:` wutcol?)
 {: .challenge}
 
-> ### Count the Number of Times a Character Occurs in a Text
->
-> Let's build a parser to split a long `tape` into smaller
-> `tape`s at single spaces.
-{: .challenge}
-
 #### Tokenize/Parse
 
-tokenize
-parse
-++trim
-++
+To _tokenize_ text is to break it into pieces according to some rule.  For instance, to count words one needs to break 
+
+The full parser for Hoon text is very sophisticated.  There are a lot of rules to deciding what is and isn't a rune, and how the various parts of an expression relate to each other.  (Remember `!,` zapcom?)  We don't need that level of power to work with basic text operations, so we'll instead use basic `list` tools whenever we need to extract break text apart.
 
 > ### Parsing Text
 >
@@ -297,10 +295,12 @@ parse
 
 #### Convert
 
+If you have text from some source and you need to convert it back into a Hoon value, use `++scot` and `++scow`:
+
 - [`++scot`](https://urbit.org/docs/reference/library/4m/#scot): render `dime` as `cord` (`dime`→`cord`)
 - [`++scow`](https://urbit.org/docs/reference/library/4m/#scow): render `dime` as `tape` (`dime`→`tape`)
 
-[`++sane`](https://urbit.org/docs/reference/library/4m/#sane) is used to check the validity of a possible text string as a `knot` or `term`.  The usage of `++sane` will feel a bit strange to you:  it doesn't apply directly to the text you want to check, but it produces a gate that checks for the aura (as `%ta` or `%tas`).  (The gate-builder is a fairly common pattern in Hoon.)
+[`++sane`](https://urbit.org/docs/reference/library/4m/#sane) is used to check the validity of a possible text string as a `knot` or `term`.  The usage of `++sane` will feel a bit strange to you:  it doesn't apply directly to the text you want to check, but it produces a gate that checks for the aura (as `%ta` or `%tas`).  (The gate-builder is a fairly common pattern in Hoon.)  `++sane` is also not infallible yet.
 
 ```hoon
 > ((sane %ta) 'ångstrom')  
@@ -503,6 +503,18 @@ Using what we know to date, most operations that we would do on a collection of 
 
 A few operations in Hoon actually require a `lest`, a `list` guaranteed to be non-null (that is, `~[]` is excluded).
 
+```hoon
+> =/  list=(list @)  ~[1 2 3]
+ i.list
+-find.i.list
+find-fork
+dojo: hoon expression failed
+> =/  list=(list @)  ~[1 2 3]
+ ?@  list  !!
+ i.list
+1
+```
+
 > ### Break Text at a Space
 >
 > Let's build a parser to split a long `tape` into smaller
@@ -515,7 +527,7 @@ A few operations in Hoon actually require a `lest`, a `list` guaranteed to be no
 > the gate should yield
 > 
 > ```
-> ~["the" "sky" "above" "the"]
+> ~["the" "sky" "above" "the" ...]
 > ```
 > 
 > To complete this, you'll need [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) and [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b#slag) (who sound like
@@ -541,7 +553,7 @@ As an addendum to our discussion about cores last week, let's take some of the c
 
 > ### Build a Library
 >
-> Take the space-breaking code and the character-counting code 
+> Take the space-breaking code and the element-counting code 
 > gates from above and include them in a `|%` barcen core.  Save
 > this file as `lib/text.hoon` in the `%base` desk and commit.
 >
