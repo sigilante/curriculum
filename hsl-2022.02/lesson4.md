@@ -199,7 +199,7 @@ A further tweak of the ASCII-only concept, the `@tas` `term` permits only “tex
 
 `term`s are rarely used for message-like text, but they are used all the time for internal labels in code.  They differ from regular text in a couple of key ways that can confuse you until you're used to them.
 
-For instance, a `@tas` value is also a mold which will _only_ match itself, so they are commonly used with type unions to filter for acceptable values.
+For instance, a `@tas` value is also a mold, and the value will _only_ match its own mold, so they are commonly used with type unions to filter for acceptable values.
 
 ```hoon
 > ^-  @tas  %5  
