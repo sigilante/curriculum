@@ -163,8 +163,8 @@ Later on, we'll look at how to convert between the forms of text and the advanta
 > ### Can You Trick Hoon?
 >
 > If a `~` marks the end of a `tape`, can it occur earlier in the
-> `tape`?  (Make sure to distinguish the _character_ `~` from the
-> _calue_ `~`.)
+> `tape`?  (Make sure to distinguish the _character_ `'~'` from the
+> _value_ `~`.)
 >
 > > ### Solution
 > >
@@ -199,7 +199,7 @@ A further tweak of the ASCII-only concept, the `@tas` `term` permits only “tex
 
 `term`s are rarely used for message-like text, but they are used all the time for internal labels in code.  They differ from regular text in a couple of key ways that can confuse you until you're used to them.
 
-For instance, a `@tas` value will _only_ match itself, so they are commonly used with type unions to filter for acceptable values.
+For instance, a `@tas` value is also a mold which will _only_ match itself, so they are commonly used with type unions to filter for acceptable values.
 
 ```hoon
 > ^-  @tas  %5  
@@ -239,10 +239,12 @@ interpolation
 `++weld` can be used to glue two `tape`s together.
 
 ```hoon
-
+|=  [t1=tape t2=tape]
+^-  tape
+(weld t1 t2)
 ```
 
-Text can be much more advanced than this.  If you are interested, you can look into `wain`, ``
+Text can be much more advanced than this.  If you are interested, you can look into `wain`.
 
 ### Manipulating Text
 
@@ -300,7 +302,7 @@ parse
 - [`++scot`](https://urbit.org/docs/reference/library/4m/#scot): render `dime` as `cord` (`dime`→`cord`)
 - [`++scow`](https://urbit.org/docs/reference/library/4m/#scow): render `dime` as `tape` (`dime`→`tape`)
 
-[`++sane`](https://urbit.org/docs/reference/library/4m/#sane) is used to check the validity of a possible text string as a `knot` or `term`.  The usage of `++sane` will feel a bit strange to you:  it doesn't apply directly to the text you want to check, but it produces a gate that checks for the aura (as `%ta` or `%tas`).  (The gate-builder is a fairly common pattern in Hoon.)
+[`++sane`](https://urbit.org/docs/hoon/reference/stdlib/4b#sane) is used to check the validity of a possible text string as a `knot` or `term`.  The usage of `++sane` will feel a bit strange to you:  it doesn't apply directly to the text you want to check, but it produces a gate that checks for the aura (as `%ta` or `%tas`).  (The gate-builder is a fairly common pattern in Hoon.)
 
 ```hoon
 > ((sane %ta) 'ångstrom')  
@@ -532,6 +534,7 @@ A few operations in Hoon actually require a `lest`, a `list` guaranteed to be no
 > > ?:  =((snag index ex) ' ')  
 > >   $(index 0, ex `tape`(slag +(index) ex), result (weld result ~[`tape`(scag index ex)]))    
 > > $(index +(index))
+> > ```
 {: .challenge}
 
 
