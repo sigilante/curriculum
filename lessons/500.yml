@@ -12,6 +12,7 @@ prerequisites:
   - "275"
   - "390"
   - "301"
+  - "485"
 postrequisites:
   - "550"
 objectives:

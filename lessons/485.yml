@@ -5,7 +5,8 @@ tags:
  - "%arvo"
 prerequisites:
   - "300"
-postrequisites: []
+postrequisites:
+  - "500"
 objectives:
   - "Use Aqua to test software and network interactions."
 runes: []

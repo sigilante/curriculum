@@ -119,5 +119,5 @@
 485,Arvo,Aqua,,300
 490,,,,
 495,,,,
-500,Arvo,OTA production.,,"275, 301, 302, 390, 400, 405, 415, 420"
+500,Arvo,OTA production.,,"275, 301, 302, 390, 400, 405, 415, 420, 485"
 550,Runtime,Produce working runtime implementation of Arvo.,,"450, 453, 500"
