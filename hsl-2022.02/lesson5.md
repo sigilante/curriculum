@@ -284,13 +284,30 @@ Why is this?  Let's peek inside the gates and see.  Since we know a core is a ce
 
 The correct behavior for `++mul:rs` is really to multiply starting from one, not zero, so that `++roll` doesn't wipe out the entire product.
 
-The [`|:` barcol]() rune allows you to build a new gate (core) with a custom sample.  For instance, we can take the original `++mul:rs` gate and give it a sample with default values of `.1`:
+If we want to set the default sample to have a different value than the bunt of the type, we can use the [`$_` buccab](https://urbit.org/docs/hoon/reference/rune/buc#-buccab) rune, whose irregular form is simply `_`.
 
 ```hoon
-> =mmul |:([a=`@rs`.1 b=`@rs`.1] (mul:rs a b))  
-> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)  
-.483840
+> =mmul |=([a=_1 b=_1] (mul:rs a b))
+> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
+> .483840
 ```
+
+> ##  Custom Samples
+> 
+> The [`|:` barcol](https://urbit.org/docs/hoon/reference/rune/bar#-barcol) rune also allows you to build a new gate (core) 
+> with a custom sample.  For instance, we can take the original 
+> `++mul:rs` gate and give it a sample with default values of 
+> `.1`:
+>
+> ```hoon
+> > =mmul |:([a=`@rs`.1 b=`@rs`.1] (mul:rs a b))  
+> > (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
+> .483840
+> ```
+> 
+> It allows you to do the same thing as `$_` buccab in a 
+> different way.
+{: .callout}
 
 
 ##  Doors
@@ -311,7 +328,7 @@ Here's a mathematical example.  If we wanted to calculate a quadratic polynomial
 If we were to build this as a gate, we would need to pass in four parameters:
 
 ```hoon
-=polynomial-gate |=  [x=@ud a=@ud b=@ud c=@ud]
+=poly-gate |=  [x=@ud a=@ud b=@ud c=@ud]
 (add (add (mul a (mul x x)) (mul b x)) c)
 ```
 
@@ -322,7 +339,7 @@ Any time we call the gate, we have to provide all four values:  one unknown, thr
 =/  a  5
 =/  b  4
 =/  c  3
-(polynomial-gate x )
+(poly-gate x a b c)
 ```
 
 > ##  Currying
@@ -376,7 +393,7 @@ Doors will enable us to build some very powerful data storage tools over the nex
 In the above example we created a door `poly` with sample `[a=@ud b=@ud c=@ud]`.  If we investigated, we would find that the initial value of each is `0`, the bunt value of `@ud`.  What if we wish to define a door with a chosen sample value directly?  We can make use of the `$_` rune, whose irregular form is simply `_`.  To create the door `poly` with the sample set to have certain values in the Dojo, we would write
 
 ```unknown
-> =poly |_  [a=_5_ b=_4_ c=_3]
+> =poly |_  [a=_5 b=_4 c=_3]
 ++  quad
   |=  x=@ud
   (add (add (mul a (mul x x)) (mul b x)) c)
