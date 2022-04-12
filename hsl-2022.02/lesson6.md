@@ -314,6 +314,8 @@ A `+$vase` is a pair of type and value, such as that returned by `!>` zapgar.  A
 
 - [`++jug`](https://urbit.org/docs/hoon/reference/stdlib/2o#jug) is a mold for a `map` of `set`s.
 
+(There's an example in the slides of a `jar`.)
+
 These are supported by the [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j#ja) core and the [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j#ju) core.
 
 
