@@ -13,10 +13,10 @@ objectives:
 - "Explain why units and vases are necessary."  
 - "Use helper arms and syntax:  `` ` ``, `biff`, `some`, etc."
 runes:  
-- "?>"  
-- "?<"  
-- "?~"  
-- "+$"
+- "`?>`"  
+- "`?<`"  
+- "`?~`"  
+- "`+$`"
 keypoints:
 - ""
 - "Units allow one to distinguish a null result (failure) from a zero."
@@ -26,13 +26,49 @@ keypoints:
 
 ##  Satisfying Static Typing
 
-- "Use assertions to enforce type constraints."  
-- "Identify a `lest` (as opposed to a list)."  
-TODO
+Hoon enforces its type system at compile time (build time).  This means that any code which makes assumptions about how values will be used is checked for mold compatibility when you `|commit` it or type it at the Dojo.  It also means that you've probably seen a fair number of problems with matching types.
 
-- "?>"  
-- "?<"  
-- "?~"  
+While we'll discuss general debugging strategies in more detail later, there are three basic things that tend to go wrong:
+
+1. Syntax error, general (just typing things out wrong, for instance a way Dojo would prevent)
+2. Syntax error, mismatched rune daughters (due to `ace`/`gap` or miscounting children)
+3. Type issues (`need`/`have`, notoriously)
+
+This last case can be handled with a couple of expedients:
+
+- Frequent use of `^-` kethep/`^+` ketlus to make sure that types match at various points in the code.
+
+    This has two benefits:  it verifies your expectations about what values are being passed around, and it means that mismatches raise an error more closely to the source of the error.
+
+    (Since Hoon checks type at build time, this does not incur a computational cost when the program is running.)
+
+- Use of assertions to enforce type constraints.  Assertions are a form of `?` wut rune which check the structure of a value.  Ultimately they all reduce back to `?:` wutcol, but are very useful in this sugar form:
+
+    - [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion, that a condition _must_ be true.
+    - [`?<` wutgal](https://urbit.org/docs/hoon/reference/rune/wut#-wutgal) is a negative assertion, that a condition _must_ be false.
+    - [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutsig) is a branch on null.
+
+    For instance, some operations require a `lest`, a `list` guaranteed to be non-null (that is, `^-  (list)  ~` is excluded).
+
+    ```hoon
+    > =/  list=(list @)  ~[1 2 3]
+     i.list
+    -find.i.list
+    find-fork
+    dojo: hoon expression failed
+    ```
+
+    `?~` wutsig solves the problem for this case:
+
+    ```hoon
+    > =/  list=(list @)  ~[1 2 3]
+     ?~  list  !!
+     i.list
+    1
+    ```
+    
+    In general, if you see an error like `find.fork`, it means that the type system is confused by your use of a too general of a type for a particular case.  Use the assertion runes to correct its assumption.
+
 
 ##  Type Arms as Mold Builders
 
@@ -281,8 +317,94 @@ A `+$vase` is a pair of type and value, such as that returned by `!>` zapgar.  A
 These are supported by the [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j#ja) core and the [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j#ju) core.
 
 
+##  Example:  Caesar Cipher
 
-TODO
-Do Caesar cipher example
+The Caesar cipher is a shift cipher ([that was indeed used anciently](https://en.wikipedia.org/wiki/Caesar_cipher)) wherein each letter in a message is encrypted by replacing it with one shifted some number of positions down the alphabet.
 
-- [Caesar Cipher](https://urbit.org/docs/hoon/hoon-school/caesar)
+Save this as `caesar.hoon` in `/gen`:
+
+```hoon
+!:
+|=  [msg=tape steps=@ud]
+=<
+=,  msg  (cass msg)
+:-  (shift msg steps)
+    (unshift msg steps)
+::
+|%
+++  alpha  "abcdefghijklmnopqrstuvwxyz"
+::  Shift a message to the right.
+::
+++  shift
+  |=  [message=tape steps=@ud]
+  ^-  tape
+  (operate message (encoder steps))
+::  Shift a message to the left.
+::
+++  unshift
+  |=  [message=tape steps=@ud]
+  ^-  tape
+  (operate message (decoder steps))
+::  Rotate forwards into encryption.
+::
+++  encoder
+  |=  [steps=@ud]
+  ^-  (map @t @t)
+  =/  value-tape=tape  (rotation alpha steps)
+  (space-adder alpha value-tape)
+::  Rotate backwards out of encryption.
+::
+++  decoder
+  |=  [steps=@ud]
+  ^-  (map @t @t)
+  =/  value-tape=tape  (rotation alpha steps)
+  (space-adder value-tape alpha)
+::  Apply the map of decrypted->encrypted letters to the message.
+::
+++  operate
+  |=  [message=tape shift-map=(map @t @t)]
+  ^-  tape
+  %+  turn  message
+  |=  a=@t
+  (~(got by shift-map) a)
+::  Handle spaces in the message.
+::
+++  space-adder
+  |=  [key-position=tape value-result=tape]
+  ^-  (map @t @t)
+  (~(put by (map-maker key-position value-result)) ' ' ' ')
+::  Produce a map from each letter to its encrypted value.
+::
+++  map-maker
+  |=  [key-position=tape value-result=tape]
+  ^-  (map @t @t)
+  =|  chart=(map @t @t)
+  ?.  =((lent key-position) (lent value-result))
+  ~|  %uneven-lengths  !!
+  |-
+  ?:  |(?=(~ key-position) ?=(~ value-result))
+  chart
+  $(chart (~(put by chart) i.key-position i.value-result), key-position t.key-position, value-result t.value-result)
+::  Cycle an alphabet around, e.g. from
+::  'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'BCDEFGHIJKLMNOPQRSTUVWXYZA'
+::
+++  rotation
+  |=  [my-alphabet=tape my-steps=@ud]
+  =/  length=@ud  (lent my-alphabet)
+  =+  (trim (mod my-steps length) my-alphabet)
+  (weld q p)
+--
+```
+
+The commentary is dense, but I've added some remarks above which hopefully decompress it a bit for you.  The use of `++space-adder` clutters it a bit, and it would probably be cleaner to just work with an “expanded alphabet” including space and punctuation characters, or to manually modify the `map` to handle those directly.
+
+There are four runes in this which we haven't seen yet:
+
+- `=,` tiscom modifies a leg in the subject, similar to `=/` tisfas (Lesson 8)
+- `=|` tisbar introduces a named noun to the subject, like a `=/` tisfas that just has the bunt (Lesson 8)
+- `~|` sigbar is a “tracing printf”, which only outputs a message if the code crashes (Lesson 9)
+- `?|` wutbar in its irregular `|()` form, a logical `OR` operation (Lesson 7)
+
+We also didn't look at [`++trim`](https://urbit.org/docs/hoon/reference/stdlib/4b#trim), which splits the first set of characters off of a `tape` (similar to [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) except returning both sides back to you as a cell).
+
+- [“Caesar Cipher”](https://urbit.org/docs/hoon/hoon-school/caesar)
