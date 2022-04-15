@@ -18,7 +18,8 @@ runes:
 - "`?~`"  
 - "`+$`"
 keypoints:
-- ""
+- "The Hoon type system requires you to be very explicit with the expected values."
+- "Maps and sets are tools for collecting and processing collections of data."
 - "Units allow one to distinguish a null result (failure) from a zero."
 ---
 
@@ -69,10 +70,27 @@ This last case can be handled with a couple of expedients:
     
     In general, if you see an error like `find.fork`, it means that the type system is confused by your use of a too general of a type for a particular case.  Use the assertion runes to correct its assumption.
 
-
 ##  Type Arms as Mold Builders
 
-We previously commented on [`+$` lusbuc](https://urbit.org/docs/hoon/reference/rune/lus#-lusbuc) as a type builder arm.  We are now better equipped to discuss what these are doing and how they work.
+We previously commented on [`+$` lusbuc](https://urbit.org/docs/hoon/reference/rune/lus#-lusbuc) as a type builder arm.  We are now better equipped to discuss what type builders or mold builders are doing and how they work.
+
+In general, mold definitions take place in a subset of the Hoon parser called “structure Hoon”.  This is opposed to “value Hoon” which is the default everywhere else.
+
+For instance, consider this gate:
+
+```hoon
+> =highgate |=(a=[@ud @ud] ?:((gth -.a +.a) -.a +.a))
+```
+
+One cannot use `:-` buccol in a sample definition even if it seems to say the same thing:
+
+```hoon
+> =highgate-fails |=(a=:-(@ud @ud) ?:((gth -.a +.a) -.a +.a))
+```
+
+even if one is accustomed to the `[]` notation for the cell.
+
+What's going on here?  In structure mode, the cell is actually defined by [`$:` buccol](https://urbit.org/docs/hoon/reference/rune/buc#-buccol) as a `spec` of a `cell`, rather than a `cell` itself.  (You can use `!,` zapcom to verify this for yourself.)
 
 `+$` lusbuc only permits `$` buc mold builders and basic structure expressions (like `@`).  Sometimes we rename a value for clarity, such as working with a particular class of values:
 
