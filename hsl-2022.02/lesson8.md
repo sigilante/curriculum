@@ -14,10 +14,10 @@ objectives:
 - "Enumerate Hoon's tools for dealing with state:  `=.` tisdot, `=^` tisket, `;<` micgal, `;~` micsig."
 - "Defer a computation."
 runes:
-- "`=.`"  
-- "`=^`"  
-- "`=~`"  
-- "`;<`"  
+- "`=.`"
+- "`=^`"
+- "`=~`"
+- "`;<`"
 - "`;~`"
 keypoints:
 - "A `%say` generator (and its cousin the `%ask` generator) affords you more flexibility in generator inputs."
@@ -182,21 +182,24 @@ We get a different value from the same generator between runs, something that is
 - [Hoon School, “1.9 Generators”](https://urbit.org/docs/hoon/hoon-school/generators)
 
 
-##  Deferring Computation
+##  State & Deferred Computation
 
 Default Hoon expressions are stateless.  This means that they don't really make reference to any other transactions or events in the system.
 
 However, clearly regular applications, such as Gall agents, are stateful, meaning that they modify their own subject regularly.
 
-There are several ways to manage state.  One approach, including `%=` cenhep, directly modifies the subject using a rune.  Another method is to use the other
+There are several ways to manage state.  One approach, including `%=` cenhep, directly modifies the subject using a rune.  Another method is to use the other runes to compose or sequence changes together (e.g. as a pipe of gates).  By and large the `=` tis runes are responsible for modifying the subject, and the `;` mic runes permit chaining deferred computations together.
 
 We will use `%say` generators as a bridge concept.  We will produce some short applications that maintain state while carrying out a calculation; they still result in a single return value, but gesture at the big-picture approach to maintaining state in persistent agents.
 
-There are a few runes for modifying the state of the subject, aside from `%=` cenhep which you've already seen:
+When I say _deferred computation_ in this context, I mean that parts of the subject changes may be underdetermined at first, and must be calculated later using the appropriate runes as new or asynchronous information becomes available.
+
+There are a few runes for modifying the subject and chaining deferred computations together, aside from `%=` cenhep which you've already seen:
 
 - [`=.` tisdot](https://urbit.org/docs/hoon/reference/rune/tis#-tisdot) is used to change a leg in the subject.
 - [`=^` tisket](https://urbit.org/docs/hoon/reference/rune/tis#-tisket) is similarly used to change a leg in the tail of the subject then evaluate against it.  This is commonly used for sequential calls to `++og`, the random number generator, and for events that need to be ordered in their resolution e.g. with a `%=` cenhep.  (Used in agents frequently.)
 - [`=*` tistar](https://urbit.org/docs/hoon/reference/rune/tis#tistar) defers an expression (rather like a macro).
+- [`=~` tissig](https://urbit.org/docs/hoon/reference/rune/tis#-tissig) composes many expressions together serially.
 - [`;<` micgal](https://urbit.org/docs/hoon/reference/rune/mic#-micgal) sequences two computations, particularly for an asynchronous event like a remote system call.  (Used in threads.)
 - [`;~` micsig](https://urbit.org/docs/hoon/reference/rune/mic#-micsig) produces a pipeline, a way of piping the output of one gate into another in a chain.  (This is particularly helpful when parsing text.)
 
@@ -243,65 +246,6 @@ A given seed will produce the same result every time it is run.  We need to use 
   [r1 r2]
 [21 47]
 ```
-
-### Example:  Traffic Light (`=.` tisdot)
-
-From the now-defunct Hoon Workbook:
-
-```hoon
-:-  %say
-|=  *
-:-  %noun
-=+  |%
-    ++  state  ?(%red %yellow %green)
-    --
-=/  current-state=state  %red
-=+  ^=  traffic-light
-    |%
-    ++  look  current-state
-    ++  set
-      |=  s=state
-      +>.$(current-state s)
-    --
-=+  a=traffic-light
-=+  b=traffic-light
-=.  a  (set.a %yellow)
-[current-state.a current-state.b]
-```
-
-Generator boilerplate:
-
-```hoon
-:-  %say
-|=  *
-:-  %noun
-```
-
-Pin a core with the state.  Having new types in a separate core is a common idiom in Hoon programs that allows the compiler to do [constant folding](https://en.wikipedia.org/wiki/Constant_folding), which improves performance.
-
-```hoon
-=+  |%
-    ++  state  ?(%red %yellow %green)
-    --
-```
-
-```hoon
-=/  current-state=state  %red
-=+  ^=  traffic-light
-    |%
-    ++  look  current-state
-    ++  set
-      |=  s=state
-      +>.$(current-state s)
-    --
-=+  a=traffic-light
-=+  b=traffic-light
-=.  a  (set.a %yellow)
-[current-state.a current-state.b]
-```
-
-
-https://web.archive.org/web/20210315032448/https://urbit.org/docs/tutorials/hoon/workbook/traffic-light/
 
 ### Example:  Parsing `tape`s (`;~` micsig)
 
