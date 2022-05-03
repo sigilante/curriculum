@@ -1,5 +1,5 @@
 ---
-title: "Managing State"
+title: "Managing State & Computations"
 teaching: 45
 exercises: 15
 nodes:
@@ -24,7 +24,7 @@ keypoints:
 - "Stateful applications requiring deferring parts of an expression relative to other parts."
 ---
 
-#   Managing State
+#   Managing State & Computations
 
 ##  `%say` Generators
 
