@@ -77,6 +77,7 @@ A `%say` generator has access to values besides those passed into it and the Hoo
 - `our` is our current ship identity.
 - `eny` is entropy, a source of randomness.
 - `now` is the current system timestamp.
+- `bec` is the current path.
 
 Dojo will automatically supply these values to the gate unless they are stubbed out with `*`.
 
@@ -102,7 +103,7 @@ The [Magic 8-Ball](https://github.com/urbit/hoon-workbook/blob/master/eightball.
 ^-  tape
 =/  answers=(list tape)
   :~  "It is certain."
-      "It is decidedly so."
+      "It is decidedly so."****
       "Without a doubt."
       "Yes - definitely."
       "You may rely on it."
@@ -188,7 +189,7 @@ Default Hoon expressions are stateless.  This means that they don't really make 
 
 However, clearly regular applications, such as Gall agents, are stateful, meaning that they modify their own subject regularly.
 
-There are several ways to manage state.  One approach, including `%=` cenhep, directly modifies the subject using a rune.  Another method is to use the other runes to compose or sequence changes together (e.g. as a pipe of gates).  By and large the `=` tis runes are responsible for modifying the subject, and the `;` mic runes permit chaining deferred computations together.
+There are several ways to manage state.  One approach, including `%=` centis, directly modifies the subject using a rune.  Another method is to use the other runes to compose or sequence changes together (e.g. as a pipe of gates).  By and large the `=` tis runes are responsible for modifying the subject, and the `;` mic runes permit chaining deferred computations together.
 
 We will use `%say` generators as a bridge concept.  We will produce some short applications that maintain state while carrying out a calculation; they still result in a single return value, but gesture at the big-picture approach to maintaining state in persistent agents.
 
@@ -240,7 +241,7 @@ A given seed will produce the same result every time it is run.  We need to use 
 > =+  rng=~(. og eny)  [-:(rads:rng 100) -:(rads:rng 100)]  
 [60 60]
 
-> =+  rng=~(. og eny)
+> =/  rng  ~(. og eny)
   =^  r1  rng  (rads:rng 100)
   =^  r2  rng  (rads:rng 100)
   [r1 r2]
@@ -259,7 +260,7 @@ The basic problem is this:
 2. You need to ingest one or more characters and decide what they “mean”, including storing the result of this meaning.
 3. You need to loop back to #1 again and again until you are out of characters.
 
-We could build a simple parser out of a trap and `++snag`, but it would be brittle and difficult to extend.  The Hoon parser is very sophisticated, since it has to take a file of ASCII characters (and some UTF-8 strings) and turn it into Nock code.  What makes parsing challenging is that we have to wade directly into a sea of new types and processes.  To wit:
+We could build a simple parser out of a trap and `++snag`, but it would be brittle and difficult to extend.  The Hoon parser is very sophisticated, since it has to take a file of ASCII characters (and some UTF-8 strings) and turn it via an AST into Nock code.  What makes parsing challenging is that we have to wade directly into a sea of new types and processes.  To wit:
 
 -   A `tape` is the string to be parsed.
 -   A `hair` is the position in the text the parser is at, as a cell of column & line, `[p=@ud q=@ud]`.
@@ -283,7 +284,7 @@ Here we will preview using `++shim` to match characters with in a given range, h
 > `(list)`(scan "after" (star (shim 'a' 'z')))  
 ~[97 102 116 101 114]  
 
-> `(list)`(scan "after the" (star (shim 'a' 'z')))  
+> `(list)`(scan "after the" (star (shim 'a' 'z')))
 {1 6}  
 syntax error  
 dojo: hoon expression failed
@@ -378,7 +379,7 @@ How do we parse multiple characters in order to break things up sensibly?
     > (scan "b" ;~(pose (just 'a') (just 'b')))
     'b'
     
-    > (;~(pose (just 'a') (just 'b')) [1 1] "ab")  
+    > (;~(pose (just 'a') (just 'b')) [1 1] "ab")
     [p=[p=1 q=2] q=[~ u=[p='a' q=[p=[p=1 q=2] q=[i='b' t=""]]]]]
     ```
 
@@ -450,7 +451,6 @@ There is an example of a calculator [in the docs](https://urbit.org/docs/hoon/gu
   |.  ~+
   ;~  pose
     ((slug mul) tar ;~(pose factor term))
-    ((slug pow) ket ;~(pose term expr))
     factor
   ==
 ++  expr
@@ -478,7 +478,7 @@ A refined `++cook`/`++cury`/`++jest` parser:
 > ((cook (cury slaw %ud) (jest '1')) [[1 1] "123"])  
 [p=[p=1 q=2] q=[~ u=[p=[~ 1] q=[p=[p=1 q=2] q="23"]]]]  
 
-> ((cook (cury slaw %ud) (jest '12')) [[1 1] "123"])  
+> ((cook (cury slaw %ud) (jest '12')) [[1 1] "123"])
 [p=[p=1 q=3] q=[~ u=[p=[~ 12] q=[p=[p=1 q=3] q="3"]]]]
 ```
 
