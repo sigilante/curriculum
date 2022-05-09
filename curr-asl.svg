@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg height="1693pt" viewbox="0.00 0.00 1846.90 1693.24" width="1847pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<defs><pattern id="diagonalHatchAmes" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#fee08b" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchBehn" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#fdae61" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchClay" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#66c2a5" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchDill" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#3288bd" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchEyre" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#5e4fa2" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchGall" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#d53e4f" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchIris" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#f46d43" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchJael" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#abdda4" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchKhan" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#9e0142" stroke-width="4"/></pattern></defs><defs><pattern id="diagonalHatchArvo" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#e6f598" stroke-width="4"/></pattern></defs>
+<defs><pattern id="diagonalHatch" width="4" height="8" patternTransform="rotate(-45 2 2)" patternUnits="userSpaceOnUse"><path d="M -1,2 l 6,0" stroke="#5e4fa2" stroke-width="4"/></pattern></defs>
 <g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 1689.24)">
 <polygon fill="white" points="-4,4 -4,-1689.24 1842.9,-1689.24 1842.9,4 -4,4" stroke="transparent"></polygon>
 <!-- 110 -->
@@ -13,7 +13,7 @@
 <!-- 100 -->
 <g class="node" id="node2">
 <title>100</title>
-<ellipse cx="28.6" cy="-1032.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="28.6" cy="-1032.24" fill="#9e0142" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="28.6" y="-1028.54">100</text>
 </g>
 <!-- 110&#45;&gt;100 -->
@@ -337,7 +337,7 @@
 <!-- 190 -->
 <g class="node" id="node28">
 <title>190</title>
-<ellipse cx="1081.3" cy="-699.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1081.3" cy="-699.27" fill="#3288bd" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1081.3" y="-695.57">190</text>
 </g>
 <!-- 190&#45;&gt;170 -->
@@ -385,7 +385,7 @@
 <!-- 200 -->
 <g class="node" id="node32">
 <title>200</title>
-<ellipse cx="1006.1" cy="-409.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1006.1" cy="-409.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1006.1" y="-405.57">200</text>
 </g>
 <!-- 201&#45;&gt;200 -->
@@ -397,7 +397,7 @@
 <!-- 205 -->
 <g class="node" id="node33">
 <title>205</title>
-<ellipse cx="1156.5" cy="-1255.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-1255.24" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-1251.54">205</text>
 </g>
 <!-- 205&#45;&gt;201 -->
@@ -409,7 +409,7 @@
 <!-- 210 -->
 <g class="node" id="node34">
 <title>210</title>
-<ellipse cx="1156.5" cy="-1201.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-1201.24" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-1197.54">210</text>
 </g>
 <!-- 210&#45;&gt;201 -->
@@ -421,7 +421,7 @@
 <!-- 215 -->
 <g class="node" id="node35">
 <title>215</title>
-<ellipse cx="1156.5" cy="-1147.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-1147.24" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-1143.54">215</text>
 </g>
 <!-- 215&#45;&gt;115 -->
@@ -439,7 +439,7 @@
 <!-- 217 -->
 <g class="node" id="node36">
 <title>217</title>
-<ellipse cx="1252.5" cy="-1147.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1252.5" cy="-1147.24" fill="url(#diagonalHatch) #3288bd" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1252.5" y="-1143.54">217</text>
 </g>
 <!-- 217&#45;&gt;192 -->
@@ -457,7 +457,7 @@
 <!-- 220 -->
 <g class="node" id="node37">
 <title>220</title>
-<ellipse cx="1156.5" cy="-1039.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-1039.24" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-1035.54">220</text>
 </g>
 <!-- 220&#45;&gt;201 -->
@@ -481,7 +481,7 @@
 <!-- 225 -->
 <g class="node" id="node39">
 <title>225</title>
-<ellipse cx="1156.5" cy="-839.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-839.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-835.57">225</text>
 </g>
 <!-- 225&#45;&gt;201 -->
@@ -493,7 +493,7 @@
 <!-- 230 -->
 <g class="node" id="node40">
 <title>230</title>
-<ellipse cx="1156.5" cy="-655.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-655.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-651.57">230</text>
 </g>
 <!-- 230&#45;&gt;201 -->
@@ -535,7 +535,7 @@
 <!-- 235 -->
 <g class="node" id="node43">
 <title>235</title>
-<ellipse cx="1156.5" cy="-601.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-601.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-597.57">235</text>
 </g>
 <!-- 235&#45;&gt;201 -->
@@ -565,7 +565,7 @@
 <!-- 240 -->
 <g class="node" id="node45">
 <title>240</title>
-<ellipse cx="1156.5" cy="-547.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-547.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-543.57">240</text>
 </g>
 <!-- 240&#45;&gt;112 -->
@@ -583,7 +583,7 @@
 <!-- 245 -->
 <g class="node" id="node46">
 <title>245</title>
-<ellipse cx="1156.5" cy="-493.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-493.27" fill="#abdda4" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-489.57">245</text>
 </g>
 <!-- 245&#45;&gt;201 -->
@@ -775,7 +775,7 @@
 <!-- 282 -->
 <g class="node" id="node55">
 <title>282</title>
-<ellipse cx="1252.5" cy="-372.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1252.5" cy="-372.27" fill="#d53e4f" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1252.5" y="-368.57">282</text>
 </g>
 <!-- 282&#45;&gt;180 -->
@@ -811,7 +811,7 @@
 <!-- 284 -->
 <g class="node" id="node57">
 <title>284</title>
-<ellipse cx="1156.5" cy="-931.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-931.27" fill="#d53e4f" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-927.57">284</text>
 </g>
 <!-- 284&#45;&gt;180 -->
@@ -859,7 +859,7 @@
 <!-- 288 -->
 <g class="node" id="node59">
 <title>288</title>
-<ellipse cx="1156.5" cy="-785.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1156.5" cy="-785.27" fill="#fdae61" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1156.5" y="-781.57">288</text>
 </g>
 <!-- 288&#45;&gt;180 -->
@@ -931,7 +931,7 @@
 <!-- 299 -->
 <g class="node" id="node62">
 <title>299</title>
-<ellipse cx="1252.5" cy="-632.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1252.5" cy="-632.27" fill="#fdae61" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1252.5" y="-628.57">299</text>
 </g>
 <!-- 299&#45;&gt;222 -->
@@ -1069,7 +1069,7 @@
 <!-- 303 -->
 <g class="node" id="node66">
 <title>303</title>
-<ellipse cx="1509.5" cy="-727.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1509.5" cy="-727.27" fill="#3288bd" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1509.5" y="-723.57">303</text>
 </g>
 <!-- 303&#45;&gt;185 -->
@@ -1117,7 +1117,7 @@
 <!-- 314 -->
 <g class="node" id="node68">
 <title>314</title>
-<ellipse cx="1391.4" cy="-1158.24" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1391.4" cy="-1158.24" fill="#fee08b" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1391.4" y="-1154.54">314</text>
 </g>
 <!-- 314&#45;&gt;265 -->
@@ -1159,7 +1159,7 @@
 <!-- 330 -->
 <g class="node" id="node71">
 <title>330</title>
-<ellipse cx="1252.5" cy="-318.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1252.5" cy="-318.27" fill="#fee08b" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1252.5" y="-314.57">330</text>
 </g>
 <!-- 330&#45;&gt;225 -->
@@ -1249,7 +1249,7 @@
 <!-- 375 -->
 <g class="node" id="node77">
 <title>375</title>
-<ellipse cx="1391.4" cy="-372.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1391.4" cy="-372.27" fill="#e6f598" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1391.4" y="-368.57">375</text>
 </g>
 <!-- 375&#45;&gt;330 -->
@@ -1261,7 +1261,7 @@
 <!-- external -->
 <g class="node" id="node78">
 <title>external</title>
-<ellipse cx="1252.5" cy="-426.27" fill="none" rx="49.5" ry="18" stroke="black"></ellipse>
+<ellipse cx="1252.5" cy="-426.27" fill="#e6f598" rx="49.5" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1252.5" y="-422.57">external</text>
 </g>
 <!-- 375&#45;&gt;external -->
@@ -1273,7 +1273,7 @@
 <!-- 382 -->
 <g class="node" id="node79">
 <title>382</title>
-<ellipse cx="1391.4" cy="-318.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1391.4" cy="-318.27" fill="#f46d43" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1391.4" y="-314.57">382</text>
 </g>
 <!-- 382&#45;&gt;217 -->
@@ -1315,7 +1315,7 @@
 <!-- 390 -->
 <g class="node" id="node81">
 <title>390</title>
-<ellipse cx="1391.4" cy="-264.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1391.4" cy="-264.27" fill="#3288bd" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1391.4" y="-260.57">390</text>
 </g>
 <!-- 390&#45;&gt;190 -->
@@ -1417,7 +1417,7 @@
 <!-- 430 -->
 <g class="node" id="node88">
 <title>430</title>
-<ellipse cx="1391.4" cy="-762.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1391.4" cy="-762.27" fill="#66c2a5" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1391.4" y="-758.57">430</text>
 </g>
 <!-- 430&#45;&gt;280 -->
@@ -1507,7 +1507,7 @@
 <!-- 482 -->
 <g class="node" id="node94">
 <title>482</title>
-<ellipse cx="1509.5" cy="-357.27" fill="none" rx="28.7" ry="18" stroke="black"></ellipse>
+<ellipse cx="1509.5" cy="-357.27" fill="#e6f598" rx="28.7" ry="18" stroke="black"></ellipse>
 <text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="1509.5" y="-353.57">482</text>
 </g>
 <!-- 482&#45;&gt;375 -->

@@ -1,0 +1,18 @@
+uuid: 192
+layout: node
+title: "Distribution of desks without dockets."
+tags:
+ - "%clay"
+prerequisites:
+  - "190"
+postrequisites:
+  - "217"
+objectives:
+  - "Produce a desk using `|merge`."
+  - "Mark a desk public (without a docket file)."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""

@@ -4,14 +4,14 @@ title: "Distribution of software using Grid."
 tags:
  - "%clay"
 prerequisites:
-  - "190"
+  - "192"
   - "215"
 postrequisites:
   - "382"
   - "390"
 objectives:
-  - "Produce a desk suitable for distribution."
-  - "Install and distribute software using Grid."
+  - "Produce a desk suitable for distribution (with a docket file)."
+  - "Install and distribute software."
   - "Explain elements of a docket file."
 runes: []
 irregular: []

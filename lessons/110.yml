@@ -5,6 +5,7 @@ tags:
  - "%hoon"
 prerequisites:
   - "100"
+  - "103"
 postrequisites:
   - "112"
   - "113"
