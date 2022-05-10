@@ -27,6 +27,7 @@
 183,"%hoon","Sets, maps, jars, jugs",,"150"
 184,"%hoon","Loobean operations",,"156"
 185,"%stdlib","I/O: Tanks, tangs, wains, wangs, and whangdoodles",,"160, 170"
+188,"%hoon","Producing interactive %ask generators.",,"163, 185"
 190,"%testing","Unit tests with -test thread.",,"170"
 192,"%clay","Distribution of desks without dockets.",,"190"
 195,"%hoon","Nature of jammed nouns.",,"113"

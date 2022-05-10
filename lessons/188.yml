@@ -1,0 +1,19 @@
+uuid: 188
+layout: node
+title: "Producing interactive %ask generators."
+tags:
+ - "%hoon"
+prerequisites:
+  - "163"
+  - "185"
+postrequisites: []
+objectives:
+  - "Create an `%ask` generator."
+  - "Produce basic formatted `%sole` effects from a generator."
+runes:
+  - ":-"
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""
