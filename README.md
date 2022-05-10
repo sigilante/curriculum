@@ -2,7 +2,7 @@
 
 _A comprehensive and up-to-date developer education platform for Urbit._
 
-![](./img/curr.png)
+![](./curr.png)
 
 _Figure.  General Mathemic Inventory (GMI)._
 
