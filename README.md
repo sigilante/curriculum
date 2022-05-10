@@ -1,27 +1,22 @@
-# curriculum
+#   `curriculum`
 
 _A comprehensive and up-to-date developer education platform for Urbit._
+
+![](./img/curr.png)
+
+_Figure.  General Mathemic Inventory (GMI)._
 
 This project organizes developer capabilities into a hierarchy of competencies (“objectives”), competency clusters (“lessons”), and ultimately developer education paths.
 
 Given a particular target capability, we can answer the question of exactly what parts of the system you need to learn to be competent at your task.
 
-More or less, we consider the world of Urbit developers to fall into six levels:
+We use this to produce three products:
 
-1. Tyro
-2. Amateur
-3. Workaday
-4. Master
-5. Wizard
-6. Client-side
+1.  [Hoon School Live](./hoon-school-live--2022.2.md), the cohort-based class for new developers.
+2.  [App School Live](./app-school-live--2022.6.md), the cohort-based class for developers who know Hoon.
+3.  Hoon School Revenant, the new form of written Hoon School docs on `developers.urbit.org`.
 
-We organize curriculum into series which describe the target transformation:
-
-1. 100	Tyro→Amateur
-2. 200	Amateur→Workaday
-3. 300	Workaday→Master
-4. 400	Master→Wizard
-5. 500	Wizard++
+---
 
 Particular paths can be traced through the competency cluster dependencies.  The point isn't to make this overly complicated, it's to make sure that we know what you need to know to accomplish a particular task.
 
@@ -59,10 +54,6 @@ content: ""
 
 with some associated `content` from [urbit.org](https://urbit.org/docs) tutorials and docs.  What we are aiming for is that each objective have a quantitative measurable outcome; that is, we should be able to definitively say that one can “identify the special role of the `$` buc arm in many cores.”  The whole chart looks complicated because some things (like how Jael works, 240 and 290) depend on different prerequisites (in this case, some Azimuth background and how `move`s work).
 
-This charts shows the General Mathemic Inventory (GMI):
-
-![](./img/curr.png)
-
 ---
 
-WHEN CHANGING NODES, you need to update the `map.csv`, the node, and any prerequisite or postrequisite changes.
+The source of truth in the current version of `curriculum` is the collection of lesson nodes in YAML files.  The `curriculum-processor.ipynb` notebook will read these off and use them to produce an up-to-date `curr-raw.csv` file.
