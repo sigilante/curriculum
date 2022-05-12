@@ -11,6 +11,7 @@ postrequisites:
   - "482"
 objectives:
   - "Produce an advanced Gall agent without a front-end interface."
+  - "Explain how subscriptions work and use them."
 runes: []
 irregular: []
 key_points: []
