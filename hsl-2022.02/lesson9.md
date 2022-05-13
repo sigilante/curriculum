@@ -265,7 +265,7 @@ Testing is designed to manifest failures so that faults and errors can be identi
     **/tests/lib/absolute/hoon**:
 
     ```hoon
-    /+  *test
+    /+  *test, *absolute
     |%
     ++  test-absolute
       ;:  weld
@@ -279,7 +279,7 @@ Testing is designed to manifest failures so that faults and errors can be identi
         !>  .0
         !>  (absolute .0)
       %-  expect-fail
-        |.  (absolute '0')
+        |.  (absolute '0')  ::actually succeeds
       ==
     --
     ```
@@ -296,6 +296,8 @@ Testing is designed to manifest failures so that faults and errors can be identi
       (sub:rs .0 a)
     --
     ```
+   
+   - What's wrong with this code?  (Diagnosis:  should be `++gth:rs`)
     
     _In extremis_, rigorous unit testing yields test-driven development (TDD). Test-driven development refers to the practice of fully specifying desired function behavior before composing the function itself. The advantage of this approach is that it forces you to clarify ahead of time what you expect, rather than making it up on the fly.
     
