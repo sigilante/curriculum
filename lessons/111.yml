@@ -1,0 +1,19 @@
+uuid: 111
+layout: node
+title: "Work with the file system."
+tags:
+ - "%sysadmin"
+prerequisites:
+  - "100"
+postrequisites:
+  - "113"
+objectives:
+  - "Identify the `.urb/` directory."
+  - "Use the `+ls` generator to show a directory's contents."
+  - "`|mount` and `|commit` a desk."
+runes: []
+irregular: []
+key_points: []
+assessments: []
+comments: ""
+content: ""
