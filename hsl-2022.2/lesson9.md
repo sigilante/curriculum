@@ -218,7 +218,7 @@ But don’t produce A code on the first pass! Let the code mature for a while at
 
 Testing is designed to manifest failures so that faults and errors can be identified and corrected.  We can classify a testing regimen into various layers:
 
-1.  Fences are barriers employed to block program execution if the state isn’t adequate to the intended task. Typically, these are implemented with `assert` or similar enforcement.  In Hoon, this means `?>` wutgar, `?<` wutgal, and `?~` wutsig. For conditions that must succeed, the failure branch in Hoon should be `!!`, which crashes the program.
+1.  Fences are barriers employed to block program execution if the state isn’t adequate to the intended task. Typically, these are implemented with `assert` or similar enforcement.  In Hoon, this means `?>` wutgar, `?<` wutgal, and `?~` wutsig, or judicious use of `^-` kethep and `^+` ketlus. For conditions that must succeed, the failure branch in Hoon should be `!!`, which crashes the program.
 2.  “Unit tests are so called because they exercise the functionality of the code by interrogating individual functions and methods. Functions and methods can often be considered the atomic units of software because they are indivisible. However, what is considered to be the smallest code unit is subjective. The body of a function can be long are short, and shorter functions are arguably more unit-like than long ones.” ([Huff, “Python Testing and Continuous Integration”](https://mq-software-carpentry.github.io/python-testing/05-units/))
     
     In many other languages, unit tests refer to functions, often prefixed `test`, that specify (and enforce) the expected behavior of a given function. Unit tests typically contain setup, assertions, and tear-down. In academic terms, they’re a grading script.
@@ -265,7 +265,7 @@ Testing is designed to manifest failures so that faults and errors can be identi
     **/tests/lib/absolute/hoon**:
 
     ```hoon
-    /+  *test
+    /+  *test, *absolute
     |%
     ++  test-absolute
       ;:  weld
@@ -279,7 +279,7 @@ Testing is designed to manifest failures so that faults and errors can be identi
         !>  .0
         !>  (absolute .0)
       %-  expect-fail
-        |.  (absolute '0')
+        |.  (absolute '0')  ::actually succeeds
       ==
     --
     ```
@@ -296,6 +296,8 @@ Testing is designed to manifest failures so that faults and errors can be identi
       (sub:rs .0 a)
     --
     ```
+   
+   - What's wrong with this code?  (Diagnosis:  should be `++gth:rs`)
     
     _In extremis_, rigorous unit testing yields test-driven development (TDD). Test-driven development refers to the practice of fully specifying desired function behavior before composing the function itself. The advantage of this approach is that it forces you to clarify ahead of time what you expect, rather than making it up on the fly.
     
