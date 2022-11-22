@@ -200,7 +200,7 @@ One more way to validate against type is to use an example instead of the extrac
 ^+  1.000  100
 ```
 
-(This is what `^-` is actually doing:  `6-  p  q` reduces to `^+  ^*  p  q`.  Many runes we use actually reduce to other rune forms, and have been introduced for ease of use.)
+(This is what `^-` is actually doing:  `^-  p  q` reduces to `^+  ^*  p  q`.  Many runes we use actually reduce to other rune forms, and have been introduced for ease of use.)
 
 Technically, we can say that a mold is a function from a noun to a noun.  What this means is that we can use a mold to map any noun to a typed value—if this fails, then the mold crashes.
 
