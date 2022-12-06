@@ -1,6 +1,6 @@
 uuid: 233
 layout: node
-title: "Functional gates/doors"
+title: "Functional operators"
 tags:
  - "%stdlib"
 prerequisites:
