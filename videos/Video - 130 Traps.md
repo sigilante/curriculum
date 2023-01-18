@@ -137,3 +137,5 @@ Essentially, we float gate calls until the final iteration of the call produces 
 A trap should end in a value, in this case `sum`.  Otherwise one can end up with an infinite loop wherein the expression never terminates.
 
 The `%=` cenhep rune is always used to reset part of a core with a list of indicated changes.  Later when we take a look at cores, we can explain why `$` buc is used.
+
+In the bigger picture, a trap doesn't have to be evaluated immediately:  that is, it can set up a calculation which will be assessed later.  Unit tests are sometimes built this way, for instance.

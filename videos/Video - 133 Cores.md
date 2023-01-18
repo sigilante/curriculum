@@ -36,10 +36,25 @@ Urbit adopts an innovative programming paradigm called _subject-oriented progra
 
 A core's `battery` consists of a number of _arms_ of expressions which can be evaluated when invoked.  A core's `payload` is then provided to the `battery` expressions, including any arguments in the `sample`.
 
+In essence, a core organizes operations and the data to which those operations apply together within a shared scope.  They act similar to objects in other programming languages.
+
+---
 
 ##  Kinds of Cores
 
+A core is a cell `[battery payload]`, essentially code and data.
+
 Cores can be organized based on how their `battery` is organized and on how their `payload` is organized.  This structure determines the practical utility of a core.
+
+Perhaps the best place to begin is by taking a look at the structure of a gate.  A gate consists of a _body_ of code, which corresponds to the `battery`, and an input argument of some kind, which is the `sample`.  It also receives information about its operating environment, or `context`; together the `sample` and `context` define the `payload`, or data which the battery has available to operate.
+
+```hoon
+::  (a*b)+c
+|=  [a=@ b=@ c=@]
+(add (mul a b) c)
+```
+
+Let's consider a number of core structures and how they reduce to the most fundamental core representation, `|%` barcen.
 
 The simplest core, the `trap`, has no `sample` but only a `context`.  We create traps with `|-` barhep or `|.` bardot and use them as recursion points.  A trap has only one arm or block of code, named `$` buc.
 

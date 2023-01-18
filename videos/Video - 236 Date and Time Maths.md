@@ -35,7 +35,7 @@ For instance, Microsoft Excel counts dates as floating-point values forwards and
 
 <!-- A sundial reveals _hyperlocal_ time, the direct solar time.  When the sundial reads with no shadow, it is hyperlocally noon, regardless of what the clocks say.  Time zones act as an approximation to allow a relatively local region to treat time as the same without the difficulties that hyperlocal time would introduce. -->
 
-That date, 1 January 1900, is Excel's _epoch_, or the point from which all values are reckoned.  Windows computers count from 1 January 1601, while Unix computers count from 1 January 1970.
+That date, right before 1 January 1900, is Excel's _epoch_, or the point from which all values are reckoned.  Windows computers count from 1 January 1601, while Unix computers count from 1 January 1970.
 
 Positive time is generally straightforward, but negative time requires an offset of one relative to conventional mathematics.  When the Venerable Bede needed to calculate the date of Easter, a moveable feast, he elected to popularize the use of a calendar derived from the birth of Jesus Christ rather than the then-current Diocletian era.  Unfortunately for our purposes as calculators, there was no Year Zero in this scheme:  Year 1 B.C. is immediately followed by A.D. 1.
 

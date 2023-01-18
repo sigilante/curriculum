@@ -23,7 +23,7 @@ content: ""
 
 In Hoon, all atoms are unsigned integers.  This poses a challenge for the representation of negative integers, which of course arise in the course of many operations.  As with floating-point values, the actual bit structure of a value can be interpreted in such a way as to permit us to think of and use a number as if it were a negative value.
 
-There are several conventions that can be used to represent signed integers.  For instance, one could simply use a leading bit in a fixed-width representation to indicate whether the whole should be mutipled by -1.
+There are several conventions that can be used to represent signed integers.  For instance, one could simply designate the leading bit in a fixed-width representation to indicate whether the whole should be mutipled by -1.
 
 $$
 \texttt{0010.1011}_{2}\;\text{for}\;\texttt{43}_{10}
