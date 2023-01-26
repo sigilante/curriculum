@@ -16,17 +16,27 @@ readings:
   - "https://developers.urbit.org/guides/core/app-school/3-imports-and-aliases"
   - "https://developers.urbit.org/guides/core/app-school/4-lifecycle"
 homework: "https://forms.gle/upKZoSe89XZAebou5"
+mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl0.md"
 ---
 
 #   🦀 `lesson0`.  A Simple Agent.
 ##  App School Live Lesson 0
 
-https://github.com/TheCombineDAO/vial
+Some setup preliminaries:
+
+- https://github.com/TheCombineDAO/vial
+- https://developers.urbit.org/guides/core/environment
 
 I have made two changes to this edition of App School Live:
 
 1. There is an additional lesson which covers using more advanced code patterns.
 2. I am requiring only seven of the eight homeworks be completed to be considered a finisher.
+
+Homework has a soft deadline ten days after the lesson (so the second Saturday) and a hard deadline on March 25.  The soft deadline allows us to batch grading for feedback in a timely manner.
+
+---
+
+(train analogy:  hand car, hi-rail truck, locomotive)
 
 Any operating system must define an expected way to load and execute programs.  For instance, the Unix/Linux platforms define an [`ELF` object format](https://www.linuxjournal.com/article/1060) which specifies where in the file the dynamic linker (library loader) is located, then loads and launches the main application process.  The Java Virtual Machine, used by Java, Java applets, Kotlin, and Clojure, specifies a [`JAR` pacakge file](https://en.wikipedia.org/wiki/JAR_%28file_format%29) with a manifest file to specify where the bytecode for the actual main application process is located.
 
@@ -79,7 +89,9 @@ Minor ones may include:
 We should work in a new clean fakeship.  Build one using the [developer pill](https://developers.urbit.org/blog/dev-pill).
 
 ```sh
-urbit -B dev-latest.pill -F zod
+$ urbit -B dev-latest.pill -F zod
+$ urbit dock zod
+$ ./zod/.run
 ```
 
 This time, however, let's create a new desk:
