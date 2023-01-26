@@ -17,6 +17,7 @@ readings:
   - "https://developers.urbit.org/guides/core/app-school/4-lifecycle"
 homework: "https://forms.gle/upKZoSe89XZAebou5"
 mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl0.md"
+video: "https://youtu.be/3_HmMUOPZGg"
 ---
 
 #   🦀 `lesson0`.  A Simple Agent.
