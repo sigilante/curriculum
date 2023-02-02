@@ -33,7 +33,7 @@ readings:
 homework:
   - "https://forms.gle/vmoNLmLPrY6EFfs49"
 mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl1.md"
-video: []
+video: "https://youtu.be/HWyFOzV9XIo"
 ---
 
 #   🦦 `asl1`.  Arvo Services.
