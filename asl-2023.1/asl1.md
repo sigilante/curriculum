@@ -461,7 +461,7 @@ There are some Arvo and Gall types that are frequently invoked in agents which y
 
 - `+$vase` is `[type noun]`, a type-value pair (these come from `!>` zapgar).
 - `+$cask` is `[mark noun]`, a marked data builder.
-- `+$cage` is `(cask vase)`, a marked vase.
+- `+$cage` is `[mark vase]` or `(cask vase)`, a marked vase.
 - `+$card:agent` (distinct from Arvo's `+$card`) is a Gall-internal proto-`move`.  As you will see next week, Gall distinguishes `move`s as `card`s that talk to `%arvo` vanes from `card`s that talk to other `%agent`s for internal simplicity.
 - `+$duct` is `(list wire)`, a causal history.
 - `+$bone` is a `duct` handle.
