@@ -18,9 +18,11 @@ readings:
   - "https://developers.urbit.org/guides/core/app-school/10-scry"
 homework:
   - "https://forms.gle/8VcUbce1Dcca2qnBA"
+mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl2.md"
+video: "https://youtu.be/CQIKyl-EihQ"
 ---
 
-#   🐢 `lesson2`.  Agents.
+#   🐢 `asl2`.  Agents.
 ##  App School Live Lesson 2
 
 Most agent arms produce the same two things:  `(quip card _this)`, a list of effects to be emitted, and a new version of the agent itself, typically with an updated state. It thus behaves much like a state machine, performing the function `(events, old-state) => (effects, new-state)`.  This allows Gall agents to alter their own state as events occur.
@@ -40,6 +42,8 @@ Formally, a `card:agent:gall` is a `(wind note gift)`:  unfolded, either of two 
 [%pass wire note]
 [%give gift]
 ```
+
+Recall from last time that a `%pass` message is sent forward to another vane or agent, and a `%give` return is accepted back at `++on-agent` or `++on-arvo`.
 
 The type of the first field in a `%pass` card is a `wire`. A `wire` is just a list of `@ta`, with a syntax of `/foo/bar/baz`. When you `%pass` something to an agent or vane, the response will come back on the `wire` you specify here. Your agent can then check the `wire` and maybe do different things depending on its content. The [`wire`](https://developers.urbit.org/guides/core/app-school/types#wire) type is covered in the [types reference](https://developers.urbit.org/guides/core/app-school/types). We'll show how `wire`s are practically used later on.
 
