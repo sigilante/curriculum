@@ -18,7 +18,7 @@ readings:
 homework:
   - "https://forms.gle/Dt6FdgCLt2Wnodfj8"
 mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl4.md"
-video: "https://youtu.be/"
+video: "https://youtu.be/GGZ3ZAUNQGI"
 ---
 
 #   🦩 `asl4`.  React Front-End.
@@ -45,10 +45,9 @@ The front-end itself will be served from the ship by the standard `%docket` agen
 
 We will build the React front-end using Node.js and the `create-landscape-app` tool.
 
-1. Download the Git repo for `create-landscape-app` and run it:
+1. Run `create-landscape-app`:
 
     ```sh
-    $ git clone https://github.com/urbit/create-landscape-app.git
     $ npx @urbit/create-landscape-app
     ```
 
@@ -59,11 +58,10 @@ We will build the React front-end using Node.js and the `create-landscape-app` t
       @urbit/create-landscape-app@8.0.0
     Ok to proceed? (y) y
     ✔ What should we call your application? … echo
-    ✔ Looks like a directory already exists called "echo". Where should your app be placed instead? … echo-fe
     ✔ What URL do you use to access Urbit? … localhost:8080
     ```
 
-3. Enter the new `echo/ui` directory and run `npm i @urbit/http-api`.
+3. Enter the new `echo/ui` directory and run `npm install @urbit/http-api`.
 4. Change the `"name"` in `package.json` to `"echo"` and add a new entry:
 
     ```json
@@ -259,7 +257,7 @@ We also need to an a `desk.docket-0` file to the root of the desk to configure t
 **`desk.bill`**
 
 ```sh
-$ echo "~[%echo]" > echo-fe/desk/desk.bill
+$ echo "~[%echo]" > echo/desk/desk.bill
 ```
 
 Finally, we will also need the docket marks, which are not in `%base` but we can get from `%garden`:
@@ -306,11 +304,9 @@ We have a front-end and a back-end, and they know how to communicate in JSON, bu
 
 To complete this, we need to modify or create some files:
 
-1. Run `npm install` in `echo-fe/ui`.
+1. Run `npm install` in `echo/ui`.
 
-1. Add `<script src="/session.js"></script>` to the `<head>` section of `public/index.html` so our React app can discover our ship name.
-
-2. Next, delete the contents of `src/app.js` and add our own code:
+2. Next, delete the contents of `src/app.jsx` and add our own code:
 
     ```javascript
     import React, { useEffect, useState, useReducer } from 'react'
@@ -410,7 +406,7 @@ To complete this, we need to modify or create some files:
         <script type="module" src="/session.js"></script>           
         ```
 
-    3. After `|install`ing the desk we can upload the file glob to the `%docket` server app by navigating to `localhost:8080/docket/upload`, selecting our desk, selecting the build directory `echo-fe/ui/dist`, and hitting the `glob!` button.
+    3. After `|install`ing the desk we can upload the file glob to the `%docket` server app by navigating to `localhost:8080/docket/upload`, selecting our desk, selecting the build directory `echo/ui/dist`, and hitting the `glob!` button.
 
 Take a quick look at the front-end functionality now.  The data passed to and from the Urbit ship are converted by the mark file into JSON.  This makes it straightforward for the front-end and back-end to coordinate, each in their own native idiom.
 
