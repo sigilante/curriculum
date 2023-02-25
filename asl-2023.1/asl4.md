@@ -240,13 +240,13 @@ This is a copy of the latest `%delta` except for name changes.  More sophisticat
 
 **`desk.docket-0`**
 
-We also need to an a `desk.docket-0` file to the root of the desk to configure the app tile and source of front-end files:
+We also need to add a `desk.docket-0` file to the root of the desk to configure the app tile and source of front-end files:
 
 ```hoon
 :~  title+'%echo'                                                                                    
     info+'A stack of numbers'
     color+0x2e.4347
-    glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejo  d5.ngg9h.iub9i.n1j7o]
+    glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o]
     base+'echo'
     version+[0 0 1]
     website+'https://github.com'
