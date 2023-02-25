@@ -32,9 +32,11 @@ readings:
   - "https://developers.urbit.org/reference/arvo/overview"
 homework:
   - "https://forms.gle/vmoNLmLPrY6EFfs49"
+mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl1.md"
+video: "https://youtu.be/HWyFOzV9XIo"
 ---
 
-#   🦦 `lesson1`.  Arvo Services.
+#   🦦 `asl1`.  Arvo Services.
 ##  App School Live Lesson 1
 
 ##  Arvo
@@ -113,15 +115,15 @@ We can interact in one of two ways with a vane at the Dojo prompt:
 - Read-only peek (scry) with the [`.^` dotket](https://developers.urbit.org/reference/hoon/rune/dot#-dotket) rune, which only allows vane state to be queried.
 - `|pass` a `note` to the vane via Arvo, which allows interactions to take place.
 
-#### Scrying
+#### Peeks
 
-A scry or peek is accomplished by passing a type and a `path` to `.^` dotket.  This path includes the vane address as a single letter `term`, a request tag called a `care`, then a beak and address, which depend on the vane.  The return value will be validated against the type.  Very frequently `path`s are built compositely so they won't look like a single argument, but the type system composes them together into a single `path`.
+A peek (or “scry”, deprecated but ubiquitous terminology) is accomplished by passing a type and a `path` to `.^` dotket.  This path includes the vane address as a single letter `term`, a request tag called a `care`, then a beak and address, which depend on the vane.  The return value will be validated against the type.  Very frequently `path`s are built compositely so they won't look like a single argument, but the type system composes them together into a single `path`.
 
 ![](https://storage.googleapis.com/media.urbit.org/docs/arvo/scry-diagram-v2.svg)
 
-Most vanes are instrumented to directly several endpoints, except for Gall, which passes almost all scries through to its agents.
+Most vanes are instrumented to directly several endpoints, except for Gall, which passes almost all peeks through to its agents.
 
-For instance, this scry will tell us which Graph Store keys are available:
+For instance, this peek will tell us which Graph Store keys are available:
 
 ```hoon
 .^(json %gx /(scot %p our)/graph-store/(scot %da now)/keys/json)
@@ -150,7 +152,7 @@ The Hood command `|pass` directly injects a `note` for Arvo to process.  Since i
 
 ### 📻 Ames
 
-Ames defines the network protocol and the implementing vane.
+Urbit knows about two kinds of networking:  Ames over Ames and HTTP over Eyre.  (That is, the network protocol over the implementing vane.)  Ames is the name of both the network protocol and the implementing vane.  Ames is for ship-to-ship communication.
 
 #### Network Protocol
 
@@ -234,7 +236,7 @@ Behn is a timer/wake-up call system.  Since it's a simple vane, let's approach i
 
 ### 📙 Clay
 
-Clay is the version-controlled, referentially-transparent, globally-addressable filesystem.  All data in Clay are typed and prsumably convertible.  For Clay, _referential transparency_ means “a request must always yield the same result for all time.”
+Clay is the version-controlled, referentially-transparent, globally-addressable filesystem.  All data in Clay are typed and presumably convertible.  For Clay, _referential transparency_ means “a request must always yield the same result for all time.”
 
 As far as the concept of _typed data_ goes, Clay attaches identification tags to any data and has ready to hand a set of conversion routines appropriate to the data type. These ID tags are called “marks,” and they act like MIME types. (You should get used to divorcing the conceptual relationship of data—what we could call it’s _form_ in the Platonic sense—from it’s _representation_ or _instantiation_. For instance, one writes a JSON file a certain way in text, but when parsing it needs to think about it at a higher level of abstraction.)
 
@@ -436,7 +438,7 @@ Get current state of subscriptions to public key updates; this won't have much t
 
 Khan allows threads to be triggered from outside of Urbit.
 
-While `%khan` hasn't been documented much yet (we expect some minor API changes), there are examples of its use in ~midsum-salrux's [Tendiebot price bot](https://github.com/midsum-salrux/tendiebot/blob/master/desk/tendiebot/app/tendiebot.hoon) and [Faux Urbit–Discord bridge](https://github.com/midsum-salrux/faux).
+While `%khan` hasn't been documented much yet (we expect some minor API changes, such as the recent addition of inline thread invocation), there are examples of its use in ~midsum-salrux's [Tendiebot price bot](https://github.com/midsum-salrux/tendiebot/blob/master/desk/tendiebot/app/tendiebot.hoon) and [Faux Urbit–Discord bridge](https://github.com/midsum-salrux/faux).
 
 Khan currently takes no cares.
 
@@ -459,7 +461,7 @@ There are some Arvo and Gall types that are frequently invoked in agents which y
 
 - `+$vase` is `[type noun]`, a type-value pair (these come from `!>` zapgar).
 - `+$cask` is `[mark noun]`, a marked data builder.
-- `+$cage` is `(cask vase)`, a marked vase.
+- `+$cage` is `[mark vase]` or `(cask vase)`, a marked vase.
 - `+$card:agent` (distinct from Arvo's `+$card`) is a Gall-internal proto-`move`.  As you will see next week, Gall distinguishes `move`s as `card`s that talk to `%arvo` vanes from `card`s that talk to other `%agent`s for internal simplicity.
 - `+$duct` is `(list wire)`, a causal history.
 - `+$bone` is a `duct` handle.
