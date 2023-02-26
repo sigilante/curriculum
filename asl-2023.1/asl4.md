@@ -257,7 +257,7 @@ We also need to add a `desk.docket-0` file to the root of the desk to configure 
 **`desk.bill`**
 
 ```sh
-$ echo "~[%echo]" > echo/desk/desk.bill
+$ echo "~[%echo]" > echo/desk.bill
 ```
 
 Finally, we will also need the docket marks, which are not in `%base` but we can get from `%garden`:
