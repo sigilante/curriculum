@@ -18,12 +18,17 @@ readings:
   - "https://developers.urbit.org/reference/arvo/threads/overview"
 homework:
   - "https://forms.gle/jAhGoXpVapUWf8UY7"
+mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl5.md"
+video: "https://youtu.be/h2eY5ONMAsA"
 ---
 
-#   🕷️ `lesson5.  Threads.
+#   🕷️ `asl5.  Threads.
 ##  App School Live Lesson 5
 
 ##  Transient Processes
+
+- App Workshop Live has been moved up to April 12.
+  - https://developers.urbit.org/courses/awl
 
 All Urbit code occupies one of these categories:
 
@@ -48,6 +53,10 @@ You have already used threads in the Dojo:  anything prefixed with a `-` hep, li
 
 ##  How Threads Work
 
+Threads can be defined in a separate file in `/ted` or inline within an agent (e.g. as an arm or simply an expression).
+
+As of this writing, threads can be invoked using Gall's `%spider` agent or via the more recent Khan vane (`%k`).  You will see both in this document, altho we will start with the older `%spider` approach.
+
 Let's crack a thread open and see what one looks like up front.  `/ted/time.hoon`, or `-time`, is used to time an event; it accepts a relative time to wait and returns the actual time waited (which should be close unless some other event intervenes, like a system shutdown).
 
 **`/ted/time.hoon`**:
@@ -67,7 +76,7 @@ Let's crack a thread open and see what one looks like up front.  `/ted/time.hoon
 (pure:m !>(`@dr`(sub now-2 now-1)))
 ```
 
-All right, line by line:
+Line by line:
 
 ```hoon
 /-  spider
@@ -75,7 +84,7 @@ All right, line by line:
 =,  strand=strand:spider
 ```
 
-Boilerplate:  load the structure file, load the helper library for I/O operations, and rename the `strand` so it's easier to refer to.
+Boilerplate:  load the `spider` structure file, load the `strandio` helper library for I/O operations, and rename the `strand` so it's easier to refer to.
 
 ```hoon
 ^-  thread:spider
@@ -84,13 +93,13 @@ Boilerplate:  load the structure file, load the helper library for I/O operation
 ^-  form:m
 ```
 
-`/sur/spider/hoon` defines a thread as `+$  thread  $-(vase _*form:(strand ,vase))`; that is, a gate which takes a `vase` and returns the `form` of a `strand` that produces a `vase`.  In other words, the thread doesn't just produce a result, it actually produces a strand that takes input and produces output from which a result can be extracted.  (That's what `form` is here.)
+`/sur/spider/hoon` defines a thread as `+$  thread  $-(vase _*form:(strand ,vase))`; that is, a gate which takes a `vase` and returns the `form` of a `strand` that produces a `vase`.  In other words, the thread doesn't just produce a result, it actually produces a strand that takes input and produces output from which a result can be extracted.  (That's what `form` accomplishes here.)
 
-It works something like this:
+It works like this:
 
-![thread diagram](https://storage.googleapis.com/media.urbit.org/site/thread-diagram.png "diagram of a thread")
+![thread diagram](https://storage.googleapis.com/media.urbit.org/site/thread-diagram.png)
 
-This is because threads typically do a bunch of I/O so it can't just immediately produce a result and end. Instead the strand will get some input, produce output, get some new input, produce new output, and so forth, until they eventually produce a `%done` with the actual final result.
+Threads typically do a bunch of I/O so one can't just immediately produce a result and end. Instead the strand will get some input, produce output, get some new input, produce new output, and so forth, until it eventually produces a `%done` with the actual final result.
 
 ```hoon
 =+  !<([~ arg=@dr] arg)
@@ -102,7 +111,7 @@ This is because threads typically do a bunch of I/O so it can't just immediately
 
 We encounter two new runes
 
-- [`!<` zapgal](https://developers.urbit.org/reference/hoon/rune/zap#-zapgal) extracts a `vase` to a given mold if the type nests properly.  Here we use it because we need to get the value back out of the `vase` in a usable form.  Note as well that Dojo unitizes the argument it receives.  (`!<` zapgal operates on the type, while `;;` micmic operates on the value.)
+- [`!<` zapgal](https://developers.urbit.org/reference/hoon/rune/zap#-zapgal) extracts a `vase` to a given mold if the type nests properly.  Here we use it because we need to get the value back out of the `vase` in a usable form.  Note as well that Dojo unitizes the argument it receives.  (`!<` zapgal operates on the type, while `;;` micmic operates on the value.)  It's the opposite of `!>` zapgar.
 - [`;<` micgal](https://developers.urbit.org/reference/hoon/rune/mic#-micgal) is designed to build pipelines of dependent clauses, much like `;~` micsig for parsers and unit tests.  Basically, `;<` micgal lets you sequence two expressions; here the first two arguments are a mold and the `bind` gate, then the first expression to complete and the second.  `/ted/time.hoon` sequences three `;<` micgal expressions together because it is explicitly timing an interval
 
 We extract the current time using `++get-time:strandio` (look it up, it's even simpler than a `%behn` call), then wait an interval (which does use `%behn`) and grab the time again.  The final result is a `vase` of the time delta wrapped in `pure`.`
@@ -129,7 +138,7 @@ A very simple thread:
 
 ```hoon
 /-  spider
-/+  strandio
+/+  strandio
 =,  strand=strand:spider
 ^-  thread:spider
 |=  arg=vase
@@ -138,7 +147,7 @@ A very simple thread:
 (pure:m arg)
 ```
 
-Save and run this.  Any surprises?  (The dojo wraps arguments in a unit so that's why it's `[~ 'foo']` rather than just `foo`.)
+Save and run this.  Any surprises?  (The dojo wraps arguments as a vase so that's why it's `[~ 'foo']` rather than just `foo`.)
 
 Any nontrivial thread will need to `bind` values for deferred results.  `bind` takes two gates as arguments; it calls the first function and if it succeeds, it calls the second with the result of the first as its sample.
 
@@ -184,6 +193,8 @@ This returns a raw JSON, which of course will need to be parsed and reparsed to 
 
 ##  Calling a Thread
 
+### From a `/ted` File
+
 As we pointed out earlier, the Dojo is instrumented to invoke threads using the `-` hep notation:
 
 ```hoon
@@ -209,6 +220,10 @@ Within an agent, a thread will be called and its result subscribed to.  This loo
 When the thread returns, the value will come in via the subscription in the `++on-agent` arm as a `%fact` of `cage` `%thread-done` (if successful) or `%thread-fail` (if not).
 
 There's a pretty good guide to all of this in the Thread Guide that is worth working through in detail.  The docs also cover child threads, or threads spawned by threads.
+
+- When you're feeling bold, have a gander at `/ted/test.hoon`.
+
+### Inline
 
 The alternative to Spider is the new `%khan` vane, which can launch threads directly.
 
@@ -238,7 +253,34 @@ Such a thread looks normal, based on what we've done above.  Results come in via
   ==
 ```
 
-- When you're feeling bold, have a gander at `/ted/test.hoon`.
+A Khan thread invocation is similar to a Gall `%spider` thread.  Cards to invoke `-azimuth-load` look like this in the two lingos:
+
+```hoon
+::  Khan
+[%pass /al %arvo %k %fard %base %azimuth-load %noun !>(~)]
+
+::  Gall/Spider
+[%pass /thread/azimuth-load %agent [our.bowl %spider] %watch /thread-result/[tid]]
+[%pass /thread/azimuth-load %agent [our.bowl %spider] %poke %spider-start !>(~)]
+```
+
+The above invocation relies on a thread already having been defined in `/ted`.  We can also define a thread inline and invoke it with Khan:
+
+```hoon
+=/  shed
+  =/  m  (strand ,vase)
+  ;<  ~  bind:m  (poke:strandio [our %hood] %helm-hi !>('hi'))
+  ;<  ~  bind:m  (poke:strandio [our %hood] %helm-hi !>('there'))
+  (pure:m !>("product"))
+[%pass /wire %arvo %k %lard %base shed]
+```
+
+A Khan task can be one of:
+
+- `%fard` is an in-Arvo thread (like a regular Gall call) from `/ted`.
+- `%fyrd` is a thread invocation from outside of Arvo (i.e. the runtime).
+- `%lard` uses an inline thread definition.
+
 
 ##  Working with `strandio`
 
@@ -250,9 +292,27 @@ curl --location --request GET "https://sampledataapi.com/API/getcategory"
 
 ```hoon
 (fetch-json:strandio 'https://sampledataapi.com/API/getcategory')
+(fetch-cord:strandio 'https://sampledataapi.com/API/getcategory')
 ```
 
-TODO
+- Interpret `/ted/code` (`-code`).
+
+    ```hoon
+    /-  spider                                                                                            
+    /+  strandio
+    =,  strand=strand:spider
+    ^-  thread:spider
+    |=  arg=vase
+    =/  m  (strand ,vase)
+    ^-  form:m
+    ;<  =bowl:spider  bind:m  get-bowl:strandio
+    ;<  code=@p  bind:m  (scry:strandio @p /j/code/(scot %p our.bowl))
+    %-  pure:m
+    !>  ^-  tape
+    %+  slag  1
+    (scow %p code)
+    ```
+
 
 ##  Resources
 
