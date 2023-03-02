@@ -22,7 +22,7 @@ mirror: "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl5.md"
 video: "https://youtu.be/h2eY5ONMAsA"
 ---
 
-#   🕷️ `asl5.  Threads.
+#   🕷️ `asl5`.  Threads.
 ##  App School Live Lesson 5
 
 ##  Transient Processes
