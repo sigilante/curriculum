@@ -395,16 +395,22 @@ To complete this, we need to modify or create some files:
     This JavaScript code can be most easily read by looking at the `return()` function at the end, then investigating `push()`, `pop()`, and the `state.map()` list builder from the known state.
 
 3. Glob it.  The web page source is itself built using Node.js first, then the Urbit ship can serve it for a web browser to use after it has been uploaded to the ship as a “glob”.
+
     1. We need to build the React app first:
         ```
         npm run build
         ```
+
+        This will produce a `/dist` folder containing the actual resources to be used as the front-end page and logic.
+    
     2. Edit the `dist/index.html` file such that the `script` tags include `type="module"`, to wit:
 
         ```js
         <script type="module" src="/apps/echo/desk.js"></script>
         <script type="module" src="/session.js"></script>           
         ```
+
+        If you get the error `Unhandled Promise Rejection: Error: Failed to PUT channel`, check that the `src` and `type` attributes are correct.  Every time you run `npm run build`, it will overwrite `/dist`.
 
     3. After `|install`ing the desk we can upload the file glob to the `%docket` server app by navigating to `localhost:8080/docket/upload`, selecting our desk, selecting the build directory `echo/ui/dist`, and hitting the `glob!` button.
 
