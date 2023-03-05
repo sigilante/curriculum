@@ -27,7 +27,7 @@ homework:
   - "https://forms.gle/DSuNNVDM72eEctVeA"
 ---
 
-#   🦭 `lesson6`.  Production Apps.
+#   🦭 `asl6`.  Production Apps.
 ##  App School Live Lesson 6
 
 ##  Debugging & Testing
@@ -179,7 +179,47 @@ Many Gall agents have a core wrapping them called `%dbug` which registers the ag
 
 - [OpenDSA Data Structures and Algorithms Modules Collection, “Programming Tutorials”, section Common Debugging Methods](https://opendsa-server.cs.vt.edu/ODSA/Books/Everything/html/debugmethods.html)
 
-### Quality Hoon
+##  Documenting Code
+
+### Comments
+
+Hoon developers employ several commenting styles, and there are mixed opinions on which is to be preferred, as you'll still see crowded comments in use in recent code.
+
+```hoon
+::  Formally, we like comments to have breathing room _beneath_ the comment.
+::
+++  my-code
+  ...
+::
+::  Sometimes we have breathing room above as well.
+::
+++  more-code
+  ...
++$  alias  type                              :: Crowded comments are common
+                                             :: but not preferred.
+```
+
+The lack of a multi-line commenting system is I think a flaw in contemporary Hoon, but it's not unique to the language.
+
+- [“Hoon Style Guide”](https://urbit.org/docs/hoon/reference/style), section “General naming style”
+
+#### Code Annotations
+
+Doccords are a system to provide code documentation using comments.  The `#` hax command in Dojo can expose annotations about the type.
+
+```hoon
+:: example TODO
+```
+
+- [`/lib/deco.hoon`](https://github.com/urbit/urbit/blob/develop/pkg/arvo/lib/deco.hoon)
+
+In a similar vein, the `$+` buclus rune allows you to annotate type so that the `!>` zapgar rune can extract the intended name.
+
+```hoon
+TODO
+```
+
+#### Style Guide
 
 The core Urbit developers suggest grading code according to certain stylistic and functional criteria:
 
@@ -193,7 +233,8 @@ But don’t produce A code on the first pass! Let the code mature for a while at
 
 - [“Hoon Style Guide”](https://urbit.org/docs/hoon/reference/style), section “Grading”
 
-### Unit Testing
+
+##  Unit Testing
 
 Testing is designed to manifest failures so that faults and errors can be identified and corrected.  We can classify a testing regimen into various layers:
 
