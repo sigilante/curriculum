@@ -207,17 +207,9 @@ The lack of a multi-line commenting system is I think a flaw in contemporary Hoo
 
 Doccords are a system to provide code documentation using comments.  The `#` hax command in Dojo can expose annotations about the type.
 
-```hoon
-:: example TODO
-```
-
 - [`/lib/deco.hoon`](https://github.com/urbit/urbit/blob/develop/pkg/arvo/lib/deco.hoon)
 
 In a similar vein, the `$+` buclus rune allows you to annotate type so that the `!>` zapgar rune can extract the intended name.
-
-```hoon
-TODO
-```
 
 #### Style Guide
 
