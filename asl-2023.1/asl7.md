@@ -4,14 +4,16 @@ teaching: 60
 exercises: 0
 nodes: []
 objectives:
-  - "Use helpful libraries to facilitate coding."
-  - "Employ the nested core design pattern in a Gall app."
+  - "Consistent naming schemes across apps foster readability."
+  - "Use helpful libraries to facilitate common operations."
+  - "Wrap pokes in generators for ease of use."
 runes: []
-keypoints:
-  - "Nested cores "
+keypoints: ""
 readings: []
 homework:
   - "https://forms.gle/pV4mQyLiLiimCNVv6"
+mirror:  "https://github.com/sigilante/curriculum/blob/master/asl-2023.1/asl7.md"
+video:  "https://youtu.be/Ys0O-mytunQ"
 ---
 
 #   🦏 `asl7`.  Design Patterns.
@@ -30,7 +32,7 @@ This lesson aims to upgrade your app development skills to a more professional p
 Marks serve two primary roles in the Urbit ecology:
 
 1. They serve as structure types and transformation rules for arbitrary nouns.
-2. They serve as markers for 
+2. They serve as markers for input effects.
 
 Marks are often used in `cage`s, or `(pair mark vase)`, which allow us to transmit typed data between agents and ships.
 
@@ -39,6 +41,8 @@ A general pattern of mark names has emerged which favors `%agent-action` for shi
 ![](https://storage.googleapis.com/media.urbit.org/developers/vert-horz.svg)
 
 In general, I counsel those two names for your basic work, and a system of six-letter words for other agent marks:  e.g., `inform`, `gossip`, `result`, `impact`, `change`, `impose`.  This yields a quick idiom that's easily recognizable (much like four-letter words in various parts of the system) and 
+
+verticals and horizontals?
 
 - [App Workbook, `%flap`](https://developers.urbit.org/guides/additional/app-workbook/flap)
 
@@ -103,6 +107,8 @@ is the equivalent of
 ```
 
 but allows the mark to be omitted and simplifies the cell syntax somewhat.
+
+`:ahoy +help`
 
 ### Exercise:  Hood Generators
 
