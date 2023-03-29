@@ -1,434 +1,245 @@
 ---
-title: "Molding Values, Using Doors"
+title: "The Standard Library"
 teaching: 45
 exercises: 15
 nodes:
-- "156"
-- "183"
+- "184"
+- "233"
 objectives:
-- "Use assertions to enforce type constraints."  
-- "Identify a `lest` (as opposed to a list)."  
-- "Produce a type arm."  
-- "Identify units, sets, maps, and compound structures like jars and jugs."  
-- "Explain why units and vases are necessary."  
-- "Use helper arms and syntax:  `` ` ``, `biff`, `some`, etc."
-runes:  
-- "`?>`"  
-- "`?<`"  
-- "`?~`"  
-- "`+$`"
+- "Explore the Hoon standard library."
+- "Produce loobean expressions."  
+- "Reorder conditional arms."  
+- "Switch against a union with or without default."
+- "Reel, roll, turn a list."  
+- "Curry, cork functions."  
+- "Change arity of a gate."
+runes:
+- "`;:`"
+- "`?|`"
+- "`?&`"
+- "`?!`"
+- "`?.`"
+- "`?-`"
+- "`?+`"
+irregular:
+- "`&`"
+- "`|`"
+- "`!`"
+- "`:`"
 keypoints:
-- "The Hoon type system requires you to be very explicit with the expected values."
-- "Maps and sets are tools for collecting and processing collections of data."
-- "Units allow one to distinguish a null result (failure) from a zero."
+- "The Hoon standard library provides many (but not all) desirable tools.  (It tends to be parser-heavy.)"
+- "Good Hoon style weights heavier expressions to the bottom.  Use `?.` wutdot to discretionally control this."
+- "Switch statements allow you to make decisions based on possible elements of a type union (e.g. of terms)."
+- "Gates can be manipulated to accept different numbers of arguments, or applied across multiple values, using functional programming arms."
+- "Formatted text can be produced using `tank`s."
 readings:
-- "https://developers.urbit.org/guides/core/hoon-school/K-doors"
-- "https://developers.urbit.org/guides/core/hoon-school/L-struct"
-- "https://developers.urbit.org/guides/core/hoon-school/M-typecheck"
+- "https://developers.urbit.org/guides/core/hoon-school/J-stdlib-text" (Text Operations:  Producing Text)
+- "https://developers.urbit.org/guides/core/hoon-school/N-logic"
+- "https://developers.urbit.org/guides/core/hoon-school/Q-func"
 ---
 
-#   Molding Values, Using Doors
+#   The Standard Library
 
-##  Satisfying Static Typing
+Whenever we run code in the dojo, the subject makes available to us a standard library of operations.  Much of these focus on parsing and building code—after all, that's what Hoon itself must do—but there are many other convenient functions tucked away in the Hoon subject.  Some parts are formally in Arvo, some in `%zuse`, some in `%lull`, and some in Hoon proper (`hoon.hoon`).  (Vane-specific operations are also available, although we don't need any of them quite yet.)  You don't really need to know about where particular parts live yet, although naked generators as we've composed thus far can only see arms of the standard library and don't have access to some Arvo information like `our` or `now`.
 
-Hoon enforces its type system at compile time (build time).  This means that any code which makes assumptions about how values will be used is checked for mold compatibility when you `|commit` it or type it at the Dojo.  It also means that you've probably seen a fair number of problems with matching types.
 
-While we'll discuss general debugging strategies in more detail later, there are three basic things that tend to go wrong:
+##  The Structure of Urbit OS
 
-1. Syntax error, general (just typing things out wrong, for instance a way Dojo would prevent)
-2. Syntax error, mismatched rune daughters (due to `ace`/`gap` or miscounting children)
-3. Type issues (`need`/`have`, notoriously)
+Navigate to `/sys` in your fakezod's pier in the `%base` desk.  Take a look at the files present here:
 
-This last case can be handled with a couple of expedients:
+```
+.  
+├── arvo.hoon  
+├── hoon.hoon  
+├── lull.hoon  
+├── vane  
+│   ├── ames.hoon  
+│   ├── behn.hoon  
+│   ├── clay.hoon  
+│   ├── dill.hoon  
+│   ├── eyre.hoon  
+│   ├── gall.hoon  
+│   ├── iris.hoon  
+│   └── jael.hoon  
+└── zuse.hoon
+```
 
-- Frequent use of `^-` kethep/`^+` ketlus to make sure that types match at various points in the code.
+Arvo and the vanes provide system services which you won't need until you start working with Gall and building apps.
 
-    This has two benefits:  it verifies your expectations about what values are being passed around, and it means that mismatches raise an error more closely to the source of the error.
+- `hoon.hoon` provides the language fundamentals for the Hoon parser and builder.  (Some of this functionality is housed in the filesystem handler `clay.hoon` as well.)
+- `lull.hoon` contains structures and services necessary to bootstrap Arvo.
+- `zuse.hoon` provides a variety data parsing and representation structures.
+- `arvo.hoon` instruments the basic Arvo event loop.
+- Vane files provide per-vane service cores and molds.
 
-    (Since Hoon checks type at build time, this does not incur a computational cost when the program is running.)
+We are going to venture into the standard library files to start us off today.  Open these with the text editor of your choice.  Let's start with `hoon.hoon`, the core of the standard library.
 
-- Use of assertions to enforce type constraints.  Assertions are a form of `?` wut rune which check the structure of a value.  Ultimately they all reduce back to `?:` wutcol, but are very useful in this sugar form:
+### `hoon.hoon`
 
-    - [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion, that a condition _must_ be true.
-    - [`?<` wutgal](https://urbit.org/docs/hoon/reference/rune/wut#-wutgal) is a negative assertion, that a condition _must_ be false.
-    - [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutsig) is a branch on null.
+`hoon.hoon` is a bit of a jungle.  It is a core organized into “chapters” with [`+|` lusbar](https://urbit.org/docs/hoon/reference/rune/lus#-lusbar).  [The docs](https://urbit.org/docs/hoon/reference/stdlib#by-section) reflect this structure and give us a good glimpse of what to expect in here.  Some highlights:
 
-    For instance, some operations require a `lest`, a `list` guaranteed to be non-null (that is, `^-  (list)  ~` is excluded).
+-   [1a: basic arithmetic](https://urbit.org/docs/hoon/reference/stdlib#1a-basic-arithmetic)
+  -   [`++add`](https://urbit.org/docs/hoon/reference/stdlib/1a/#add "Add") [`++dec`](https://urbit.org/docs/hoon/reference/stdlib/1a/#dec "Decrement") [`++div`](https://urbit.org/docs/hoon/reference/stdlib/1a/#div "Divide") [`++dvr`](https://urbit.org/docs/hoon/reference/stdlib/1a/#dvr "Divide (with remainder)") [`++gte`](https://urbit.org/docs/hoon/reference/stdlib/1a/#gte "Greater than / equal") [`++gth`](https://urbit.org/docs/hoon/reference/stdlib/1a/#gth "Greater than") [`++lte`](https://urbit.org/docs/hoon/reference/stdlib/1a/#lte "Less than / equal (atom)") [`++lth`](https://urbit.org/docs/hoon/reference/stdlib/1a/#lth "Less than (atom)") [`++max`](https://urbit.org/docs/hoon/reference/stdlib/1a/#max "Maximum") [`++min`](https://urbit.org/docs/hoon/reference/stdlib/1a/#min "Minimum (atom)") [`++mod`](https://urbit.org/docs/hoon/reference/stdlib/1a/#mod "Modulus (atom)") [`++mul`](https://urbit.org/docs/hoon/reference/stdlib/1a/#mul "Multiply (atom)") [`++sub`](https://urbit.org/docs/hoon/reference/stdlib/1a/#sub "Subtract")
+-   [2a: unit logic](https://urbit.org/docs/hoon/reference/stdlib#2a-unit-logic)
+  -   [`++biff`](https://urbit.org/docs/hoon/reference/stdlib/2a/#biff "Unit as argument") [`++bind`](https://urbit.org/docs/hoon/reference/stdlib/2a/#bind "Nonunit function to unit, producing unit") [`++bond`](https://urbit.org/docs/hoon/reference/stdlib/2a/#bond "Replace null") [`++both`](https://urbit.org/docs/hoon/reference/stdlib/2a/#both "Group unit values into pair") [`++clap`](https://urbit.org/docs/hoon/reference/stdlib/2a/#clap "Combine two units with function") [`++clef`](https://urbit.org/docs/hoon/reference/stdlib/2a/#clef "Compose two units with function") [`++drop`](https://urbit.org/docs/hoon/reference/stdlib/2a/#drop "Unit to list") [`++fall`](https://urbit.org/docs/hoon/reference/stdlib/2a/#fall "Give unit a default value") [`++flit`](https://urbit.org/docs/hoon/reference/stdlib/2a/#flit "Make filter") [`++hunt`](https://urbit.org/docs/hoon/reference/stdlib/2a/#hunt "Select between two units by a rule") [`++lift`](https://urbit.org/docs/hoon/reference/stdlib/2a/#lift "Curried bind") [`++mate`](https://urbit.org/docs/hoon/reference/stdlib/2a/#mate "Choose") [`++need`](https://urbit.org/docs/hoon/reference/stdlib/2a/#need "Unwrap unit") [`++some`](https://urbit.org/docs/hoon/reference/stdlib/2a/#some "Wrap value in unit")
+-   [2b: list logic](https://urbit.org/docs/hoon/reference/stdlib#2b-list-logic)
+  -   [`++bake`](https://urbit.org/docs/hoon/reference/stdlib/2b/#bake "Convert wet gate to dry gate") [`++fand`](https://urbit.org/docs/hoon/reference/stdlib/2b/#fand "All indices in list") [`++find`](https://urbit.org/docs/hoon/reference/stdlib/2b/#find "First index in list") [`++flop`](https://urbit.org/docs/hoon/reference/stdlib/2b/#flop "Reverse list") [`++gulf`](https://urbit.org/docs/hoon/reference/stdlib/2b/#gulf "List from range") [`++homo`](https://urbit.org/docs/hoon/reference/stdlib/2b/#homo "Homogenize list") [`++join`](https://urbit.org/docs/hoon/reference/stdlib/2b/#join "Add separator between list elements") [`++lent`](https://urbit.org/docs/hoon/reference/stdlib/2b/#lent "List length") [`++levy`](https://urbit.org/docs/hoon/reference/stdlib/2b/#levy "Logical AND on list") [`++lien`](https://urbit.org/docs/hoon/reference/stdlib/2b/#lien "Logical OR on list") [`++limo`](https://urbit.org/docs/hoon/reference/stdlib/2b/#limo "Construct list from nullterminated tuple") [`++murn`](https://urbit.org/docs/hoon/reference/stdlib/2b/#murn "Maybe transform") [`++oust`](https://urbit.org/docs/hoon/reference/stdlib/2b/#oust "Remove from list") [`++reap`](https://urbit.org/docs/hoon/reference/stdlib/2b/#reap "Replicate (list)") [`++reel`](https://urbit.org/docs/hoon/reference/stdlib/2b/#reel "Right fold (list)") [`++roll`](https://urbit.org/docs/hoon/reference/stdlib/2b/#roll "Left fold (list)") [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b/#scag "Prefix (produce front of list)") [`++skid`](https://urbit.org/docs/hoon/reference/stdlib/2b/#skid "Separate list into two lists from slammed elments") [`++skim`](https://urbit.org/docs/hoon/reference/stdlib/2b/#skim "Produce list of elements from boolean gate") [`++skip`](https://urbit.org/docs/hoon/reference/stdlib/2b/#skip "Produce list of elements failing boolean gate") [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b/#slag "Produce all elements from index in list") [`++snag`](https://urbit.org/docs/hoon/reference/stdlib/2b/#snag "Produce element at specific index (list)") [`++snip`](https://urbit.org/docs/hoon/reference/stdlib/2b/#snip "Drop tail off list") [`++snoc`](https://urbit.org/docs/hoon/reference/stdlib/2b/#snoc "Append noun to list") [`++sort`](https://urbit.org/docs/hoon/reference/stdlib/2b/#sort "Quicksort (list)") [`++spin`](https://urbit.org/docs/hoon/reference/stdlib/2b/#spin "Gate to list (with state)") [`++spun`](https://urbit.org/docs/hoon/reference/stdlib/2b/#spun "Gate to list (with state)") [`++swag`](https://urbit.org/docs/hoon/reference/stdlib/2b/#swag "Infix (list)") [`++turn`](https://urbit.org/docs/hoon/reference/stdlib/2b/#turn "Gate to list") [`++weld`](https://urbit.org/docs/hoon/reference/stdlib/2b/#weld "Concatenate two lists") [`++welp`](https://urbit.org/docs/hoon/reference/stdlib/2b/#welp "Perfect concatenate (lists)") [`++zing`](https://urbit.org/docs/hoon/reference/stdlib/2b/#zing "Turn lists into single list by promoting elements from sublists")
+-   [2g: unsigned powers](https://urbit.org/docs/hoon/reference/stdlib#2g-unsigned-powers)
+  -   [`++pow`](https://urbit.org/docs/hoon/reference/stdlib/2g/#pow "Computes a to the power of b") [`++sqt`](https://urbit.org/docs/hoon/reference/stdlib/2g/#sqt "Compute square root with remainder")
+-   [2h: set logic](https://urbit.org/docs/hoon/reference/stdlib#2h-set-logic)
+  -   [`++in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#in) [`++all:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#allin "Logical AND (set and wet gate)") [`++any:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#anyin "Logical OR (set and gate)") [`++apt:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#aptin "Check correctness (set)") [`++bif:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#bifin "Bifurcate set") [`++del:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#delin "Delete (set)") [`++dif:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#difin "Difference (set)") [`++dig:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#digin "Address of a in set") [`++gas:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#gasin "Concatenate (set)") [`++has:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#hasin "Key existence check (set)") [`++int:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#intin "Intersection (set)") [`++put:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#putin "Put b in a (set)") [`++rep:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#repin "Accumulate elements (set)") [`++run:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#runin "Apply gate to set") [`++tap:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#tapin "Flatten set into list") [`++uni:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#uniin "Union (sets)") [`++wyt:in`](https://urbit.org/docs/hoon/reference/stdlib/2h/#wytin "Produce number of elements in set")
+-   [2i: map logic](https://urbit.org/docs/hoon/reference/stdlib#2i-map-logic)
+  -   [`++by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#by "Map operations") [`++all:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#allby "Logical AND (map and wet gate)") [`++any:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#anyby "Logical OR (map and wet gate)") [`++apt:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#aptby "Check correctness (map)") [`++bif:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#bifby "Bifurcate map") [`++del:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#delby "Delete (map)") [`++dif:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#difby "Difference between maps") [`++dig:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#digby "Address of key (map)") [`++gas:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#gasby "Concatenate (map)") [`++get:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#getby "Grab unit value") [`++got:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#gotby "Assert for value (map)") [`++has:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#hasby "Key existence check (map)") [`++int:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#intby "Intersection (map)") [`++jab:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#jabby "Transform value (map)") [`++key:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#keyby "Set of keys") [`++mar:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#marby "Add with validation (map)") [`++put:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#putby "Add keyvalue pair (map)") [`++rep:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#repby "Reduce to product (map)") [`++rib:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#ribby "Transform + product (map)") [`++run:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#runby "Transform values (map)") [`++rut:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#rutby "Transform nodes (map)") [`++tap:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#tapby "Listify pairs") [`++uni:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#uniby "Union, merge (map)") [`++uno:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#unoby "General union (map)") [`++urn:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#urnby "Turn (with key) (map)") [`++wyt:by`](https://urbit.org/docs/hoon/reference/stdlib/2i/#wytby "Produce depth of tree map")
+-   [2j: jar and jug logic](https://urbit.org/docs/hoon/reference/stdlib#2j-jar-and-jug-logic)
+  -   [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j/#ja "Jar engine") [`++add:ja`](https://urbit.org/docs/hoon/reference/stdlib/2j/#addja "Prepend to list") [`++get:ja`](https://urbit.org/docs/hoon/reference/stdlib/2j/#getja "Grab value by key")
+  -   [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#ju "Jug operations") [`++del:ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#delju "Delete (jug)") [`++gas:ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#gasju "Concatenate (jug)") [`++get:ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#getju "Retrieve set") [`++has:ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#hasju "Check contents (jug)") [`++put:ju`](https://urbit.org/docs/hoon/reference/stdlib/2j/#putju "Add keyset pair (jar)")
+-   [2l: container from container](https://urbit.org/docs/hoon/reference/stdlib#2l-container-from-container)
+  -   [`++malt`](https://urbit.org/docs/hoon/reference/stdlib/2l/#malt "Map from list") [`++molt`](https://urbit.org/docs/hoon/reference/stdlib/2l/#molt "Map from pair list") [`++silt`](https://urbit.org/docs/hoon/reference/stdlib/2l/#silt "Produce set from list")
+-   [2n: functional hacks](https://urbit.org/docs/hoon/reference/stdlib#2n-functional-hacks)
+  -   [`++aftr`](https://urbit.org/docs/hoon/reference/stdlib/2n/#aftr "Pair after") [`++cork`](https://urbit.org/docs/hoon/reference/stdlib/2n/#cork "Compose forward") [`++corl`](https://urbit.org/docs/hoon/reference/stdlib/2n/#corl "Compose backward") [`++curr`](https://urbit.org/docs/hoon/reference/stdlib/2n/#curr "Rightcurry a gate") [`++cury`](https://urbit.org/docs/hoon/reference/stdlib/2n/#cury "Curry left a gate") [`++fore`](https://urbit.org/docs/hoon/reference/stdlib/2n/#fore "Pair before") [`++head`](https://urbit.org/docs/hoon/reference/stdlib/2n/#head "Get head of cell") [`++same`](https://urbit.org/docs/hoon/reference/stdlib/2n/#same "Identity (produces same value)") [`++succ`](https://urbit.org/docs/hoon/reference/stdlib/2n/#succ "Successor") [`++tail`](https://urbit.org/docs/hoon/reference/stdlib/2n/#tail "Get tail of cell") [`++test`](https://urbit.org/docs/hoon/reference/stdlib/2n/#test "Test for equality") [`++lead`](https://urbit.org/docs/hoon/reference/stdlib/2n/#lead "Put head") [`++late`](https://urbit.org/docs/hoon/reference/stdlib/2n/#late "Put tail")
+-   [2p: serialization](https://urbit.org/docs/hoon/reference/stdlib#2p-serialization)
+  -   [`++cue`](https://urbit.org/docs/hoon/reference/stdlib/2p/#cue "Unpack atom to noun") [`++jam`](https://urbit.org/docs/hoon/reference/stdlib/2p/#jam "Pack noun to atom") [`++mat`](https://urbit.org/docs/hoon/reference/stdlib/2p/#mat "Lengthencode") [`++rub`](https://urbit.org/docs/hoon/reference/stdlib/2p/#rub "Lengthdecode")
+-   [2q: molds and mold builders](https://urbit.org/docs/hoon/reference/stdlib#2q-molds-and-mold-builders)
+  -   [`+$axis`](https://urbit.org/docs/hoon/reference/stdlib/2q/#axis "Tree address") [`+$bean`](https://urbit.org/docs/hoon/reference/stdlib/2q/#bean "Boolean") [`+$char`](https://urbit.org/docs/hoon/reference/stdlib/2q/#char "Character") [`+$cord`](https://urbit.org/docs/hoon/reference/stdlib/2q/#cord "UTF8 text") [`+$byts`](https://urbit.org/docs/hoon/reference/stdlib/2q/#byts "bytes, LSB first") [`+$date`](https://urbit.org/docs/hoon/reference/stdlib/2q/#date "Parsed date") [`+$flag`](https://urbit.org/docs/hoon/reference/stdlib/2q/#flag "Boolean (flag)") [`+$knot`](https://urbit.org/docs/hoon/reference/stdlib/2q/#knot "Atom type of ASCII characters") [`+$noun`](https://urbit.org/docs/hoon/reference/stdlib/2q/#noun "Any noun") [`+$path`](https://urbit.org/docs/hoon/reference/stdlib/2q/#path "Like unix path") [`+$stud`](https://urbit.org/docs/hoon/reference/stdlib/2q/#stud "Standard name") [`+$tang`](https://urbit.org/docs/hoon/reference/stdlib/2q/#tang "Bottom-first error") [`+$tank`](https://urbit.org/docs/hoon/reference/stdlib/2q/#tank "Formatted print tree") [`+$tape`](https://urbit.org/docs/hoon/reference/stdlib/2q/#tape "List of characters") [`+$tour`](https://urbit.org/docs/hoon/reference/stdlib/2q/#tour "UTF-32 clusters") [`+$tarp`](https://urbit.org/docs/hoon/reference/stdlib/2q/#tarp "Parsed time") [`+$term`](https://urbit.org/docs/hoon/reference/stdlib/2q/#term "Hoon constant") [`+$wain`](https://urbit.org/docs/hoon/reference/stdlib/2q/#wain "List of cords") [`+$wall`](https://urbit.org/docs/hoon/reference/stdlib/2q/#wall "List of list of characters")
+-   [3b: floating point](https://urbit.org/docs/hoon/reference/stdlib#3b-floating-point)
+  -   [`++rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#rs) [`++add:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#addrs "Add (singleprecision float)") [`++bit:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#bitrs "fn to singleprecision float") [`++div:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#divrs "Divide (singleprecision float)") [`++drg:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#drgrs "@rs to decimal float") [`++equ:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#equrs "Equals (singleprecision float)") [`++exp:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#exprs "Exponent (@rs)") [`++fma:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#fmars "Fused multiplyadd (singleprecision float)") [`++grd:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#grdrs "Decimal float to @rs") [`++gte:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#gters "Greater than / equal (singleprecision float)") [`++gth:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#gthrs "Greater than (singleprecision float)") [`++lte:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#lters "Less than / equal (singleprecision float)") [`++lth:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#lthrs "Less than (singleprecision float)") [`++ma:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#mars "Initialize ff (rs core)") [`++mul:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#mulrs "Multiply (singleprecision float)") [`++san:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#sanrs "Signed integer to @rs") [`++sea:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#sears "Convert from singleprecision float to fn") [`++sig:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#sigrs "Produce sign of @rs") [`++sqt:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#sqtrs "Produce square root of singleprecision float") [`++sub:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#subrs "Subtract from singleprecision float") [`++sun:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#sunrs "Unsigned integer to singleprecision float") [`++toi:rs`](https://urbit.org/docs/hoon/reference/stdlib/3b/#toirs "Round singleprecision float to nearest signed integer")
+-   [3c: urbit time](https://urbit.org/docs/hoon/reference/stdlib#3c-urbit-time)
+  -   [`++yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yo "Time constants core") [`++cet:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#cetyo "Days in a century") [`++day:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#dayyo "Seconds in day") [`++era:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#erayo "Leapyear period") [`++hor:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#horyo "Seconds in hour") [`++jes:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#jesyo "Maximum 64bit timestamp") [`++mit:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#mityo "Seconds in minute") [`++moh:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#mohyo "Days in month") [`++moy:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#moyyo "Days in months of leapyear") [`++qad:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#qadyo "Seconds in 4 years") [`++yer:yo`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yeryo "Seconds in year")
+  -   [`++yall`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yall "Time since beginning of time") [`++yawn`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yawn "Days since beginning of time") [`++year`](https://urbit.org/docs/hoon/reference/stdlib/3c/#year "Date to @d") [`++yell`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yell "Tarp from atomic date") [`++yelp`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yelp "Determine if leapweek") [`++yore`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yore "Date from atomic date") [`++yule`](https://urbit.org/docs/hoon/reference/stdlib/3c/#yule "Daily time to time atom")
+-   [4a: exotic bases](https://urbit.org/docs/hoon/reference/stdlib#4a-exotic-bases)
+  -   Urbit phonetic base (`@p`):  [`++po`](https://urbit.org/docs/hoon/reference/stdlib/4a/#po "Phonetic base") [`++ind:po`](https://urbit.org/docs/hoon/reference/stdlib/4a/#indpo "Parse suffix") [`++ins:po`](https://urbit.org/docs/hoon/reference/stdlib/4a/#inspo "Parse prefix") [`++tod:po`](https://urbit.org/docs/hoon/reference/stdlib/4a/#todpo "Fetch suffix") [`++tos:po`](https://urbit.org/docs/hoon/reference/stdlib/4a/#tospo "Fetch prefix")
+  -   Bitcoin base-58:  [`++fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#fa "base58check") [`++cha:fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#chafa "Decode base58check character") [`++tok:fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#tokfa "Compute base58check checksum") [`++pad:fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#padfa "base58check padding bytes") [`++enc:fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#encfa "Encode base58check") [`++den:fa`](https://urbit.org/docs/hoon/reference/stdlib/4a/#denfa "Decode base58check")
+-   [4b: text processing](https://urbit.org/docs/hoon/reference/stdlib#4b-text-processing)
+  -   [`++cass`](https://urbit.org/docs/hoon/reference/stdlib/4b/#cass "To lowercase") [`++crip`](https://urbit.org/docs/hoon/reference/stdlib/4b/#crip "Tape to cord") [`++cuss`](https://urbit.org/docs/hoon/reference/stdlib/4b/#cuss "To uppercase") [`++mesc`](https://urbit.org/docs/hoon/reference/stdlib/4b/#mesc "Escape special characters") [`++runt`](https://urbit.org/docs/hoon/reference/stdlib/4b/#runt "Prepend n times") [`++sand`](https://urbit.org/docs/hoon/reference/stdlib/4b/#sand "Softcast by aura") [`++sane`](https://urbit.org/docs/hoon/reference/stdlib/4b/#sane "Check aura validity") [`++teff`](https://urbit.org/docs/hoon/reference/stdlib/4b/#teff "UTF8 length") [`++trim`](https://urbit.org/docs/hoon/reference/stdlib/4b/#trim "Tape split") [`++trip`](https://urbit.org/docs/hoon/reference/stdlib/4b/#trip "Cord to tape") [`++tuba`](https://urbit.org/docs/hoon/reference/stdlib/4b/#tuba "UTF8 to UTF32 tape") [`++tufa`](https://urbit.org/docs/hoon/reference/stdlib/4b/#tufa "UTF32 to UTF8 tape") [`++tuft`](https://urbit.org/docs/hoon/reference/stdlib/4b/#tuft "UTF32 to UTF8 text") [`++taft`](https://urbit.org/docs/hoon/reference/stdlib/4b/#taft "UTF8 to UTF32 cord") [`++wack`](https://urbit.org/docs/hoon/reference/stdlib/4b/#wack "Knot escape") [`++wick`](https://urbit.org/docs/hoon/reference/stdlib/4b/#wick "Knot unescape") [`++woad`](https://urbit.org/docs/hoon/reference/stdlib/4b/#woad "Unescape cord") [`++wood`](https://urbit.org/docs/hoon/reference/stdlib/4b/#wood "Escape cord")
+-   [4m: parsing (formatting functions)](https://urbit.org/docs/hoon/reference/stdlib#4m-parsing-formatting-functions)
+  -   [`++scot`](https://urbit.org/docs/hoon/reference/stdlib/4m/#scot "Render dime as cord") [`++scow`](https://urbit.org/docs/hoon/reference/stdlib/4m/#scow "Render dime as tape") [`++slat`](https://urbit.org/docs/hoon/reference/stdlib/4m/#slat "Curried slaw") [`++slav`](https://urbit.org/docs/hoon/reference/stdlib/4m/#slav "Demand: parse cord with input aura") [`++slaw`](https://urbit.org/docs/hoon/reference/stdlib/4m/#slaw "Parse cord to input aura") [`++slay`](https://urbit.org/docs/hoon/reference/stdlib/4m/#slay "Parse cord to coin") [`++smyt`](https://urbit.org/docs/hoon/reference/stdlib/4m/#smyt "Render path as tank") [`++spat`](https://urbit.org/docs/hoon/reference/stdlib/4m/#spat "Render path as cord") [`++spud`](https://urbit.org/docs/hoon/reference/stdlib/4m/#spud "Render path as tape") [`++stab`](https://urbit.org/docs/hoon/reference/stdlib/4m/#stab "Parse cord to path") [`++stap`](https://urbit.org/docs/hoon/reference/stdlib/4m/#stap "Path parser")
 
-    ```hoon
-    > =/  list=(list @)  ~[1 2 3]
-     i.list
-    -find.i.list
-    find-fork
-    dojo: hoon expression failed
-    ```
+Let's examine some specific implementations:
 
-    `?~` wutsig solves the problem for this case:
+How do we convert text into all lower-case?
+- [`++cass`](https://urbit.org/docs/hoon/reference/stdlib/4b#cass)
 
-    ```hoon
-    > =/  list=(list @)  ~[1 2 3]
-     ?~  list  !!
-     i.list
-    1
-    ```
-    
-    In general, if you see an error like `find.fork`, it means that the type system is confused by your use of a too general of a type for a particular case.  Use the assertion runes to correct its assumption.
+How do we turn a `cord` into a `tape`?
+- [`++trip`](https://urbit.org/docs/hoon/reference/stdlib/4b#trip)
 
-##  Type Arms as Mold Builders
+How can we make a list of a null-terminated tuple?
+- [`++le:nl`](https://urbit.org/docs/hoon/reference/stdlib/2m#lenl)
 
-We previously commented on [`+$` lusbuc](https://urbit.org/docs/hoon/reference/rune/lus#-lusbuc) as a type builder arm.  We are now better equipped to discuss what type builders or mold builders are doing and how they work.
+How can we evaluate Nock expressions?
+- [`++mink`](https://urbit.org/docs/hoon/reference/stdlib/4n#mink)
 
-In general, mold definitions take place in a subset of the Hoon parser called “structure Hoon”.  This is opposed to “value Hoon” which is the default everywhere else.
+(If you see a `|*` bartar rune in there, it's similar to a `|=` bartis, but what's called a _wet gate_.)
 
-For instance, consider this gate:
+### `zuse.hoon`
+
+When you open `zuse.hoon`, you'll see that it is composed with some data structures from `%lull`, but that by and large it consists of a core including arms organized into “engines”.
+
+Most of these are internal Arvo conventions, such as conversion between Unix-epoch times and Urbit-epoch times.  The main one you are likely to work with is the `++html` core, which contains important tools for working with web-based data, such as [MIME types](https://en.wikipedia.org/wiki/Media_type) and [JSON strings](https://en.wikipedia.org/wiki/JSON).
+
+To convert a `@ux` hexadecimal value to a `cord`:
 
 ```hoon
-> =highgate |=(a=[@ud @ud] ?:((gth -.a +.a) -.a +.a))
+> (en:base16:mimes:html [3 0x12.3456])  
+'123456'
 ```
 
-One cannot use `:-` buccol in a sample definition even if it seems to say the same thing:
+To convert a `cord` to a `@ux` hexadecimal value:
 
 ```hoon
-> =highgate-fails |=(a=:-(@ud @ud) ?:((gth -.a +.a) -.a +.a))
+> `@ux`q.+>:(de:base16:mimes:html '123456')
+0x12.3456
 ```
 
-even if one is accustomed to the `[]` notation for the cell.
-
-What's going on here?  In structure mode, the cell is actually defined by [`$:` buccol](https://urbit.org/docs/hoon/reference/rune/buc#-buccol) as a `spec` of a `cell`, rather than a `cell` itself.  (You can use `!,` zapcom to verify this for yourself.)
-
-`+$` lusbuc only permits `$` buc mold builders and basic structure expressions (like `@`).  Sometimes we rename a value for clarity, such as working with a particular class of values:
+There are tools for working with Bitcoin wallet base-58 values, JSON strings, XML strings, and more.
 
 ```hoon
-|%
-+$  url  @t
---
+> (en-urlt:html "https://hello.me")
+"https%3A%2F%2Fhello.me"
 ```
 
-(There's no formal restriction on the value, but subsequent code may be made much more legible by such definitions.)
+What seems to be missing from the standard library?
+
+
+##  Conditional Expressions
+
+Let's wrap up the `?` wut runes, many of which you have already seen:
+
+Conditional decision-making:
+
+- [`?:` wutcol](https://urbit.org/docs/hoon/reference/rune/wut#-wutcol) lets you branch between an expression-if-true and an expression-if-false.
+- [`?.` wutdot](https://urbit.org/docs/hoon/reference/rune/wut#-wutdot) inverts the order of `?:`.  Good Hoon style prescribes that the heavier branch of a logical expression should be lower in the file.
+- [`?-` wuthep](https://urbit.org/docs/hoon/reference/rune/wut#-wuthep) lets you choose between several possibilities, as with a type union.  Every case must be handled and no case can be unreachable.
+- [`?+` wutlus](https://urbit.org/docs/hoon/reference/rune/wut#-wutlus) is similar to `?-` but allows a default value in case no branch is taken.
+
+Assertions:
+
+- [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion (`%.y%` or crash).
+- [`?<` wutgal](https://urbit.org/docs/hoon/reference/rune/wut#-wutgal) is a negative assertion (`%.n` or crash).
+- [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutket) asserts non-null.
+- [`?^` wutket](https://urbit.org/docs/hoon/reference/rune/wut#-wutket) asserts cell.
+- [`?@` wutpat](https://urbit.org/docs/hoon/reference/rune/wut#-wutpat) asserts atom.
+
+Logical operators:
+
+- [`?&` wutpam](https://urbit.org/docs/hoon/reference/rune/wut#-wutpam), irregularly `&()`, is a logical `AND` over loobean values.
+- [`?|` wutbar](https://urbit.org/docs/hoon/reference/rune/wut#-wutbar), irregularly `|()`, is a logical `OR` over loobean values.
+- [`?!` wutzap](https://urbit.org/docs/hoon/reference/rune/wut#-wutzap), irregularly `!`, is a logical `NOT`.
+
+Pattern matching:
+
+- [`?=` wuttis](https://urbit.org/docs/hoon/reference/rune/wut#-wuttis) tests for a pattern match in type, someday to be superseded or supplemented by a planned `?#` wuthax rune.
+
+
+##  Functional Programming
+
+Given a gate, you can manipulate it to accept a different number of values than its sample formally requires, or otherwise modify its behavior.
+
+### Changing Arity
+
+If a gate accepts only two values in its sample, for instance, you can chain together multiple calls automatically using [`;:` miccol](https://urbit.org/docs/hoon/reference/rune/mic#-miccol):
 
 ```hoon
-|%
-+$  rank  ?(%galaxy %star %planet)
---
+> (add 3 (add 4 5))
+12
+> :(add 3 4 5)
+12
+> (mul 3 (mul 4 5))
+60
+> :(mul 3 4 5)
+60
 ```
 
-In essence, a type builder arm is producing a mold resolvable within a given subject.  It's resolved as a gate (because a mold is a gate) and applied to the sample.
+This is called changing the _arity_ of the gate.  (Does this work on `++mul:rs`?)
 
-As you'll see in later more complicated applications, long names with complicated limbs are often aliased this way as well:
+### Binding the Sample
+
+If you have a gate which accepts multiple values in the sample, you can fix one of these.  To fix the head of the sample (the first argument), use [`++cury`](https://urbit.org/docs/hoon/reference/stdlib/2n#cury); to bind the tail, use [`++curr`](https://urbit.org/docs/hoon/reference/stdlib/2n#curr).
+
+Consider calculating _a x² + b x + c_, a situation we earlier resolved using a door.  We can resolve the situation differently using currying:
 
 ```hoon
-|%
-+$  card  card:agent:gall
---
+> =full |=([x=@ud a=@ud b=@ud c=@ud] (add (add (mul (mul x x) a) (mul x b)) c))
+> (full 5 4 3 2)
+117
+> =one (curr full [4 3 2])  
+> (one 5)  
+117
 ```
 
-##  Better Data Structures through Doors
-
-Hoon is statically typed, which means (among other things) that auras are subject to strict nesting rules, molds are crash-only, and the whole thing is rather cantankerous about matching types.
-
-However, since gate-building arms are possible, Hoon developers frequently employ them as templates to build type-appropriate cores, including gates.
-
-Let's briefly review our two main tools for evaluating Hoon with `%` cen runes:
-
-- [`%-` cenhep](https://urbit.org/docs/hoon/reference/rune/cen#cenhep) accepts two children, a wing which resolves to a gate; and a sample which is provided at `+6` to the gate.  It yields the result of the Hoon expression, which may be a simple value, a data structure, or a core.
-- [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#censig) accepts three children, a wing which resolves to an arm in a door; the aforesaid door; and a sample which is provided at `+6` to the door.  It conventionally yields a gate which can then be applied to a sample.
-
-Now it turns out that `%-` cenhep is actually a special case of `%~` censig:  it resolves to `%~($ a b)`, evaluating the `$` buc arm of a gate core.  (A door really is just a more general case of a gate.  Think carefully about this.)
-
-### `map`
-
-In general terms, a map is a pattern from a key to a value.  You can think of a dictionary, or an index, or a data table.  Essentially it scans for a particular key, then returns the data associated with that key (which may be any noun).
-
-| Key         | Value      |
-| ----------- | ---------- |
-| 'Mazda'     | 'RX-8'     |
-| 'Dodge'     | 'Viper'    |
-| 'Ford'      | 'Mustang'  |
-| 'Chevrolet' | 'Chevelle' |
-| 'Porsche'   | 'Boxster'  |
-| 'Bugatti'   | 'Type 22'  |
-
-While `map` is the mold or type of the value, the door which affords `map`-related functionality is named `++by`.  (This felicitously affords us a way to read `map` operations in an English-friendly phrasing.)
-
-In Urbit, all values are static and never change.  (This is why we “overwrite” or replace the values in a limb to change it with `%=` centis.)  This means that when we build a `map`, we often rather awkwardly replace it with its modified value explicitly.
-
-We'll build a color `map`, from a `@tas` of a [color's name](https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors) to its HTML hexadecimal representation as a `@ux` hex value.
-
-We can produce a `map` from a `list` of key-value cells using the [`++malt`](https://urbit.org/docs/hoon/reference/stdlib/2l#malt) gate:
+One can also [`++cork`](https://urbit.org/docs/hoon/reference/stdlib/2n#cork) a gate, or arrange it such that it applies to the result of the next gate.  This pairs well with `;:` miccol.  (There is also [`++corl`](https://urbit.org/docs/hoon/reference/stdlib/2n#corl).)  This example converts a value to `@ux` then decrements it:
 
 ```hoon
-> =colors (malt ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
+> ((cork dec @ux) 20)  
+0x13
 ```
 
-We could designate the mold of this as a `(map @tas @ux)`, altho examine the type spear and see why this isn't completely correct.  In fact, due to the way `@tas` `term`s work, it's more convenient to explicitly supertype the key mold when defining the `map` in the first place:
+### Reeling A Jig
+
+[`++roll`](https://urbit.org/docs/hoon/reference/stdlib/2b#roll) and [`++reel`](https://urbit.org/docs/hoon/reference/stdlib/2b#reel) are used to left-fold and right-fold a list, respectively.  To fold a list is similar to [`++turn`](https://urbit.org/docs/hoon/reference/stdlib/2b#turn), except that instead of yielding a `list` with the values having had each applied, `++roll` and `++reel` produce an accumulated value.
 
 ```hoon
-> =colors `(map @tas @ux)`(my ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
+> (roll `(list @)`[1 2 3 4 5 ~] add)
+q=15
+> (reel `(list @)`[1 2 3 4 5 ~] mul)
+120
 ```
-
-To insert one key-value pair at a time, we use `put`.  We need to either pin it into the subject for Dojo or modify it with `=/` tisfas.
-
-```hoon
-> =colors (~(put by colors) [%orange 0xff.8833])
-> =colors (~(put by colors) [%violet 0x83.59a3])
-> =colors (~(put by colors) [%black 0x0])
-```
-
-Note the pattern here:  there is a `++put` arm of `++by` which builds a gate to modify `colors` by inserting a value.
-
-What happens if we try to add something that doesn't match the type?
-
-```hoon
-> =colors (~(put by colors) [%cerulean '#02A4D3'])
-```
-
-We'll see a `mull-grow`, a `mull-nice`, and a `nest-fail`.  Essentially these are all flavors of mold-matching errors.
-
-(As an aside, `++put:by` is also how you'd replace a key's value.)
-
-The point of a `map` is to make it easy to retrieve data values given their appropriate key.  Use `++get:by`:
-
-```hoon
-> (~(get by colors) %orange)
-[~ 0xff.8833]
-```
-
-What is that cell?  Wasn't the value stored as `0xff.8833`?  Well, one fundamental problem that a `map` needs to solve is to allow us to distinguish an _empty_ result (or failure to locate a value) from a _zero_ result (or an answer that's actually zero).  To this end, the `unit` was introduced, a type union of a `~` (for no result) and `[~ item]` (for when a result exists).
-
-- What does `[~ ~]` mean when returned from a `map`?
-
-`unit`s are common enough that they have their own syntax and set of operational functions.  We'll look at them more in a bit.
-
-```hoon
-> (~(get by colors) %brown)
-~
-```
-
-([`++got:by`](https://urbit.org/docs/hoon/reference/stdlib/2i#gotby) returns the value without the `unit` wrapper, but crashes on failure to locate.  I recommend just using `++get` and extracting the tail of the resulting cell after confirming it isn't null with `?~` wutsig.  See also [`++gut:by`](https://urbit.org/docs/hoon/reference/stdlib/2i#gutby) which allows a default in case of failure to locate.)
-
-You can check whether a key is present using `++has:by`:
-
-```hoon
-> (~(has by colors) %teal)
-%.n
-> (~(has by colors) %green)
-%.y
-```
-
-You can get a list of all keys with `++key:by`:
-
-```hoon
-> ~(key by colors)
-{%black %red %blue %violet %green %yellow %orange}
-```
-
-You can apply a gate to each value, rather like `++turn` in Lesson 4, using `++run:by`.  For instance, these gates will break the color hexadecimal value into red, green, and blue components:
-
-```hoon
-> =red |=(a=@ux ^-(@ux (cut 2 [4 2] a)))
-> =green |=(a=@ux ^-(@ux (cut 2 [2 2] a)))
-> =blue |=(a=@ux ^-(@ux (cut 2 [0 2] a)))
-> (~(run by colors) blue)
-{ [p=%black q=0x0]  
- [p=%red q=0x3f]  
- [p=%blue q=0xff]  
- [p=%violet q=0xa3]  
- [p=%green q=0x38]  
- [p=%yellow q=0x70]  
- [p=%orange q=0x33]  
-}
-```
-
-### `set`
-
-A `set` is rather like a `list` except that each entry can only be represented once.  As with a `map`, a `set` is typically associated with a particular type, such as `(set @ud)` for a collection of decimal values.  (`set`s also don't have an order, so they're basically a bag of unique values.)
-
-`set` operations are provided by `++in`.  Most names are similar to `map`/`++by` operations when applicable.
-
-[`++silt`](https://urbit.org/docs/hoon/reference/stdlib/2l#silt) produces a `set` from a `list`:
-
-```hoon
-> =primes (silt ~[2 3 5 7 11 13])
-```
-
-`++put:in` adds a value to a `set` (and null-ops when the value is already present):
-
-```hoon
-> =primes (~(put in primes) 17)
-> =primes (~(put in primes) 13)
-```
-
-`++del:in` removes a value from a `set`:
-
-```hoon
-> =primes (~(put in primes) 18)
-> =primes (~(del in primes) 18)
-```
-
-`++has:in` checks for existence:
-
-```hoon
-> (~(has in primes) 15)
-%.n
-> (~(has in primes) 17)
-%.y
-```
-
-`++tap:in` yields a `list` of the values:
-
-```hoon
-> ~(tap in primes)  
-~[3 2 7 5 11 13 17]  
-> (sort ~(tap in primes) lth)  
-~[2 3 5 7 11 13 17]
-```
-
-`++run:in` applies a function across all values:
-
-```hoon
-> (~(run in primes) dec)  
-{10 6 12 1 2 16 4}
-```
-
-### `unit` Redux (and `vase`)
-
-We encountered the `unit` as a tool for distinguishing null results from actual zeroes:  “using a `unit` allows you to specify something that may not be there.”
-
-You can build a `unit` using the tic special notation or [`++some`](https://urbit.org/docs/hoon/reference/stdlib/2a#some):
-
-```
-> `%mars
-[~ %mars]
-> (some %mars)
-[~ u=%mars]
-```
-
-While `++got:by` is one way to get a value back without wrapping it in a `unit`, it's better practice to use the [`unit` logic](https://urbit.org/docs/hoon/reference/stdlib/2a) gates to manipulate gates to work correctly with `unit`s.
-
-For one thing, use [`++need`](https://urbit.org/docs/hoon/reference/stdlib/2a#need) to unwrap a `unit`, or crash if the `unit` is `~` null.
-
-```hoon
-> =colors `(map @tas @ux)`(my ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
-> (need (~(get by colors) %yellow))
-0xfb.e870
-> (need (~(get by colors) %teal))  
-dojo: hoon expression failed
-```
-
-Rather than unwrap a `unit`, one can modify gates to work with `unit`s directly even if they're not natively set up that way.  For instance, one cannot decrement a `unit` because `++dec` doesn't accept a `unit`.  [`++bind`](https://urbit.org/docs/hoon/reference/stdlib/2a#bind) can bind a non-`unit` function
-
-```hoon
-> (bind ((unit @ud) [~ 2]) dec)  
-[~ 1]
-> (bind (~(get by colors) %orange) red)  
-[~ 0xff]
-```
-
-(There are several others tools listed [on that page](https://urbit.org/docs/hoon/reference/stdlib/2a) which may be potentially useful to you.)
-
-A `+$vase` is a pair of type and value, such as that returned by `!>` zapgar.  A `vase` is useful when transmitting data in a way that may lose its type information.
-
-### `jar` and `jug`
-
-`map`s and `set`s are frequently used in the standard library and in the extended ecosystem (such as in `graph-store`).  There are a couple of common patterns which recur often enough that they have their own names:
-
-- [`++jar`](https://urbit.org/docs/hoon/reference/stdlib/2o#jar) is a mold for a `map` of `list`s.
-
-- [`++jug`](https://urbit.org/docs/hoon/reference/stdlib/2o#jug) is a mold for a `map` of `set`s.
-
-(There's an example in the slides of a `jar`.)
-
-These are supported by the [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j#ja) core and the [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j#ju) core.
-
-
-##  Example:  Caesar Cipher
-
-The Caesar cipher is a shift cipher ([that was indeed used anciently](https://en.wikipedia.org/wiki/Caesar_cipher)) wherein each letter in a message is encrypted by replacing it with one shifted some number of positions down the alphabet.
-
-Save this as `caesar.hoon` in `/gen`:
-
-```hoon
-!:
-|=  [msg=tape steps=@ud]
-=<
-=.  msg  (cass msg)
-:-  (shift msg steps)
-    (unshift msg steps)
-::
-|%
-++  alpha  "abcdefghijklmnopqrstuvwxyz"
-::  Shift a message to the right.
-::
-++  shift
-  |=  [message=tape steps=@ud]
-  ^-  tape
-  (operate message (encoder steps))
-::  Shift a message to the left.
-::
-++  unshift
-  |=  [message=tape steps=@ud]
-  ^-  tape
-  (operate message (decoder steps))
-::  Rotate forwards into encryption.
-::
-++  encoder
-  |=  [steps=@ud]
-  ^-  (map @t @t)
-  =/  value-tape=tape  (rotation alpha steps)
-  (space-adder alpha value-tape)
-::  Rotate backwards out of encryption.
-::
-++  decoder
-  |=  [steps=@ud]
-  ^-  (map @t @t)
-  =/  value-tape=tape  (rotation alpha steps)
-  (space-adder value-tape alpha)
-::  Apply the map of decrypted->encrypted letters to the message.
-::
-++  operate
-  |=  [message=tape shift-map=(map @t @t)]
-  ^-  tape
-  %+  turn  message
-  |=  a=@t
-  (~(got by shift-map) a)
-::  Handle spaces in the message.
-::
-++  space-adder
-  |=  [key-position=tape value-result=tape]
-  ^-  (map @t @t)
-  (~(put by (map-maker key-position value-result)) ' ' ' ')
-::  Produce a map from each letter to its encrypted value.
-::
-++  map-maker
-  |=  [key-position=tape value-result=tape]
-  ^-  (map @t @t)
-  =|  chart=(map @t @t)
-  ?.  =((lent key-position) (lent value-result))
-  ~|  %uneven-lengths  !!
-  |-
-  ?:  |(?=(~ key-position) ?=(~ value-result))
-  chart
-  $(chart (~(put by chart) i.key-position i.value-result), key-position t.key-position, value-result t.value-result)
-::  Cycle an alphabet around, e.g. from
-::  'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'BCDEFGHIJKLMNOPQRSTUVWXYZA'
-::
-++  rotation
-  |=  [my-alphabet=tape my-steps=@ud]
-  =/  length=@ud  (lent my-alphabet)
-  =+  (trim (mod my-steps length) my-alphabet)
-  (weld q p)
---
-```
-
-The commentary is dense, but I've added some remarks above which hopefully decompress it a bit for you.  The use of `++space-adder` clutters it a bit, and it would probably be cleaner to just work with an “expanded alphabet” including space and punctuation characters, or to manually modify the `map` to handle those directly.
-
-There are four runes in this which we haven't seen yet:
-
-- `=,` tiscom modifies a leg in the subject, similar to `=/` tisfas (Lesson 8)
-- `=|` tisbar introduces a named noun to the subject, like a `=/` tisfas that just has the bunt (Lesson 8)
-- `~|` sigbar is a “tracing printf”, which only outputs a message if the code crashes (Lesson 9)
-- `?|` wutbar in its irregular `|()` form, a logical `OR` operation (Lesson 7)
-
-We also didn't look at [`++trim`](https://urbit.org/docs/hoon/reference/stdlib/4b#trim), which splits the first set of characters off of a `tape` (similar to [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) except returning both sides back to you as a cell).
-
-- [“Caesar Cipher”](https://urbit.org/docs/hoon/hoon-school/caesar)

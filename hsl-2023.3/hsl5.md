@@ -1,573 +1,434 @@
 ---
-title: "Subject-Oriented Programming"
+title: "Molding Values, Using Doors"
 teaching: 45
 exercises: 15
 nodes:
-- "150"
-- "153"
-- "155"
+- "156"
+- "183"
 objectives:
-- "Build cores for deferred use and with custom samples."
-- "Identify the `$` buc arm in several structures and its role."
-- "Identify the structure of a door and relate it to a core."
-- "Pull an arm in a door."
-- "Identify the role of a desk in the Clay filesystem."
-- "Identify the components of a beak."
-- "Identify filesystem locations (including desks)."
-- "Identify the components of a path."
-runes:
-- "`!:`"
-- "`|^`"
-- "`|.`"
-- "`|:`"
-- "`|_`"
-- "`%~`"
-- "`$_`"
+- "Use assertions to enforce type constraints."  
+- "Identify a `lest` (as opposed to a list)."  
+- "Produce a type arm."  
+- "Identify units, sets, maps, and compound structures like jars and jugs."  
+- "Explain why units and vases are necessary."  
+- "Use helper arms and syntax:  `` ` ``, `biff`, `some`, etc."
+runes:  
+- "`?>`"  
+- "`?<`"  
+- "`?~`"  
+- "`+$`"
 keypoints:
-- "Core patterns can be used to build many kinds of customized gates."
-- "The door is a common configuration for an Urbit core."
-- "The arms of doors are gate-builders."
-- "A desk in Clay organizes collections of code and data resources."
-- "A path in Clay describes a unique access path to a resource."
-- "The beak describes the current triplet of ship, desk, and timestamp for the filesystem."
+- "The Hoon type system requires you to be very explicit with the expected values."
+- "Maps and sets are tools for collecting and processing collections of data."
+- "Units allow one to distinguish a null result (failure) from a zero."
 readings:
-- "https://developers.urbit.org/guides/core/hoon-school/O-subject" (first section)
 - "https://developers.urbit.org/guides/core/hoon-school/K-doors"
+- "https://developers.urbit.org/guides/core/hoon-school/L-struct"
+- "https://developers.urbit.org/guides/core/hoon-school/M-typecheck"
 ---
 
-#   Subject-Oriented Programming
+#   Molding Values, Using Doors
 
-##  The Subject
+##  Satisfying Static Typing
 
-Before we talk about a single line of Hoon today, I want to talk about the subject-oriented programming paradigm.
+Hoon enforces its type system at compile time (build time).  This means that any code which makes assumptions about how values will be used is checked for mold compatibility when you `|commit` it or type it at the Dojo.  It also means that you've probably seen a fair number of problems with matching types.
 
-Classically, programming styles are categorized into:
+While we'll discuss general debugging strategies in more detail later, there are three basic things that tend to go wrong:
 
-1. Imperative:  focused on _control_ flow, recipe-like steps.
-2. Declarative:  focused on _data_ flow than control flow; think of database queries or regular expressions, if you've worked with them.
-3. Functional:  focused on composition of functions and expressions as a logical tree (subcategory of declarative programming).
-4. Object-Oriented:  focused on relationships between entities containing data and code that pass messages to each other to control what happens.
+1. Syntax error, general (just typing things out wrong, for instance a way Dojo would prevent)
+2. Syntax error, mismatched rune daughters (due to `ace`/`gap` or miscounting children)
+3. Type issues (`need`/`have`, notoriously)
 
-Sometimes these map to languages but you can basically do any of them in any language (if you're really willing to kick against the pricks sometimes).  The affordances and tools tend to facilitate one way over others though.
+This last case can be handled with a couple of expedients:
 
-Subject-oriented programming combines aspects of object-oriented programming and functional programming.  You can think of it as a functional language with strict scoping rules.  If I lost you there, that's fine, we'll come back to this point.
+- Frequent use of `^-` kethep/`^+` ketlus to make sure that types match at various points in the code.
 
-The _subject_ of any Hoon expression is basically the binary tree which spawned it.  In essence, subject-oriented programming is a way of fusing context, stack, and variable scope into one.  Subject-oriented programming means that this scope or limit of what you can see, kind of like a horizon, is all you really have to take into account.
+    This has two benefits:  it verifies your expectations about what values are being passed around, and it means that mismatches raise an error more closely to the source of the error.
 
-### Wing Resolution
+    (Since Hoon checks type at build time, this does not incur a computational cost when the program is running.)
 
-We've had to jump through some (small) hoops to make our values visible to subsequent expressions in the Dojo.  This is because the Dojo can _either_ manually pin a value into the subject (using `=name` syntax) or evaluate a full Hoon expression including values (using `=/` tisfas syntax).
+- Use of assertions to enforce type constraints.  Assertions are a form of `?` wut rune which check the structure of a value.  Ultimately they all reduce back to `?:` wutcol, but are very useful in this sugar form:
 
-We saw a little bit of wing resolution in Lesson 3:
+    - [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion, that a condition _must_ be true.
+    - [`?<` wutgal](https://urbit.org/docs/hoon/reference/rune/wut#-wutgal) is a negative assertion, that a condition _must_ be false.
+    - [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutsig) is a branch on null.
 
-```hoon
-> =data [a=[aa=[aaa=[1 2] bbb=[3 4]] bb=[5 6]] b=[7 8]]
+    For instance, some operations require a `lest`, a `list` guaranteed to be non-null (that is, `^-  (list)  ~` is excluded).
 
-> -:aaa.aa.a.data
-1
-```
+    ```hoon
+    > =/  list=(list @)  ~[1 2 3]
+     i.list
+    -find.i.list
+    find-fork
+    dojo: hoon expression failed
+    ```
 
-How does an expression like this actually resolve?  Hoon doesn't know whether a particular value is a face or an arm name until it conducts a search looking for name matches.  If it finds a face first, the value of the face is returned.  If it finds an arm first, the arm will be evaluated and the product returned.
+    `?~` wutsig solves the problem for this case:
 
-The names are breadcrumbs as a “wing” or limb search path.  (There is one critical difference between address-based search paths and name-based search paths:  address-based search paths always return the value as data, never as code.  Use name-based search paths if you need to evaluate it as an expression.)
+    ```hoon
+    > =/  list=(list @)  ~[1 2 3]
+     ?~  list  !!
+     i.list
+    1
+    ```
+    
+    In general, if you see an error like `find.fork`, it means that the type system is confused by your use of a too general of a type for a particular case.  Use the assertion runes to correct its assumption.
 
-> Urbit does not use the lambda calculus, an environment or symbol table, or linking. Because it pushes name resolution out of the fundamental interpreter and up into the language, it can play many more namespace juggling tricks.
+##  Type Arms as Mold Builders
 
-There is no restriction against using the same face name for multiple limbs of the subject. This is one way in which faces aren't like ordinary variables:
+We previously commented on [`+$` lusbuc](https://urbit.org/docs/hoon/reference/rune/lus#-lusbuc) as a type builder arm.  We are now better equipped to discuss what type builders or mold builders are doing and how they work.
 
-`^` skips the first _n_ matches in the subject.  What this means to you is that the _n_ “nearest” names are skipped first, so what `^` does is pull a name from an outer core.  (Naturally, you only use this when you know what you’re looking for in the subject.)  `^$` is one way of setting up a `%=` cenhep loop/recursion with two nested `|-` barket traps, for instance.
+In general, mold definitions take place in a subset of the Hoon parser called “structure Hoon”.  This is opposed to “value Hoon” which is the default everywhere else.
 
-```hoon
-> double:[double=123 c]
-123
-
-> ^double:[double=123 c]
-24
-
-> ^double:[double=123 double=456 c]
-456
-
-> ^^double:[double=123 double=456 c]
-24
-```
-
-- [Hoon School, “The Subject and Its Legs”](https://urbit.org/docs/hoon/hoon-school/the-subject-and-its-legs)
-
-> ## Improving Debugging
->
-> The [`!:` zapcol](https://urbit.org/docs/hoon/reference/rune/zap#-zapcol) rune turns on a stack trace, or table of data 
-> related to a crash, in the event that the daughter expression 
-> fails.  `!:` zapcol is frequently used at the top of a 
-> generator to help track and guide debugging.
-{: .callout}
-
-
-##  More Cores
-
-Cores store code (`battery`) and data (`payload`).  Although gates are a type of core, other cores can be used to build gates to carry out particular operations.  Since Hoon is very rigorous about type constraints and type checking, as you have been discovering to your chagrin in the homework, we will use gate-building cores to satisfy this rigor.  (In the last lesson, we saw the `list` and `sane` gate-building arms.)
-
-### Building Gates on Demand
-
-For instance, most of the time when we have called a gate, the gate has already existed:
+For instance, consider this gate:
 
 ```hoon
-> =inc |=(a=@ud (add 1 a))
-> (inc 10)
-11
+> =highgate |=(a=[@ud @ud] ?:((gth -.a +.a) -.a +.a))
 ```
 
-In this case, `inc` is a gate which already exists in the subject, and Hoon looks up the name in the current subject, then slots the payload into the battery arm `$` and evaluates the expression.
-
-We could also skip producing the gate ahead of time and build it on-demand right where we use it:
+One cannot use `:-` buccol in a sample definition even if it seems to say the same thing:
 
 ```hoon
-> (|=(a=@ud (add 1 a)) 123)
-124
-> (|=(a=@ud (mul 2 a)) 123)
-246
+> =highgate-fails |=(a=:-(@ud @ud) ?:((gth -.a +.a) -.a +.a))
 ```
 
-Although it rarely matters to us much, the standard library arms `++add`, `++mul`, etc. are more like the second:  they are gates built on demand by the arms.
+even if one is accustomed to the `[]` notation for the cell.
 
-Let's build a core which has arms to modify values in a characteristic way by building gates.  In the Dojo:
+What's going on here?  In structure mode, the cell is actually defined by [`$:` buccol](https://urbit.org/docs/hoon/reference/rune/buc#-buccol) as a `spec` of a `cell`, rather than a `cell` itself.  (You can use `!,` zapcom to verify this for yourself.)
+
+`+$` lusbuc only permits `$` buc mold builders and basic structure expressions (like `@`).  Sometimes we rename a value for clarity, such as working with a particular class of values:
 
 ```hoon
-=c |%
-++  add-10
-  |=  a=@ud
-  (add a 10)
-++  sub-10
-  |=  a=@ud
-  (sub a 10)
-++  mul-10
-  |=  a=@ud
-  (mul a 10)
-++  div-10
-  |=  a=@ud
-  (div a 10)
-++  mul-20
-  |=  a=@ud
-  (add (mul-10 a) (mul-10 a))
---
-```
-
-We use these by locating them in the core `c` with `:` col limb resolution:
-
-```hoon
-> (add-10:c 6)
-16
-> (sub-10:c 16)
-6
-> (mul-10:c 16)
-160
-> (div-10:c 160)
-16
-```
-
-### What's in the Payload?
-
-The `payload` contains the data necessary for a core to evaluate its expressions.  Formally, the `payload` itself is also a cell of two standard parts:  `[sample context]`.
-
-- `sample` refers to the input arguments.
-- `context` refers to the effective subject including the parent core.
-
-When you type a core name at the Dojo prompt, the pretty-printer displays a summary of known information:
-
-```hoon
-> dec  
-<1.hkg [a=@ <46.hgz 1.pnw %140>]>
-```
-
-Let's dissect this.  Since the top-level description is a cell of `[battery payload]`, it makes sense that the head of `++dec` is the battery:
-
-```hoon
-> -:dec  
-[ 11  
- [ 1.851.876.717  
-   [ 1  
-     [1 1.717.658.988]  
-     7  
-     [0 1]  
-     8  
-     [1 1 100 101 99 114 101 109 101 110 116 45 117 110 100 101 114 102 108 111 119 0]  
-     9  
-     2  
-     0  
-     1  
-   ]  
-   0  
-   1  
- ]  
- 6  
- [5 [1 0] 0 6]  
- [0 0]  
- 8  
- [1 0]  
- 8  
- [1 6 [5 [0 30] 4 0 6] [0 6] 9 2 10 [6 4 0 6] 0 1]  
- 9  
- 2  
- 0  
- 1  
-]
-```
-
-As this is Nock code, it's rather hard for us to do anything with directly, but there it is.
-
-Let's look at the `payload`, at the tail or address `+3` of the core's tree:
-
-```hoon
-> +3:dec  
-[a=0 <46.hgz 1.pnw %140>]
-```
-
-Now this is a cell again, `[sample context]`.  Let's see the `sample` alone:
-
-```hoon
-> +6:dec
-a=0
-```
-
-(The pretty-printer now resolves the aura of the input value to the bunt of the mold.)
-
-The `context` is the current system subject, which has 46 arms and refers to Hoon version 140K:
-
-```hoon
-> +7:dec
-<46.hgz 1.pnw %140>
-```
-
-> ##  Examining `battery`s
-> 
-> Recall that as we saw a moment ago, the `battery` of any gate
-> refers to the code, located at the address `+2` or `-`:
-> 
-> ```hoon
-> > -:add
-> [6 [5 [1 0] 0 12] [0 13] 9 2 10 [6 [8 [9 2.398 0 7] 9 2 10 [6 0 28] 0 2] 4 0 13] 0 1]
-> ```
-{: .callout}
-
-> ##  Examining `sample`s
-> 
-> You can check out the default `sample` of any gate by name:
-> 
-> ```hoon
-> > +6:add
-> [a=0 b=0]
-> ```
-{: .callout}
-
-Every arm of a core is evaluated with its parent core as the subject.  `.` is the subject, so `..` is the subject of a given arm (second dot being wing resolution).  You can check details of the parent core using the `..` syntax `..add`.  This trick is used when producing agents that have highly nested operations (search `..` in the `/app` directory), or when composing [jets](https://urbit.org/docs/vere/jetting#edit-the-hoon-source-code), for instance.
-
-### Modifying Gate Behavior
-
-Sometimes you need to modify parts of a core (like a gate) on-the-fly to get the desired behavior.  For instance, if you are using `++roll` to calculate the multiplicative product of the elements of a list, this “just works”:
-
-```hoon
-> (roll `(list @ud)`~[10 12 14 16 18] mul)  
-483.840
-```
-
-In contrast, if you do the same thing to a list of numbers with a fractional part (`@rs` floating-point values), the naïve operation will fail:
-
-```hoon
-> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mul:rs)  
-.0
-```
-
-Why is this?  Let's peek inside the gates and see.  Since we know a core is a cell of `[battery payload]`, let's take a look at the `payload`:
-
-```hoon
-> +:mul  
-[[a=1 b=1] <46.hgz 1.pnw %140>]  
-> +:mul:rs  
-[[a=.0 b=.0] <21.hqd [r=?(%d %n %u %z) <51.qbt 123.zao 46.hgz 1.pnw %140>]>]
-```
-
-The correct behavior for `++mul:rs` is really to multiply starting from one, not zero, so that `++roll` doesn't wipe out the entire product.
-
-If we want to set the default sample to have a different value than the bunt of the type, we can use the [`$_` buccab](https://urbit.org/docs/hoon/reference/rune/buc#-buccab) rune, whose irregular form is simply `_`.
-
-```hoon
-> =mmul |=([a=_.1 b=_.1] (mul:rs a b))
-> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
-> .483840
-```
-
-> ##  Custom Samples
-> 
-> The [`|:` barcol](https://urbit.org/docs/hoon/reference/rune/bar#-barcol) rune also allows you to build a new gate (core) 
-> with a custom sample.  For instance, we can take the original 
-> `++mul:rs` gate and give it a sample with default values of 
-> `.1`:
->
-> ```hoon
-> > =mmul |:([a=`@rs`.1 b=`@rs`.1] (mul:rs a b))
-> > (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
-> .483840
-> ```
-> 
-> It allows you to do the same thing as `$_` buccab in a 
-> different way.
-{: .callout}
-
-
-##  Doors
-- "Identify the structure of a door and relate it to a core."
-- "Pull an arm in a door."
-
-Doors are another kind of core whose arms evaluate to make gates.  The difference is that a door also has its own sample.  A door is the most general case of a function in Hoon.  (You could say a "gate-building core" or a "function-building function" to clarify what these are.)
-
-Doors are created with the [`|_` barcab](https://urbit.org/docs/hoon/reference/rune/bar#_-barcab) rune.  Doors get used for a few different purposes in the standard library:
-
-- instrumenting and storing persistent data structures like `map`s (Lesson 6, Lesson 7)
-- implementing state machines (Lesson 8)
-
-One BIG pitfall for thinking about doors is thinking of them as “containing” gates, as if they were more like “objects”.  Instead, think of them the same way as you think of gates, just that they can be altered at a higher level.
-
-Here's a mathematical example.  If we wanted to calculate a quadratic polynomial, _y = a x² + b x + c_, then we need to know two kinds of things:  the unknown or variable _x_, AND the parameters _a_, _b_, and _c_.
-
-If we were to build this as a gate, we would need to pass in four parameters:
-
-```hoon
-=poly-gate |=  [x=@ud a=@ud b=@ud c=@ud]
-(add (add (mul a (mul x x)) (mul b x)) c)
-```
-
-Any time we call the gate, we have to provide all four values:  one unknown, three parameters.  But there's a sense in which we want to separate the three parameters and only call the gate with one _x_ value.  One way to accomplish this is to wrap the gate inside of another:
-
-```hoon
-=wrapped-gate |=  [x=@ud]
-=/  a  5
-=/  b  4
-=/  c  3
-(poly-gate x a b c)
-```
-
-> ##  Currying
-> 
-> If we instead used the _currying_ gate builders, [`++cury`](https://urbit.org/docs/hoon/reference/stdlib/2n#cury) and 
-> [`++curr`](https://urbit.org/docs/hoon/reference/stdlib/2n#curry), we could build these up into a gate with a single sample a
-> different way.  Consider this a stretch exercise if you're
-> interested.
-{: .challenge}
-
-If we built this as a door instead, we could push the parameters out to a more outer layer of abstraction.  In this case, the parameters are the sample of the door, while the arm `++quad` builds a gate that corresponds to those parameters and only accepts one unknown variable `x`.
-
-```hoon
-=poly |_  [a=@ud b=@ud c=@ud]
-++  quad
-  |=  x=@ud
-  (add (add (mul a (mul x x)) (mul b x)) c)
---
-```
-
-This will be used in two steps:  a gate-building step then a gate usage step.
-
-We produce a gate from a door's arm using the [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#-censig) rune, almost always used in its irregular form, `~()`.
-
-```hoon
-~(quad poly [5 4 3])
-```
-
-By itself, not so useful.  We could pin it into the Dojo, for instance, to use later.
-
-Our ultimate goal is to use the built gate on particular data, e.g.,
-
-```hoon
-> (~(quad poly [5 4 3]) 2)
-31
-```
-
-By hand:  5×2² + 4×2 + 3 = 31, so that's correct.
-
-Doors will enable us to build some very powerful data storage tools over the next couple of lessons.
-
-> ##  Adding an Arm
-> 
-> Add an arm to the door which calculates the linear function
-> _a×x + b_.
-> 
-> Add another arm which calculates the derivative of the first
-> quadratic function, _2×a×x + b_.
-{: .challenge}
-
-In the above example we created a door `poly` with sample `[a=@ud b=@ud c=@ud]`.  If we investigated, we would find that the initial value of each is `0`, the bunt value of `@ud`.  What if we wish to define a door with a chosen sample value directly?  We can make use of the `$_` rune, whose irregular form is simply `_`.  To create the door `poly` with the sample set to have certain values in the Dojo, we would write
-
-```unknown
-> =poly |_  [a=_5 b=_4 c=_3]
-++  quad
-  |=  x=@ud
-  (add (add (mul a (mul x x)) (mul b x)) c)
---
-
-> (quad:poly 2)  
-31
-```
-
-- [Hoon School, “Doors”](https://urbit.org/docs/hoon/hoon-school/doors#doors) is worth a read.
-
-
-### A Few Ramifications of Cores and Doors
-
-[`|^` barket](https://urbit.org/docs/hoon/reference/rune/bar#-barket) is an example of what we can call a _convenience rune_, similar to the idea of sugar syntax (irregular syntax to make writing certain things out in a more expressive manner).  `|^` barket produces a core with _at least_ a `$` buc arm and computes it immediately.  (So it's a bit like a trap in the regard of computing immediately.)
-
-This code calculates the volume of a cylinder, _A=πr²h_.
-
-```hoon
-=volume-of-cylinder |^
-(mul:rs (area-of-circle .2.0) height)
-++  area-of-circle
-  |=  r=@rs
-  (mul:rs r (mul:rs pi r))
-++  pi  .3.1415926
-++  height  .10.0
---
-```
-
-Since all of the values either have to be pinned ahead of time or made available as arms, a `|^` barket would probably be used inside of a gate.  Of course, since it is a core with a `$` buc arm, one could also use it recursively to calculate values like the factorial.
-
----
-
-If you read the docs, you'll find that a [`|-` barhep](https://urbit.org/docs/hoon/reference/rune/bar#-barhep) rune “produces a trap (a core with one arm `$`) and evaluates it.”  So a trap actually evaluates to a `|%` barcen core with an arm `$`:
-
-```hoon
-:: count to five
-=/  index  1
-|-
-?:  =(index 5)  index
-$(index +(index))
-```
-
-actually translates to
-
-```hoon
-:: count to five
-=/  index  1
-=<  $
 |%
-++  $
-  ?:  =(index 5)  index
-  %=  $
-    index  +(index)
-  ==
++$  url  @t
 --
 ```
 
-You can also create a trap for later use with the [`|.` bardot](https://urbit.org/docs/hoon/reference/rune/bar#-bardot) rune.  It's quite similar, but without the `=<($...` part then it doesn't get evaluated immediately.
+(There's no formal restriction on the value, but subsequent code may be made much more legible by such definitions.)
 
 ```hoon
-> =forty-two |.(42)
-> $:forty-two
-42
-> (forty-two)
-42
+|%
++$  rank  ?(%galaxy %star %planet)
+--
 ```
 
----
+In essence, a type builder arm is producing a mold resolvable within a given subject.  It's resolved as a gate (because a mold is a gate) and applied to the sample.
 
-What is a gate?  It is a door with only one arm `$` buc, and whenever you invoke it then that default arm's expression is referred to and evaluated.
-
-A _gate_ and a _trap_ are actually very similar:  a [gate](https://urbit.org/docs/hoon/reference/rune/bar#-bartis) simply has a sample (and can actively change when evaluated or via a `%=` cenhep), whereas a trap does not (and can _only_ be passively changed via something like `%=` cenhep).
-
-In fact, to relate slamming a gate back to working with doors, `%-` cenhep and friends all evaluate to [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#cenhep) on the `$` buc arm.
-
-
-##  Paths on Mars
-
-An Earth filesystem orients itself around some key metaphor:
-
-- Windows machines organize the world by drive, e.g. `C:\`.
-- Unix machines (including macOS and Linux) organize the world from `/`, the root directory.
-
-On Mars, we treat a filesystem as a way of organizing arbitrary access to blocks of persistent data.  There are some concessions to Earth-style filesystems, but Clay (Urbit's filesystem) organizes everything with respect to a `desk`, a discrete collection of static data on a particular ship.  Of course, like everything else in Hoon, a desk is a tree as well.
-
-> ##  Desks as Branches
-> 
-> If you are comfortable with version control systems like Git,
-> then thinking of the Clay filesystem as a version control
-> repository may be a fruitful metaphor for you.
-> 
-> In this case, we think of a desk as an independent branch of
-> data on the ship, with its own apps, marks, structure files,
-> libraries, generators, and so forth.
-> 
-> A desk is actually a series of numbered commits, and each time
-> you `|commit` a file with changes, you'll see a new revision
-> number listed after the ship and the desk name, but before the
-> folder and file path.
-> 
-> You can access an older version of a file in Clay by referring
-> to the revision number you are looking for instead of the
-> timestamp, e.g. `/~zod/base/2/gen/boxcar/hoon`.
-{: .callout}
-
-Whenever we access something in Clay, we provide three pieces of information before the path:  the ship, the desk, and the timestamp.  Typically we are looking for the most up-to-date version of a file, so our triplet consists of our ship name, the desk name (defaulting to `%base`), and the current time.
-
-Two of these can be queried at any time:
-
-- `our` always contains the ship's identity, as a `@p`.
-- `now` resolves to the current system time, as a `@da`.
-
-The “current” desk is a Dojo concept, since for Clay we can access any desk at any time (with permission).
-
-
-We call this triplet the `beak`.  It can be manually constructed using the parts above, or more commonly used with the `/` fas prefix and `=` tis signs for the three components:
+As you'll see in later more complicated applications, long names with complicated limbs are often aliased this way as well:
 
 ```hoon
-> /===  
-[~.~zod ~.base ~.~2022.4.5..20.34.15..6e5c ~]  
+|%
++$  card  card:agent:gall
+--
 ```
 
-(You'll also sometimes see `%` cen stand in for the whole.  So much for consistency!)
+##  Better Data Structures through Doors
 
-The beak is a `(list @ta)` or `(list knot)`.  The pretty-printer may catch and format it a little different depending on how you present it, but they are all commensurate:
+Hoon is statically typed, which means (among other things) that auras are subject to strict nesting rules, molds are crash-only, and the whole thing is rather cantankerous about matching types.
+
+However, since gate-building arms are possible, Hoon developers frequently employ them as templates to build type-appropriate cores, including gates.
+
+Let's briefly review our two main tools for evaluating Hoon with `%` cen runes:
+
+- [`%-` cenhep](https://urbit.org/docs/hoon/reference/rune/cen#cenhep) accepts two children, a wing which resolves to a gate; and a sample which is provided at `+6` to the gate.  It yields the result of the Hoon expression, which may be a simple value, a data structure, or a core.
+- [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#censig) accepts three children, a wing which resolves to an arm in a door; the aforesaid door; and a sample which is provided at `+6` to the door.  It conventionally yields a gate which can then be applied to a sample.
+
+Now it turns out that `%-` cenhep is actually a special case of `%~` censig:  it resolves to `%~($ a b)`, evaluating the `$` buc arm of a gate core.  (A door really is just a more general case of a gate.  Think carefully about this.)
+
+### `map`
+
+In general terms, a map is a pattern from a key to a value.  You can think of a dictionary, or an index, or a data table.  Essentially it scans for a particular key, then returns the data associated with that key (which may be any noun).
+
+| Key         | Value      |
+| ----------- | ---------- |
+| 'Mazda'     | 'RX-8'     |
+| 'Dodge'     | 'Viper'    |
+| 'Ford'      | 'Mustang'  |
+| 'Chevrolet' | 'Chevelle' |
+| 'Porsche'   | 'Boxster'  |
+| 'Bugatti'   | 'Type 22'  |
+
+While `map` is the mold or type of the value, the door which affords `map`-related functionality is named `++by`.  (This felicitously affords us a way to read `map` operations in an English-friendly phrasing.)
+
+In Urbit, all values are static and never change.  (This is why we “overwrite” or replace the values in a limb to change it with `%=` centis.)  This means that when we build a `map`, we often rather awkwardly replace it with its modified value explicitly.
+
+We'll build a color `map`, from a `@tas` of a [color's name](https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors) to its HTML hexadecimal representation as a `@ux` hex value.
+
+We can produce a `map` from a `list` of key-value cells using the [`++malt`](https://urbit.org/docs/hoon/reference/stdlib/2l#malt) gate:
 
 ```hoon
-> /===  
-[~.~zod ~.base ~.~2022.4.4..22.03.03..43c1 ~]  
-> `(list @ta)`/===  
-/~zod/base/~2022.4.4..22.04.36..9f37
-> `(list knot)`/===  
-/~zod/base/~2022.4.4..22.03.55..7f76  
+> =colors (malt ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
 ```
 
-Swapping out a value for one of the equals signs allows you to talk about (hypothetical) other beaks:
-
-```
-> /=sandbox=
-[~.~zod %sandbox ~.~2022.4.5..20.34.18..1d2b ~]
-> /~nec==
-[~.~nec ~.base ~.~2022.4.5..20.37.28..cf3e ~]
-> /==(@da 0)
-[~.~zod ~.base ~292277024401-.1.1 ~]
-```
-
-(You can write any path, whether or not it exists; you cannot, of course, access data at any path because most paths don't exist, just as most possible street addresses do not exist.)
-
-At this point in Urbit's history, most interesting changes to Clay are done on Earth and then synchronized back to Mars via `|commit`.  The `cat` generator can show you the contents of a file at a particular path in Clay:
+We could designate the mold of this as a `(map @tas @ux)`, altho examine the type spear and see why this isn't completely correct.  In fact, due to the way `@tas` `term`s work, it's more convenient to explicitly supertype the key mold when defining the `map` in the first place:
 
 ```hoon
-> +cat /===/gen/trouble/hoon  
-/~zod/base/~2022.4.5..20.42.06..2ad6/gen/trouble/hoon  
-/-  *hood  
-:-  %say  
-|=  $:  [now=@da eny=@uvJ bec=beak]  
-       [arg=~ ~]  
-   ==  
-[%tang (report-vats p.bec now)]
+> =colors `(map @tas @ux)`(my ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
 ```
 
-The `ls` generator does something similar:
+To insert one key-value pair at a time, we use `put`.  We need to either pin it into the subject for Dojo or modify it with `=/` tisfas.
 
 ```hoon
-> +ls /===/gen
- acme/domain-validation/hoon
- agents/hoon
- aqua/
- aqua-export/hoon
- azimuth/
- azimuth-block/hoon
- ...
+> =colors (~(put by colors) [%orange 0xff.8833])
+> =colors (~(put by colors) [%violet 0x83.59a3])
+> =colors (~(put by colors) [%black 0x0])
 ```
+
+Note the pattern here:  there is a `++put` arm of `++by` which builds a gate to modify `colors` by inserting a value.
+
+What happens if we try to add something that doesn't match the type?
+
+```hoon
+> =colors (~(put by colors) [%cerulean '#02A4D3'])
+```
+
+We'll see a `mull-grow`, a `mull-nice`, and a `nest-fail`.  Essentially these are all flavors of mold-matching errors.
+
+(As an aside, `++put:by` is also how you'd replace a key's value.)
+
+The point of a `map` is to make it easy to retrieve data values given their appropriate key.  Use `++get:by`:
+
+```hoon
+> (~(get by colors) %orange)
+[~ 0xff.8833]
+```
+
+What is that cell?  Wasn't the value stored as `0xff.8833`?  Well, one fundamental problem that a `map` needs to solve is to allow us to distinguish an _empty_ result (or failure to locate a value) from a _zero_ result (or an answer that's actually zero).  To this end, the `unit` was introduced, a type union of a `~` (for no result) and `[~ item]` (for when a result exists).
+
+- What does `[~ ~]` mean when returned from a `map`?
+
+`unit`s are common enough that they have their own syntax and set of operational functions.  We'll look at them more in a bit.
+
+```hoon
+> (~(get by colors) %brown)
+~
+```
+
+([`++got:by`](https://urbit.org/docs/hoon/reference/stdlib/2i#gotby) returns the value without the `unit` wrapper, but crashes on failure to locate.  I recommend just using `++get` and extracting the tail of the resulting cell after confirming it isn't null with `?~` wutsig.  See also [`++gut:by`](https://urbit.org/docs/hoon/reference/stdlib/2i#gutby) which allows a default in case of failure to locate.)
+
+You can check whether a key is present using `++has:by`:
+
+```hoon
+> (~(has by colors) %teal)
+%.n
+> (~(has by colors) %green)
+%.y
+```
+
+You can get a list of all keys with `++key:by`:
+
+```hoon
+> ~(key by colors)
+{%black %red %blue %violet %green %yellow %orange}
+```
+
+You can apply a gate to each value, rather like `++turn` in Lesson 4, using `++run:by`.  For instance, these gates will break the color hexadecimal value into red, green, and blue components:
+
+```hoon
+> =red |=(a=@ux ^-(@ux (cut 2 [4 2] a)))
+> =green |=(a=@ux ^-(@ux (cut 2 [2 2] a)))
+> =blue |=(a=@ux ^-(@ux (cut 2 [0 2] a)))
+> (~(run by colors) blue)
+{ [p=%black q=0x0]  
+ [p=%red q=0x3f]  
+ [p=%blue q=0xff]  
+ [p=%violet q=0xa3]  
+ [p=%green q=0x38]  
+ [p=%yellow q=0x70]  
+ [p=%orange q=0x33]  
+}
+```
+
+### `set`
+
+A `set` is rather like a `list` except that each entry can only be represented once.  As with a `map`, a `set` is typically associated with a particular type, such as `(set @ud)` for a collection of decimal values.  (`set`s also don't have an order, so they're basically a bag of unique values.)
+
+`set` operations are provided by `++in`.  Most names are similar to `map`/`++by` operations when applicable.
+
+[`++silt`](https://urbit.org/docs/hoon/reference/stdlib/2l#silt) produces a `set` from a `list`:
+
+```hoon
+> =primes (silt ~[2 3 5 7 11 13])
+```
+
+`++put:in` adds a value to a `set` (and null-ops when the value is already present):
+
+```hoon
+> =primes (~(put in primes) 17)
+> =primes (~(put in primes) 13)
+```
+
+`++del:in` removes a value from a `set`:
+
+```hoon
+> =primes (~(put in primes) 18)
+> =primes (~(del in primes) 18)
+```
+
+`++has:in` checks for existence:
+
+```hoon
+> (~(has in primes) 15)
+%.n
+> (~(has in primes) 17)
+%.y
+```
+
+`++tap:in` yields a `list` of the values:
+
+```hoon
+> ~(tap in primes)  
+~[3 2 7 5 11 13 17]  
+> (sort ~(tap in primes) lth)  
+~[2 3 5 7 11 13 17]
+```
+
+`++run:in` applies a function across all values:
+
+```hoon
+> (~(run in primes) dec)  
+{10 6 12 1 2 16 4}
+```
+
+### `unit` Redux (and `vase`)
+
+We encountered the `unit` as a tool for distinguishing null results from actual zeroes:  “using a `unit` allows you to specify something that may not be there.”
+
+You can build a `unit` using the tic special notation or [`++some`](https://urbit.org/docs/hoon/reference/stdlib/2a#some):
+
+```
+> `%mars
+[~ %mars]
+> (some %mars)
+[~ u=%mars]
+```
+
+While `++got:by` is one way to get a value back without wrapping it in a `unit`, it's better practice to use the [`unit` logic](https://urbit.org/docs/hoon/reference/stdlib/2a) gates to manipulate gates to work correctly with `unit`s.
+
+For one thing, use [`++need`](https://urbit.org/docs/hoon/reference/stdlib/2a#need) to unwrap a `unit`, or crash if the `unit` is `~` null.
+
+```hoon
+> =colors `(map @tas @ux)`(my ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
+> (need (~(get by colors) %yellow))
+0xfb.e870
+> (need (~(get by colors) %teal))  
+dojo: hoon expression failed
+```
+
+Rather than unwrap a `unit`, one can modify gates to work with `unit`s directly even if they're not natively set up that way.  For instance, one cannot decrement a `unit` because `++dec` doesn't accept a `unit`.  [`++bind`](https://urbit.org/docs/hoon/reference/stdlib/2a#bind) can bind a non-`unit` function
+
+```hoon
+> (bind ((unit @ud) [~ 2]) dec)  
+[~ 1]
+> (bind (~(get by colors) %orange) red)  
+[~ 0xff]
+```
+
+(There are several others tools listed [on that page](https://urbit.org/docs/hoon/reference/stdlib/2a) which may be potentially useful to you.)
+
+A `+$vase` is a pair of type and value, such as that returned by `!>` zapgar.  A `vase` is useful when transmitting data in a way that may lose its type information.
+
+### `jar` and `jug`
+
+`map`s and `set`s are frequently used in the standard library and in the extended ecosystem (such as in `graph-store`).  There are a couple of common patterns which recur often enough that they have their own names:
+
+- [`++jar`](https://urbit.org/docs/hoon/reference/stdlib/2o#jar) is a mold for a `map` of `list`s.
+
+- [`++jug`](https://urbit.org/docs/hoon/reference/stdlib/2o#jug) is a mold for a `map` of `set`s.
+
+(There's an example in the slides of a `jar`.)
+
+These are supported by the [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j#ja) core and the [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j#ju) core.
+
+
+##  Example:  Caesar Cipher
+
+The Caesar cipher is a shift cipher ([that was indeed used anciently](https://en.wikipedia.org/wiki/Caesar_cipher)) wherein each letter in a message is encrypted by replacing it with one shifted some number of positions down the alphabet.
+
+Save this as `caesar.hoon` in `/gen`:
+
+```hoon
+!:
+|=  [msg=tape steps=@ud]
+=<
+=.  msg  (cass msg)
+:-  (shift msg steps)
+    (unshift msg steps)
+::
+|%
+++  alpha  "abcdefghijklmnopqrstuvwxyz"
+::  Shift a message to the right.
+::
+++  shift
+  |=  [message=tape steps=@ud]
+  ^-  tape
+  (operate message (encoder steps))
+::  Shift a message to the left.
+::
+++  unshift
+  |=  [message=tape steps=@ud]
+  ^-  tape
+  (operate message (decoder steps))
+::  Rotate forwards into encryption.
+::
+++  encoder
+  |=  [steps=@ud]
+  ^-  (map @t @t)
+  =/  value-tape=tape  (rotation alpha steps)
+  (space-adder alpha value-tape)
+::  Rotate backwards out of encryption.
+::
+++  decoder
+  |=  [steps=@ud]
+  ^-  (map @t @t)
+  =/  value-tape=tape  (rotation alpha steps)
+  (space-adder value-tape alpha)
+::  Apply the map of decrypted->encrypted letters to the message.
+::
+++  operate
+  |=  [message=tape shift-map=(map @t @t)]
+  ^-  tape
+  %+  turn  message
+  |=  a=@t
+  (~(got by shift-map) a)
+::  Handle spaces in the message.
+::
+++  space-adder
+  |=  [key-position=tape value-result=tape]
+  ^-  (map @t @t)
+  (~(put by (map-maker key-position value-result)) ' ' ' ')
+::  Produce a map from each letter to its encrypted value.
+::
+++  map-maker
+  |=  [key-position=tape value-result=tape]
+  ^-  (map @t @t)
+  =|  chart=(map @t @t)
+  ?.  =((lent key-position) (lent value-result))
+  ~|  %uneven-lengths  !!
+  |-
+  ?:  |(?=(~ key-position) ?=(~ value-result))
+  chart
+  $(chart (~(put by chart) i.key-position i.value-result), key-position t.key-position, value-result t.value-result)
+::  Cycle an alphabet around, e.g. from
+::  'ABCDEFGHIJKLMNOPQRSTUVWXYZ' to 'BCDEFGHIJKLMNOPQRSTUVWXYZA'
+::
+++  rotation
+  |=  [my-alphabet=tape my-steps=@ud]
+  =/  length=@ud  (lent my-alphabet)
+  =+  (trim (mod my-steps length) my-alphabet)
+  (weld q p)
+--
+```
+
+The commentary is dense, but I've added some remarks above which hopefully decompress it a bit for you.  The use of `++space-adder` clutters it a bit, and it would probably be cleaner to just work with an “expanded alphabet” including space and punctuation characters, or to manually modify the `map` to handle those directly.
+
+There are four runes in this which we haven't seen yet:
+
+- `=,` tiscom modifies a leg in the subject, similar to `=/` tisfas (Lesson 8)
+- `=|` tisbar introduces a named noun to the subject, like a `=/` tisfas that just has the bunt (Lesson 8)
+- `~|` sigbar is a “tracing printf”, which only outputs a message if the code crashes (Lesson 9)
+- `?|` wutbar in its irregular `|()` form, a logical `OR` operation (Lesson 7)
+
+We also didn't look at [`++trim`](https://urbit.org/docs/hoon/reference/stdlib/4b#trim), which splits the first set of characters off of a `tape` (similar to [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) except returning both sides back to you as a cell).
+
+- [“Caesar Cipher”](https://urbit.org/docs/hoon/hoon-school/caesar)

@@ -1,562 +1,383 @@
 ---
-title: "Hoon Syntax"
+title: "Hoon Conventions"
 teaching: 45
 exercises: 15
 nodes:
-- "110"
-- "113"
+- "115"
+- "120"
+- "125"
+- "175"
 objectives:
-- "Distinguish nouns, cells, and atoms."
-- "Apply auras to transform an atom."
-- "Identify common Hoon molds, such as cells, lists, and tapes."
-- "Pin a face to the subject."
-- "Make a decision at a branch point."
-- "Distinguish loobean from boolean operations."
-- "Slam a gate (call a function)."
+- "Identify current known irregular syntax."
+- "Convert between regular and irregular forms of runes to date."
+- "Identify a mold in the hierarchy of Urbit types (nouns, molds, marks)."
+- "Understand how type inference and type checking takes place."
+- "Bunt a mold."
+- "Identify type using `!>`."
+- "Annotate Hoon code with comments."
+- "Produce a generator to convert a value between auras."
+- "Employ a gate to defer a computation."
+- "Produce a gate as a generator."
+- "Build code samples with `-build-file` thread."
+- "Discuss Ford import runes."
 runes:
-- "`%-`"
-- "`:-`"
-- "`=/`"
-- "`?:`"
-- "`^-`"
+- "`^+`"
+- "`^*`"
+- "`$?`"
+- "`$:`"
+- "`!>`"
+- "`|=`"
+- "`::`"
+- "`!!`"
+- "`/+`"
 keypoints:
-- "A noun is an atom or a cell.  An atom is an unsigned integer.  A cell is a pair of two nouns."
-- "An aura is a metadata “interpretation” of an atom."
-- "Functional expressions always result in a value."
-- "You preserve a value with a name (“face”) in Hoon using a `=/` tisfas rune."
-- "You make a decision between alternatives in Hoon using a `?:` wutcol rune."
-- "You can use existing code (“gates” = “functions”) in Hoon using a `%-` cenhep."
+- "Many runes have irregular syntax, called “sugar syntax”.  This makes it easier to write aesthetically communicative Hoon code."
+- "Molds define Hoon structures.  They have a default value (“bunt”) and are strictly statically typed (i.e. they must match)."
+- "Find the type of a value using the `!>` zapgar rune."
+- "Use comments (`::`) to explain the logic of any code you produce."
+- "A gate (made with `|=` bartis) lets you store a computation for future use."
+- "You can store a gate as a standalone reusable file called a generator."
+- "You can build code from a file directly with `-build-file` or import its contents with `/+` from `/lib`."
 readings:
-- "https://developers.urbit.org/guides/core/hoon-school/A-intro"
-- "https://developers.urbit.org/guides/core/hoon-school/B-syntax"
+- "https://developers.urbit.org/guides/core/hoon-school/D-gates"
+- "https://developers.urbit.org/guides/core/hoon-school/E-types"
 ---
 
-#   Hoon Syntax
-##  Hoon School Lesson 1
+#   Hoon Conventions
+##  Hoon School Lesson 2
 
-![](https://i.dailymail.co.uk/i/pix/2015/02/02/2541F2DB00000578-0-This_Holden_utility_was_seized_by_police_for_Hooning_in_Tennant_-a-24_1422867990080.jpg)
+##  A Spoonful of Sugar
 
-The way this will work:  we will have regular video meetings that will be posted.  I will talk through and teach material based on these notes.  I also suggest readings (see the bottom of the header block) from the written Hoon School docs.  These are optional but provide a slightly different perspective on the material.  You are also welcome to investigate older videos, but be aware that I may have changed the sequence or explanation of some material.
+In Lesson 1, we rigorously adhered to the regular syntax of runes so that you could get used to using them.  In fact, the only two irregular forms we used were these:
 
-#   Hoon Syntax
+- Cell definition `[a b]` which represents the `:-` colhep rune, `:-  a  b`
+- Aura application ``@ux`500`` which represents a double `^-` kethep, `^-  @ux  ^-  @  500`.  (Why two `^-`s?)
 
-It's important to get to writing code fast.  Open a fakeship Dojo, type
-
-```
-%-  add  [5 6]
-```
-
-and press `Return`.  (Note that there are _two_ spaces between some components, and that if you attempt to write without both spaces, the Dojo prompt will not let you type.)
-
-The operation you just completed is straightforward enough:  `5 + 6`, in many languages, or `(+ 5 6)` in a Lisp like Clojure.  In fact, even in regular written mathematics, we are actually thinking of a mathematical expression as values connected by an operator.
+Hoon developers often employ irregular forms, sometimes called “sugar syntax”.  Besides the `:-` colhep and `^-` kethep forms, we will commonly use a new form for `%-` cenhep “function calls”:
 
 ```
-5+6        :: standard notation  
-5 6 +      ::  reverse-polish notation  
-+(5,6)     ::  some languages  
-(+ 5 6)    ::  lisp-y  
-    
-  +  
- / \  
-5   6
+%-  add  [1 2]
+(add 1 2)
 ```
 
-That tree format carries a lot of information and shows how things are implicitly working throughout arithmetic.  Consider an equation with a left-hand side and a right-hand side:
+You should get used to reading and interpreting these forms and we will start to use them actively during this lesson.
 
-```
-6 = 4 + 2
-
-  =  
- / \  
-6   +  
-   / \  
-  4   2  
-```
-
-If you try to run `%-  add  [5 6 7]` in the Dojo, you will find that it fails.  That's because addition is actually a binary operator, an operator on _two things_.  Thus we would have to run it twice:
-
-```
-Fails!
-
-   %-
-  /  \
-add  [5 6 7]
-
-
-Correct way to see:
-
-  + 
- / \
-5   +
-   / \
-  6   7
-```
-
-Making the Hoon operators explicit:
-
-```
-This is a cell, a pair of values:
-
-      :-
-     /  \
-    5    6
-
-Thus to process the first expression we have:
-         
-         %-
-        /  \
-      add  :-
-          /  \
-         5    6
-
-And to process the second:
-
-         %-
-        /  \
-      add  :-
-          /  \
-         5    %-
-             /  \
-           add  :-
-               /  \
-              6    7
-```
-
-You'll get used to thinking in this "tree-like" structure of branching expressions joined by operators, which in Hoon we call _runes_.
-
-If we want to know why things look the way they do in Hoon, we need to step back to talk about why the system needs the Hoon representation at all.
-
-
-##  Why Hoon?
-
-The Urbit operating system hews to a conceptual model wherein each expression takes place in a certain context (the “subject”).  While sharing a lot of practicality with other programming paradigms and platforms, Urbit's model is mathematically well-defined and unambiguously specified.
-
-At its root, Urbit is completely specified by [Nock](https://urbit.org/docs/nock/definition), sort of a machine language for the Urbit virtual machine layer and event log.  However, Nock code is basically unreadable (and unwriteable) for a human.  [One worked example](https://urbit.org/docs/nock/example) yields, for decrementing a value by one, the Nock formula:
-
-```
-[8 [1 0] 8 [1 6 [5 [0 7] 4 0 6] [0 6] 9 2 [0 2] [4 0 6] 0 7] 9 2 0 1]
-```
-
-This is like reading binary machine code:  perhaps a silicon engineer needs to know this, but we mortals need a clearer vernacular.
-
-Hoon serves as Urbit's practical programming language.  Everything in Urbit OS is written in Hoon, and many of the ancillary tools as well.  
-
-Any operation in Urbit ultimately results in a value.  Much like machine language designates any value as a command, an address, or a number, a Hoon value is interpreted per the Nock rules and results in a basic data value at the end.  So what are our data values in Hoon?  How does it _work_?
-
--   [Ted Blackman ~rovnys-ricfer, “Why Hoon?”](https://urbit.org/blog/why-hoon/)
-
-
-##  Nouns and Verbs
-
-Think about a child persistently asking you what a thing is made of.  At first, you may respond, "plastic", or "metal".  Eventually, the child may wear you down to a more fundamental level:  atoms and molecules.
-
-In a very similar sense, everything in a Hoon program is an atom or a molecule.  A Hoon program is a complex molecule, a digital chemistry that describes one mathematical representation of data caught in a crystal.
-
-The most general data category in Hoon is a _noun_.  This is just about as broad as saying “thing”, so let's be more specific:
-
-> A noun is an atom or a cell.
-
-Progress?  We can say, in plain English, that
-
-- An _atom_ is a nonzero integer number (0–∞).
-- A _cell_ is a pair of two nouns.  (In our chemical metaphor, a cell is a molecule!)
-
-_Everything_ in Hoon (and Nock, and Urbit) is a noun.  The Urbit OS itself is a noun.  So given any noun, the Urbit VM simply applies the Nock rules to change the noun in well-defined mechanical ways.
-
-> Back to the Dojo!  Enter both of the following:
+> ### Converting Between Forms
 >
-> ```
-> 729
-> [1 2]
-> ```
+> Convert each of the following irregular forms into the correct regular runic syntax.
 >
-> the first being an atom, the second being a cell.  All cells and atoms (and hence all nouns) have the same structure and display even if they are much more complicated than these.
-{: .challenge}
-
-### Atoms
-
-If an atom is a nonzero number, how do we represent anything else?  Hoon provides an “aura” or tag which lets you treat a number as text, time, date, Urbit address, IP address, and much more.
-
-An aura always begins with `@` pat, which denotes an atom (as opposed to a cell, `^` ket).  The next letter or letters tells you what kind of representation you want the value to have.
-
-For instance, to change the representation of a regular decimal number like `32` to a binary representation (i.e. for 2⁵), use `@ub`:
-
-```
-> `@ub`32
-0b10.0000
-```
-
-(The tic marks are a shorthand which we'll explain later.)
-
-While there are dozens of auras for specialized applications, here are the most important ones for you to know:
-
-| Aura | Meaning | Example | Comment |
-| ---- | ------- | ------- | ------- |
-| `@`  | Empty aura | `100` | (displays as `@ud`) |
-| `@da` | Date (absolute) | ~2022.2.8..16.48.20..b53a | Epoch calculated from 292 billion B.C. |
-| `@p` | Ship name | `~zod` |  |
-| `@rs` | Number with fractional part | `.3.1415` | Note the preceding `.` dot. |
-| `@t` | Text (“cord”) | `'hello'` | One of Urbit's several text types; only UTF-8 values are valid. |
-| `@ub` | Binary value | `0b1100.0101` |  |
-| `@ud` | Decimal value | `100.000` | Note that German-style thousands separator is used, `.` dot. |
-| `@ux` | Hexadecimal value | `0x1f.3c4b` |  |
-
-(In our chemical metaphor, these are rather like different elements.  Unlike chemical elements, however, these are completely interconvertible.)
-
-Hearkening back to our discussion of interchangeable representations in Lesson -1, you can see that these are all different-but-equivalent ways of representing the same underlying data values.
-
-The `^-` kethep rune is useful for ensuring that everything in the second child matches the type (aura) of the first, e.g.
-
-```
-^-  @ux  0x1ab4
-```
-
-We will use `^-` kethep extensively to enforce type constraints, a very useful tool in Hoon code.
-
-We can also use `^-` kethep to strip off metadata about the kind of value something is, then apply a new kind of value:
-
-```
-^-  @ub  ^-  @  0x1ab4
-```
-
-This second way of using `^-` is actually what the tic mark version for converting values is doing, as in the examples following.
-
-> Convert between some of these at the command line, e.g.:
+> 1. `(add 1 2)`
+> 2. ``@ub`16`
+> 3. `[%lorem %ipsum]`
+> 4. `[%lorem %ipsum %dolor]` (can do two ways)
 >
-> ```
-> > `@p`100  
-> ~syr  
-> > `@p`0b1100.0101  
-> ~luc  
-> > `@x`0b1100.0101  
-> 0xc5  
-> > `@ud`0b1100.0101  
-> 197
-> ```
-> 
-> (You may see an error particular with `@t`, due to some binary sequences being valid UTF-8 text and others not.)
-{: .challenge}
-
-### Cells
-
-A cell is a pair of two nouns.  Cells are traditionally written using square brackets:  `[]`.  For now, just recall the square brackets and that cells are always _pairs_ of values.
-
-```
-[1 2]
-[@p @t]
-[[1 2] [3 4]]
-```
-
-This is actually a shorthand for a rune as well:
-
-```
-:-  1  2
-```
-
-produces a cell `[1 2]`.  You can chain these together:
-
-```
-:-  1  :-  2  3
-```
-
-to produce `[1 [2 3]]` or `[1 2 3]`.
-
-We deal with cells in more detail below.
-
-> ### Hoon as Noun
-> 
-> We mentioned earlier that everything in Urbit is a noun, including the program itself.  This is true, but getting from the rune expression in Hoon to the numeric expression requires a few more tools than we currently are prepared to introduce.
-> 
-> For now, you can preview the structure of the Urbit OS as a noun by typing `.` dot at the Dojo prompt.  This displays a summary of the structure of the operating function itself as a noun.
-{: .callout}
-
-
-##  The Phylum _Chordata_
-
-The backbone of any Hoon expression is a scaffolding of _runes_, which are essentially mathematical relationships between daughter components.  If nouns are nouns, then runes are verbs:  they describe what nouns do.
-
-For instance, when we called a function earlier (or, in Hoon parlance, _slammed a gate_), we needed to provide the [`%-` cenhep](https://urbit.org/docs/hoon/reference/rune/cen#-cenhep) rune with two bits of information, a function name and the values to associate with it:
-
-```
-%-
-  add
-  [1 2]
-```
-
-`++add` expects precisely two values (or _arguments_), which are provided by `%-` in the neighboring child expression.  There's really no limit to the complexity of Hoon expressions:  they can track deep and wide.  They also don't care much about layout, which leaves you a lot of latitude.  The only hard-and-fast rule is that there are single spaces (_ace_) and everything else (_gap_).
-
-```
-%-
-  add
-  [%-(add [1 2]) 3]
-```
-
-(Notice that inside of the `[]` cell notation we are using a slightly different form of the `%-` rune call.  In general, there are several ways to use many runes, and we will introduce these gradually.)
-
-(While this requirement is rather stiff, we'll see more expressive ways to write Hoon code after you're comfortable using runes.)
-
-For instance, here are some of the standard library functions which have a similar architecture:
-
-- [`++add`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (addition)
-- [`++sub`](https://urbit.org/docs/hoon/reference/stdlib/1a#sub) (subtraction, positive results only—what happens if you subtract past zero?)
-- [`++mul`](https://urbit.org/docs/hoon/reference/stdlib/1a#mul) (multiplication)
-- [`++div`](https://urbit.org/docs/hoon/reference/stdlib/1a#div) (integer division, no remainder)
-- [`++pow`](https://urbit.org/docs/hoon/reference/stdlib/1a#pow) (power or exponentiation)
-- [`++mod`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (modulus, remainder after integer division)
-- [`++dvr`](https://urbit.org/docs/hoon/reference/stdlib/1a#dvr) (integer division with remainder)
-- [`++max`](https://urbit.org/docs/hoon/reference/stdlib/1a#max) (maximum of two numbers)
-- [`++min`](https://urbit.org/docs/hoon/reference/stdlib/1a#min) (minimum of two numbers)
-
-
-> ### Writing Incorrect Code
+> Convert each of the following regular forms into the correct irregular syntax.
 >
-> At the Dojo, you can attempt to operate using the wrong values; for instance, `++add` doesn't know how to add three numbers at the same time.
->
-> ```
-> > %-  
->  add  
->  [1 2 3]  
-> -need.@  
-> -have.[@ud @ud]  
-> nest-fail  
-> dojo: hoon expression failed
-> ```
->
-> So this statement above is _syntactically_ correct (for the `%-` rune) but in practice fails because the expected input arguments don't match.  Any time you see a `need`/`have` pair, this is what it means.
-{: .callout}
-
-Any Hoon program is architected around runes.  If you have used another programming language, you can see these as analogous to keywords, although they also make explicit what most language syntax parsers leave implicit.  Hoon aims at a parsimony of representation while leaving latitude for aesthetics.  In other words, Hoon strives to give you a unique characteristic way of writing a correct expression, but it leaves you flexibility in how you lay out the components to maximize readability.
-
-We are only going to introduce a handful of runes in this lesson, but by the time we're done you'll know the twenty or twenty-five runes that yield 80% of the capability.
-
-> ### Identifying Unknown Runes
->
-> Here is a (lightly-edited) snippet of Hoon code from the OS itself.  Anything written after a `::` colcol is a _comment_ and is ignored by the computer.  (Comments are useful for human-language explanations.)
-> 
-> ```
-> %-  send
-> ::  forwards compatibility with next-dill
-> ?@  p.kyz  [%txt p.kyz ~]
-> ?:  ?=  %hit  -.p.kyz
->   [%txt ~]
-> ?.  ?=  %mod  -.p.kyz
->   p.kyz
-> =/  =@c
->   ?@  key.p.kyz  key.p.kyz
->     ?:  ?=  ?(%bac %del %ret)  -.key.p.kyz 
->       `@`-.key.p.kyz
->     ~-
-> ?:  ?=  %met  mod.p.kyz  [%met c]  [%ctl c]
-> ```
-> 
-> 1. Mark each rune.
-> 2. For each rune, find its corresponding children.  (You don't need to know what a rune does to identify how things slot together.)
-> 3. Consider these questions:
->     - Is every pair of punctuation marks a rune?
->     - How can you tell a rune from other kinds of marks?
-> 
-> One clue:  every rune in Hoon (except for one, not in the above code) has _at least one child_.
-{: .challenge}
-
-> ### Inferring Rune Behavior
->
-> Here is a snippet of Hoon code from the OS itself.
-> 
-> ```
-> =.  moz
-> %+  weld  moz
-> ^-  list
-> :~  [hen %lsip %e %init ~]
->     [hen %lsip %d %init ~]
->     [hen %lsip %g %init ~]
->     [hen %lsip %c %init ~]
->     [hen %lsip %a %init ~]
-> ==
-> ```
-> 
-> What does the `==` tistis do for the `:~` colsig?
+> 1. :-  %lemon  %jello
+> 2. %-  pow  :-  2  16
+> 3. ^-  @p  ^-  @  256
 {: .challenge}
 
 
-##  Preserving Values with Faces
+##  Deferring Computations
 
-Unlike many procedural programming languages, a Hoon expression only knows what it has been told.  This means that as soon as we calculate a value, it returns and falls back into the ether.
-
-```
-%-  sub  [5 1]
-```
-
-Right now, we don't have a way of preserving values for subsequent use in a more complicated Hoon expression.
-
-We are going to store the value as a variable, or in Hoon, “pin a face to the subject”.
-
-When we used `++add` or `++sub`, we basically wanted an immediate answer.  There's not much more to say than `5 + 1`.  In contrast, pinning a face accepts three daughter expressions:  a name (or face), a value, and the rest of the program.
+So far, every time we have calculated something, we have had to build it from scratch in Dojo.  This is completely untenable for nontrivial calculations, and clearly the Urbit OS itself is built on persistent files defining its behavior.
 
 ```
-=/  perfect-number  28
-%-  add  [perfect-number 10]
-```
-
-As a tree, the above program looks like this:
-
-```
-                =/
-             /  |   \
-perfect-number  28   %-
-                    /  \
-                  add  :-
-                      /  \
-         perfect-number   10
-```
-
-This is a little bit strange in the Dojo because subsequent expressions can't see the locally-defined name for a value, although it works quite well in long-form code.  The Dojo offers a workaround to retain named values:
-
-```
-=perfect-number 28
-%-  add  [perfect-number 10]
-```
-
-The difference is that the Dojo “pin” is permanent until deleted:
-
-```
-=perfect-number
-```
-
-rather than only effective for the daughter expressions of a `=/` tisfas rune.  (We also won't be able to use this Dojo pin in a regular Hoon program.)
-
-> ### A Large Power of Two
->
-> Create two numbers named `two` and `twenty`, with appropriate values, using the `=/` tisfas rune.
-> 
-> Then use these values to calculate 2²⁰ with `++pow` and `%-` cenhep.
-{: .challenge}
-
-
-##  Holding Things
-
-Atoms are well and fine for relatively simple data, but we already know about cells as pairs of nouns.  How else can we think of collections of data?
-
-### Cells
-
-A cell is formally a pair of two objects, but as long as the second (right-hand) object is a cell, these can be written stacked together:
-
-```
-> [1 [2 3]]
-[1 2 3]
-> [1 [2 [3 4]]]
-[1 2 3 4]
-```
-
-This convention keeps the notation from getting too cluttered.  For now, let's call this a “running cell” because it consists of several cells run together.
-
-There's some subtlety to this, but mostly these read to the right, i.e. `[1 2 3]` is the same as `[1 [2 3]]`.
-
-> Enter the following cells:
->
-> ```
-> [1 2 3]
-> [1 [2 3]]
-> [[1 2] 3]
-> [[1 2 3]]
-> [1 [2 [3]]]
-> [[1 2] [3 4]]
-> [[[1 2] [3 4]] [[5 6] [7 8]]]
-> ```
-{: .challenge}
-
-Are they all the same?  We'll revisit cell structure in Lesson 3 and see why not.
-
-
-### Text
-
-There are two ways to represent text in Urbit:  `cord`s (`@t` aura atoms) and `tape`s (lists of individual characters).
-
-Why represent text?  What does that mean?  We have to have a way of distinguishing words that mean something to Hoon (like `list`) from words that mean something to a human or a process (like `'hello world'`).
-
-Right now, all you need to know is that there are (at least) two valid ways to write text:
-
-- `'with single quotes'` as a `cord`.
-- `"with double quotes"` as a `tape`.
-
-We will use these incidentally for now and explain their characteristics in Lesson 3.
-
-
-##  Make a Decision
-
-The final rune we will use today will allow us to select between two different Hoon expressions, like picking a fork in a road.  Any computational process requires the ability to distinguish options.  For this, we first require a basis for discrimination:  truthness (_not_ “truthiness”).
-
-Essentially, we have to be able to decide whether or not some value or expression evaluates as `%.y` _true_ (in which case we will do one thing) or `%.n` _false_ (in which case we do another).  At this point, our basic expressions are always mathematical; later on we will check for existence, for equality of two values, etc.
-
-- [`++gth`](https://urbit.org/docs/hoon/reference/stdlib/1a#gth) (greater than `>`)
-- [`++lth`](https://urbit.org/docs/hoon/reference/stdlib/1a#lth) (less than `<`)
-- [`++gte`](https://urbit.org/docs/hoon/reference/stdlib/1a#gte) (greater than or equal to `≥`)
-- [`++lte`](https://urbit.org/docs/hoon/reference/stdlib/1a#lte) (less than or equal to `≤`)
-
-If we supply these with a pair of numbers to a `%-` cenhep call, we can see if the expression is considered `%.y` true or `%.n` false.
-
-```
-> %-  gth  [5 6]
-%.n
-> %-  lth  [7 6]
-%.n
-> %-  gte  [7 6]
-%.y
-> %-  lte  [7 7]
-%.y
-```
-
-Given a test expression like those above, we can use the `?:` wutcol rune to decide between the two possible alternatives.  `?:` wutcol accepts three children:  a true/false statement, an expression for the `%.y` true case, and an expression for the `%.n` false case.
-
-```
-in Hoon:
-
-?:  %-  gth  5  6
+::  Confirm whether a value is greater than one.
+=/  a  5
+?:  (gth a 1)
   'yes'
 'no'
-
-in tree form:
-
-         ?:
-     /    |   \
-    %-  'yes'  'no'
-   /  \ 
- gth  :-
-     /  \
-    5    6
 ```
 
-[Piecewise mathematical functions](https://en.wikipedia.org/wiki/Piecewise) require precisely this functionality.  For instance, the Heaviside function is a piecewise mathematical function which is equal to zero for inputs less than zero and one for inputs greater than or equal to zero.
+This has no flexibility:  if we want to change `a` we have to rewrite the whole thing every time!
 
-<img src="https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}" title="https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}" />
+Hoon uses _gates_ as deferred computations.  What this means is that we can build a Hoon expression now and use it at will later on, perhaps many times.  More than that, we can also use it on different data values.  A gate is the Hoon analogue of a function or subroutine in other programming languages.
 
-`https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}`
-
-_However_, we don't yet know how to represent a negative value yet!  (This is an inconvenience we won't resolve for a while, alas, although I address it briefly in the video.)  All of the decimal values we have used thus far are unsigned (non-negative) values, `@ud`.  For now, the easiest solution is to just translate the Heaviside function so it activates at a different value:
-
-<img src="https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}" title="https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}" />
-
-`https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}`
-
-Thus equipped, we can evaluate the Heaviside function for particular values of `x`:
+Structurally, a gate is a [`|=` bartis](https://urbit.org/docs/hoon/reference/rune/bar#-bartis) rune with two children:  a `spec` (specification of input) and a `hoon` (body).  Think of just replacing the `=/` tisfas with the `|=` bartis:
 
 ```
-=/  x  10
-?:  %-  gte  [x 10]
-  1
-0
+::  Confirm whether a value is greater than one.
+|=  a=@ud
+?:  (gth a 1)
+  'yes'
+'no'
 ```
 
-(Notably, we don't know yet how to store this capability for future use on as-yet-unknown values of `x`; we'll see how to do that in Lesson 2.)
+Compare this to other programming languages, if you know any:
+- Does it have a name?
+- Does it have a return value?
 
-Carefully map how the runes in that statement relate to each other, and notice how the taller structure makes it relatively easier to read and understand what's going on.
+Beyond those, what is the purpose of each line?
 
-> ### “Absolute” Value
->
-> Implement a version of the absolute value function, $|x|$, similar to the Heaviside implementation above.  (Translate it to 10 as well since we still can't deal with negative numbers; call this $|x|_{10}$.)
+The [`spec`](https://urbit.org/docs/hoon/reference/stdlib/4o#spec) gives the type as a mold and attaches a face to it for use in the gate.
+
+The body evaluates and returns its result, ultimately to the call site.  Frequently it is wise to explicitly require a particular return value type using `^-` kethep:
+
+```
+::  Confirm whether a value is greater than one.
+|=  a=@ud
+^-  @t
+?:  (gth a 1)
+  'yes'
+'no'
+```
+
+The input value, what is included in the `spec`, is sometimes called the argument or parameter in mathematics and other programming languages.  It's basically the input value.  Hoon prefers to call it the _sample_.
+
+Gates use enforce the type of incoming and outgoing values.  In other words, a `spec` is a kind of type which is fixing the possible noun inputs.  (See “Molds” below.)
+
+Gates can take multiple arguments as a cell:
+
+```
+::  Return which of two numbers is larger.
+|=  [a=@ud b=@ud]
+?:  (gth a b)
+  a
+b
+```
+
+You can also call them different ways with raw [`%` cen](https://urbit.org/docs/hoon/reference/rune/cen) runes:
+
+```
+%-  max  [100 200]
+%+  max  100  200
+```
+
+Remember `^-` kethep?  We will use `^-` as a _fence_, a way of making sure only data matching the appropriate structure get passed on.
+
+```
+::  Confirm if a value is greater than one.
+|=  a=@ud
+^-  @t
+?:  (gth a 1)
+  'yes'
+'no'
+```
+
+*This is the correct way to define a gate.*  Frequent annotation of type with `^-` kethep fences is essential to producing good Hoon code.
+
+In technical language, we describe Hoon as a _statically typed_ language.  This means that it enforces type constraints on all values very aggressively.  If you are used to a dynamic language like Python or Ruby, this will seem very restrictive at first.  The flip side is that once your code compiles correctly, you will often find that it is very much along the way towards being a working correct product.
+
+
+##  Mold Essentials
+
+Programming languages use data types to distinguish different kinds of data and associated rules.  For instance, what does it mean to add 3 to the letter A?  Depending on your programming language, you could see `A3`, `D`, or an error.
+
+A _type_ is really a rule for interpretation.  But for our Hoonish purposes, it's rather too broad a notion and we need to clarify some different kinds of things we could refer to as “type”.  It is instructive for us to distinguish three kinds of types in Hoon:
+
+1. Atoms:  values with auras.
+2. Molds:  structures.  Think of cells, lists, sets, and arrays.
+3. Marks:  file types.  Compare to conventional files distinguished by extension and definite internal structure.
+
+To re-employ the chemical metaphor, an atom is an atom; a cell is a molecule; a mold is an ideal molecule, a definition or structural representation; a mark is like a protein, a more complex transformation rule.
+
+Trivial types you have seen and worked with.  Marks we will leave until a later discussion of Gall agents or Clay, which use marks to type filesystem data.  For now, we focus on molds.
+
+We commonly need to do one of two things with a mold:
+
+1. Validate the shape of a noun (“clam”).
+2. Produce an example value (“bunt”).
+
+We often use bunts to clam, e.g.,
+
+```
+^-  @ud
+```
+
+uses the `@ud` default value (`0`) as the type specimen which the computation must match.
+
+To _actually_ get the bunt value, use the [`^*` kettar](https://urbit.org/docs/hoon/reference/rune/ket#kettar) rune, almost always used in its irregular form `*`:
+
+```
+^*  @ud
+^*  @da
+*@da
+*[@ud @ux @ub]
+```
+
+One more way to validate against type is to use an example instead of the extracted mold.  This uses [`^+` ketlus](https://urbit.org/docs/hoon/reference/rune/ket#ketlus) similarly to how we used `^-` ketlus previously:
+
+```
+^+  1.000  100
+```
+
+(This is what `^-` is actually doing:  `6-  p  q` reduces to `^+  ^*  p  q`.  Many runes we use actually reduce to other rune forms, and have been introduced for ease of use.)
+
+Technically, we can say that a mold is a function from a noun to a noun.  What this means is that we can use a mold to map any noun to a typed value—if this fails, then the mold crashes.
+
+We can use more complex structures for molds though, including built-in types like `list`s and `tape`s:
+
+```
+`(list @)`[104 101 108 108 111 32 77 97 114 115 33 ~]
+`tape``(list @)`[104 101 108 108 111 32 77 97 114 115 33 ~]
+
+`(list @)`[144 57 195 46 200 165 186 88 118 99 ~]
+`(list @p)``(list @)`[144 57 195 46 200 165 186 88 118 99 ~]
+```
+
+(Sometimes you see a `%bad-text` when using `tape`s, which means that you've tried to convert a number into text which isn't text.  More on `tape`s in Lesson 4.)
+
+-   Why does this mold conversion fail?
+
+     ```
+     `(list @ux)`[1 2 3 ~]
+     ```
+
+    What do we need to do in order to make it succeed?
+
+We can have more complex molds as well:
+
+```
+::  [[from-ship to-ship] points]
+[[@p @p] @ud]
+```
+
+Most of the time, we will define such complex types using specific runes and “mold builder” tools.
+
+### Identifying Molds
+
+The quick way to figure out which mold the Hoon compiler thinks something is (and definitionally is, I suppose) is to use the [`!>` zapgar](https://urbit.org/docs/hoon/reference/rune/zap#-zapgar) rune.
+
+```
+!>  0xace2.bead
+```
+
+For reasons which will be elaborated in Lesson 3, this is often employed as the so-called “type spear”:
+
+```
+-:!>(0xace2.bead)
+```
+
+### Mold Runes
+
+At this point, we really need to know about only two mold runes:
+
+1.  [`$?` bucwut](https://urbit.org/docs/hoon/reference/rune/buc#-bucwut), which forms a type union.
+
+    For instance, if you wanted a gate to return one of an unsigned aura type, but no other type, you could define a type union thus:
+    
+    ```
+    $?  [@ud @ux @ub ~]
+    ```
+    
+    and use it in a gate:
+    
+    ```
+    |=  [n=$?(@ud @ux @ub)]
+    (add n 1)
+    ```
+    
+    ```
+    > (foo 4)  
+    5  
+    > (foo 0x5)  
+    6  
+    > (foo 0b110)  
+    7  
+    > (foo ~zod)  
+    -need.?(@ub @ud @ux)  
+    -have.@p  
+    nest-fail  
+    dojo: hoon expression failed
+    ```
+
+    Unfortunately, type unions of atoms are not helpful in filtering over produced values (with `^-` kethep), as they default to the type of the last value in the union.  So the type union `$?(@ (list @))` distinguishes an atom and a list, but `(list $?(@ud @sd))` does not successfully produce a list distinguishing both types.
+
+    The irregular form of `$?` bucwut looks like this:
+    
+    ```
+    ?(@ud @ux @ub)
+    ```
+    
+    Type unions are mainly helpful when you need to match something that can have multiple options.
+
+2. [`$:` buccol](https://urbit.org/docs/hoon/reference/rune/buc#-buccol), which forms a named tuple.
+
+    We don't need to do a lot with these directly, unless we want to build a special type like a vector (e.g. with two components like an _x_ and a _y_).
+    
+    But these are what is actually going on inside of gate definitions:
+    
+    ```
+    |=  data=$:(ship=@p money=@ud)
+    ^-  $:(ship=@p money=@ud)
+    [(add ship.data 1) (add money.data 100)]
+    ```
+    
+    (A bit contrived, but we're still quite limited by what we know of Hoon.  We'll get more comfortable with using molds in Lesson 3.)
+
+
+##  Building Code
+
+The missing piece to really tie all of this together is the ability to store a gate and use it at a later time, not just in the same long Dojo session.  Enter the _generator_.
+
+A generator is a simple program which can be called from the Dojo.  It is a gate, so it takes some input as sample and produces some result.  Naked generators are the simplest generators possible, having access only to information passed to them directly in their sample.
+
+In this module, we will compose our first generator.
+
+### The Gate
+
+```
+::  Square a number.
+|=  a=@ud
+^-  @ud
+%+  mul
+  a
+a
+```
+
+(Any time you write code to use later, you should include some comments to explain what the code does and perhaps how it does that.)
+
+### The Process
+
+1. Open a text editor.
+2. Copy the gate above into the text editor.  (Double-check that two-space gaps are still gaps; some text editors chew them up into single-space aces.)
+3. Save the gate as `square.hoon` in the `base/gen` folder of your fakeship.
+4. In the Dojo, `|commit %base`.  _You should see a message indicating that the file has been loaded._
+5. Run the generator with `+square 5`.
+
+Any generator can be run the same way, beginning with the `+` lus character and followed by the name of a file in the `base/gen` directory.
+
+> ## Triangular Function
 > 
-> <img src="https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases}&space;x-10,&space;&&space;x&space;>&space;10&space;\\&space;10-x,&space;&&space;10-x&space;\le&space;10&space;\end{cases}" title="https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases} x-10, & x > 10 \\ 10-x, & 10-x \le 10 \end{cases}" />
+> In `%hw1`, you implemented the triangular function.
+> 
+> ![](https://lh4.googleusercontent.com/zdauTDEWvhhOkFEb6VcDEJ4SITsHOgcStf4NYFQSIVjTDPjaCqYGdin9TDCCeTG3OyMrUUdq-JtViiu_c9wuojim_mHpV6-DoTNwZzYz5_6qVVvN5fc3hEuSna2GwY15RQ=w740)
+> 
+> Take your code from that, turn it into a gate, and save it as a generator `tri.hoon`.
+{: .challenge}
+
+If you need to test code without completing it, you can stub out as-yet-undefined arms with the [`!!` zapzap](https://urbit.org/docs/hoon/reference/rune/zap#-zapzap) crash rune.  `!!` is the only rune which has no children, and it's helpful when you need something to satisfy Hoon syntax but aren't ready to flesh out the program yet.
+
+### Building Code Generally
+
+A generator gives us on-demand access to code, but it is helpful to load and use code from files while we work in the Dojo.
+
+A conventional library import with [`/+` faslus](https://urbit.org/docs/arvo/ford/ford#ford-runes) will work in a generator or another file, but won't work in Dojo, so you can't use `/+` faslus interactively.
+
+Instead, you need to use the `-build-file` thread to load the code.  Most commonly, you will do this with library code when you need a particular gate's functionality.
+
+`-build-file` accepts a file path and returns the built operational code.  For instance:
+
+```hoon
+> =ntw -build-file %/lib/number-to-words/hoon
+> one-hundred:numbers:ntw  
+100
+> (to-words:eng-us:numbers:ntw 19)
+[~ "nineteen"]
+```
+
+There are also a number of other import runes which make library, structure, and mark code available to you.  For now, the only one you need to worry about is `/+` faslus.
+
+For simplicity, everything we do will take place on the `%base` desk for now.  We will learn how to create a library in a subsequent lesson.
+
+> ### Loading a Library
 >
-> `https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases} x-10, & x > 10 \\ 10-x, & 10-x \le 10 \end{cases}`
->
-> Test it on a few values like 8, 9, 10, 11, and 12.
+> In a generator, load the `number-to-words` library using the
+> `/+` tislus rune.  (This must take place at the very top of
+> your file.)
+> 
+> Use this to produce a gate which accepts an unsigned decimal
+> integer and returns the text interpretation of its increment.
 {: .challenge}

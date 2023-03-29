@@ -1,335 +1,562 @@
 ---
-title: "Development Preliminaries"
-teaching: 15
+title: "Hoon Syntax"
+teaching: 45
 exercises: 15
 nodes:
-- "100"
-- "103"
+- "110"
+- "113"
 objectives:
-- "Explain what an Urbit ship is.."
-- "Distinguish a fakeship from a liveship."
-- "Use the `+ls` generator to show a directory's contents."
-- "`|mount` and `|commit` a desk."
-- "Identify the `.urb/` directory."
-- "Pronounce ASCII characters per standard Hoon developer practice."
-runes: []
+- "Distinguish nouns, cells, and atoms."
+- "Apply auras to transform an atom."
+- "Identify common Hoon molds, such as cells, lists, and tapes."
+- "Pin a face to the subject."
+- "Make a decision at a branch point."
+- "Distinguish loobean from boolean operations."
+- "Slam a gate (call a function)."
+runes:
+- "`%-`"
+- "`:-`"
+- "`=/`"
+- "`?:`"
+- "`^-`"
 keypoints:
-- "Development should typically be done on a disposable ship:  fakeship, comet, or moon."
-- "Earth and Mars must synchronize their filesystems."
+- "A noun is an atom or a cell.  An atom is an unsigned integer.  A cell is a pair of two nouns."
+- "An aura is a metadata “interpretation” of an atom."
+- "Functional expressions always result in a value."
+- "You preserve a value with a name (“face”) in Hoon using a `=/` tisfas rune."
+- "You make a decision between alternatives in Hoon using a `?:` wutcol rune."
+- "You can use existing code (“gates” = “functions”) in Hoon using a `%-` cenhep."
+readings:
+- "https://developers.urbit.org/guides/core/hoon-school/A-intro"
+- "https://developers.urbit.org/guides/core/hoon-school/B-syntax"
 ---
 
-#   Development Preliminaries
-##  Hoon School Lesson 0
+#   Hoon Syntax
+##  Hoon School Lesson 1
 
-What is an Urbit ship?  What does it mean to create one?  If we riff off of the Lesson -1 ideas, an Urbit ship has operations, state, and values that conform to the Nock and Arvo specifications.  In particular, identity is required.
+![](https://i.dailymail.co.uk/i/pix/2015/02/02/2541F2DB00000578-0-This_Holden_utility_was_seized_by_police_for_Hooning_in_Tennant_-a-24_1422867990080.jpg)
 
-There have been several guides put out on how to set up efficiently to develop on Urbit.  The most recent guide targets macOS development and is in preparation by Tlon:
+The way this will work:  we will have regular video meetings that will be posted.  I will talk through and teach material based on these notes.  I also suggest readings (see the bottom of the header block) from the written Hoon School docs.  These are optional but provide a slightly different perspective on the material.  You are also welcome to investigate older videos, but be aware that I may have changed the sequence or explanation of some material.
 
-- [“Tlon Dev Guide”](https://github.com/urbit/tlon.io/blob/5b5ab41d506fbc9fe8eda59f73db1254a048c9a2/content/dev/dev-guide.md)
+#   Hoon Syntax
 
-It's a good summary, but more than we need at this point in Hoon School Live.
-
-
-##  Urbit Ships
-
-Azimuth provides the identity.  Nock and Hoon define the operations.  Arvo provides the state.  But all of these must intersect in a particular instance of reality.  An Urbit ship is that instantiation of identity.
-
-> ### Operating Systems
->
-> If you are working on a Linux or macOS system, then you are
-> already well-equipped.
->
-> For Windows, you need to either set up the [MinGW build](https://github.com/urbit/urbit/releases)
-> of Urbit, or install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
-> Windows has a different way of representing line breaks
-> in text files, and this can lead to some incompatibility with
-> Clay.  (Your text editor should have an option for Unix-style
-> or Windows-style line breaks or newlines; select Unix-style.)
->
-> You won't be able to use Port currently for fakeships, although
-> a future update promises this feature.
-{:callout .challenge}
-
-### Fakeships v. Liveships
-
-An Urbit ship is a particular realization of an _identity_ and an _event log_ or _state_.  Both of these are necessary.
-
-Since live network identities are finite, scarce, and valuable, most prefer to develop on fake identities (fakeships or fakezods).  (This also avoids the possibility of inadvertently receiving an over-the-air update while developing code.)
-
-A fakeship is also different from a comet, which is an unkeyed liveship.
-
-To boot a fakeship, select an appropriate name (almost always ~zod) and boot with `urbit`:
-
-```sh
-urbit -F zod
-```
-
-If you don't want to download the boot sequence (_pill_) more than once, you can download it one time and use it to boot new fakeships:
-
-```sh
-wget https://bootstrap.urbit.org/urbit-v1.8.pill
-urbit -F zod -B urbit-v1.8.pill -c zod-2022-02-22
-```
-
-This launches the boot sequence, which creates the unique ship for the current system configuration.  The log looks something like this:
+It's important to get to writing code fast.  Open a fakeship Dojo, type
 
 ```
-urbit 1.8  
-boot: home is /home/neal/urbit/zod-2022-02-22  
-loom: mapped 2048MB  
-lite: arvo formula 27e494c5  
-lite: core 7b144622  
-lite: final state 7b144622  
-boot: loading pill urbit-v1.8.pill  
-boot: parsing %brass pill  
-loom: mapped 2048MB  
-boot: protected loom  
-live: logical boot  
-boot: installed 348 jets  
----------------- playback starting ----------------  
-pier: replaying events 1-17  
-1-b  
-1-c (compiling compiler, wait a few minutes)  
-ride: parsing  
-ride: compiling  
-ride: compiled  
-1-d  
-1-e  
-ride: parsing  
-ride: compiling  
-ride: compiled  
-1-f  
-ride: parsing  
-ride: compiling  
-ride: compiled  
-1-g  
-lull: ~hidrun-loclun  
-zuse: ~tipnut-hacpyl  
-vane %ames: ~rigsud-bolmes  
-vane %behn: ~sartes-masnyl  
-vane %clay: ~dachut-hapdur
-vane %dill: ~milwer-fogmeb  
-vane %eyre: ~bonler-ranteb  
-vane %gall: ~dildus-landef  
-vane %iris: ~macryl-midnyl  
-vane %jael: ~rabbyl-famdeg  
-arvo: metamorphosis  
-gall: direct morphogenesis  
-%clay-kernel-updated  
-clay: rebuilding %base after kernel update  
-gall: installing %hood  
-drum: link [~zod %dojo]  
-kiln: boot  
-kiln: installing %base locally  
-...
-gall: installing %acme  
-gall: installing %azimuth  
-...
-gall: installing %weather  
-gall: installing %btc-wallet  
-pier: (17): play: done  
----------------- playback complete ----------------  
-vere: checking version compatibility  
-ames: live on 31337 (localhost only)  
-http: web interface live on http://localhost:8080  
-http: loopback live on http://localhost:12321  
-pier (27): live  
-docket: fetching %http glob for %garden desk  
-ames: metamorphosis  
+%-  add  [5 6]
 ```
 
-One way to think of it: Arvo is merely an event log, but to do anything nontrivial it dispatches the events to vanes. Jael must have the identity (either livenet credentials or a fakeship) to boot, and other parts of the system cannot boot until Jael boots.
+and press `Return`.  (Note that there are _two_ spaces between some components, and that if you attempt to write without both spaces, the Dojo prompt will not let you type.)
 
-To quote ~master-morzod:
+The operation you just completed is straightforward enough:  `5 + 6`, in many languages, or `(+ 5 6)` in a Lisp like Clojure.  In fact, even in regular written mathematics, we are actually thinking of a mathematical expression as values connected by an operator.
 
-> A brass pill is a recipe for a complete bootstrap sequence, starting with a bootstrap Hoon compiler as a Nock formula. It compiles a Hoon compiler from source, then uses it to compile everything else in the kernel.
->
-> The main sequence is concerned with getting the entire system in good nick before Arvo runs.
+```
+5+6        :: standard notation  
+5 6 +      ::  reverse-polish notation  
++(5,6)     ::  some languages  
+(+ 5 6)    ::  lisp-y  
+    
+  +  
+ / \  
+5   6
+```
+
+That tree format carries a lot of information and shows how things are implicitly working throughout arithmetic.  Consider an equation with a left-hand side and a right-hand side:
+
+```
+6 = 4 + 2
+
+  =  
+ / \  
+6   +  
+   / \  
+  4   2  
+```
+
+If you try to run `%-  add  [5 6 7]` in the Dojo, you will find that it fails.  That's because addition is actually a binary operator, an operator on _two things_.  Thus we would have to run it twice:
+
+```
+Fails!
+
+   %-
+  /  \
+add  [5 6 7]
+
+
+Correct way to see:
+
+  + 
+ / \
+5   +
+   / \
+  6   7
+```
+
+Making the Hoon operators explicit:
+
+```
+This is a cell, a pair of values:
+
+      :-
+     /  \
+    5    6
+
+Thus to process the first expression we have:
+         
+         %-
+        /  \
+      add  :-
+          /  \
+         5    6
+
+And to process the second:
+
+         %-
+        /  \
+      add  :-
+          /  \
+         5    %-
+             /  \
+           add  :-
+               /  \
+              6    7
+```
+
+You'll get used to thinking in this "tree-like" structure of branching expressions joined by operators, which in Hoon we call _runes_.
+
+If we want to know why things look the way they do in Hoon, we need to step back to talk about why the system needs the Hoon representation at all.
+
+
+##  Why Hoon?
+
+The Urbit operating system hews to a conceptual model wherein each expression takes place in a certain context (the “subject”).  While sharing a lot of practicality with other programming paradigms and platforms, Urbit's model is mathematically well-defined and unambiguously specified.
+
+At its root, Urbit is completely specified by [Nock](https://urbit.org/docs/nock/definition), sort of a machine language for the Urbit virtual machine layer and event log.  However, Nock code is basically unreadable (and unwriteable) for a human.  [One worked example](https://urbit.org/docs/nock/example) yields, for decrementing a value by one, the Nock formula:
+
+```
+[8 [1 0] 8 [1 6 [5 [0 7] 4 0 6] [0 6] 9 2 [0 2] [4 0 6] 0 7] 9 2 0 1]
+```
+
+This is like reading binary machine code:  perhaps a silicon engineer needs to know this, but we mortals need a clearer vernacular.
+
+Hoon serves as Urbit's practical programming language.  Everything in Urbit OS is written in Hoon, and many of the ancillary tools as well.  
+
+Any operation in Urbit ultimately results in a value.  Much like machine language designates any value as a command, an address, or a number, a Hoon value is interpreted per the Nock rules and results in a basic data value at the end.  So what are our data values in Hoon?  How does it _work_?
+
+-   [Ted Blackman ~rovnys-ricfer, “Why Hoon?”](https://urbit.org/blog/why-hoon/)
+
+
+##  Nouns and Verbs
+
+Think about a child persistently asking you what a thing is made of.  At first, you may respond, "plastic", or "metal".  Eventually, the child may wear you down to a more fundamental level:  atoms and molecules.
+
+In a very similar sense, everything in a Hoon program is an atom or a molecule.  A Hoon program is a complex molecule, a digital chemistry that describes one mathematical representation of data caught in a crystal.
+
+The most general data category in Hoon is a _noun_.  This is just about as broad as saying “thing”, so let's be more specific:
+
+> A noun is an atom or a cell.
+
+Progress?  We can say, in plain English, that
+
+- An _atom_ is a nonzero integer number (0–∞).
+- A _cell_ is a pair of two nouns.  (In our chemical metaphor, a cell is a molecule!)
+
+_Everything_ in Hoon (and Nock, and Urbit) is a noun.  The Urbit OS itself is a noun.  So given any noun, the Urbit VM simply applies the Nock rules to change the noun in well-defined mechanical ways.
+
+> Back to the Dojo!  Enter both of the following:
 >
 > ```
-> pier: replaying events 1-18
+> 729
+> [1 2]
+> ```
+>
+> the first being an atom, the second being a cell.  All cells and atoms (and hence all nouns) have the same structure and display even if they are much more complicated than these.
+{: .challenge}
+
+### Atoms
+
+If an atom is a nonzero number, how do we represent anything else?  Hoon provides an “aura” or tag which lets you treat a number as text, time, date, Urbit address, IP address, and much more.
+
+An aura always begins with `@` pat, which denotes an atom (as opposed to a cell, `^` ket).  The next letter or letters tells you what kind of representation you want the value to have.
+
+For instance, to change the representation of a regular decimal number like `32` to a binary representation (i.e. for 2⁵), use `@ub`:
+
+```
+> `@ub`32
+0b10.0000
+```
+
+(The tic marks are a shorthand which we'll explain later.)
+
+While there are dozens of auras for specialized applications, here are the most important ones for you to know:
+
+| Aura | Meaning | Example | Comment |
+| ---- | ------- | ------- | ------- |
+| `@`  | Empty aura | `100` | (displays as `@ud`) |
+| `@da` | Date (absolute) | ~2022.2.8..16.48.20..b53a | Epoch calculated from 292 billion B.C. |
+| `@p` | Ship name | `~zod` |  |
+| `@rs` | Number with fractional part | `.3.1415` | Note the preceding `.` dot. |
+| `@t` | Text (“cord”) | `'hello'` | One of Urbit's several text types; only UTF-8 values are valid. |
+| `@ub` | Binary value | `0b1100.0101` |  |
+| `@ud` | Decimal value | `100.000` | Note that German-style thousands separator is used, `.` dot. |
+| `@ux` | Hexadecimal value | `0x1f.3c4b` |  |
+
+(In our chemical metaphor, these are rather like different elements.  Unlike chemical elements, however, these are completely interconvertible.)
+
+Hearkening back to our discussion of interchangeable representations in Lesson -1, you can see that these are all different-but-equivalent ways of representing the same underlying data values.
+
+The `^-` kethep rune is useful for ensuring that everything in the second child matches the type (aura) of the first, e.g.
+
+```
+^-  @ux  0x1ab4
+```
+
+We will use `^-` kethep extensively to enforce type constraints, a very useful tool in Hoon code.
+
+We can also use `^-` kethep to strip off metadata about the kind of value something is, then apply a new kind of value:
+
+```
+^-  @ub  ^-  @  0x1ab4
+```
+
+This second way of using `^-` is actually what the tic mark version for converting values is doing, as in the examples following.
+
+> Convert between some of these at the command line, e.g.:
+>
+> ```
+> > `@p`100  
+> ~syr  
+> > `@p`0b1100.0101  
+> ~luc  
+> > `@x`0b1100.0101  
+> 0xc5  
+> > `@ud`0b1100.0101  
+> 197
 > ```
 > 
-> Arvo is going to play the pill’s events to configure itself.
+> (You may see an error particular with `@t`, due to some binary sequences being valid UTF-8 text and others not.)
+{: .challenge}
+
+### Cells
+
+A cell is a pair of two nouns.  Cells are traditionally written using square brackets:  `[]`.  For now, just recall the square brackets and that cells are always _pairs_ of values.
+
+```
+[1 2]
+[@p @t]
+[[1 2] [3 4]]
+```
+
+This is actually a shorthand for a rune as well:
+
+```
+:-  1  2
+```
+
+produces a cell `[1 2]`.  You can chain these together:
+
+```
+:-  1  :-  2  3
+```
+
+to produce `[1 [2 3]]` or `[1 2 3]`.
+
+We deal with cells in more detail below.
+
+> ### Hoon as Noun
+> 
+> We mentioned earlier that everything in Urbit is a noun, including the program itself.  This is true, but getting from the rune expression in Hoon to the numeric expression requires a few more tools than we currently are prepared to introduce.
+> 
+> For now, you can preview the structure of the Urbit OS as a noun by typing `.` dot at the Dojo prompt.  This displays a summary of the structure of the operating function itself as a noun.
+{: .callout}
+
+
+##  The Phylum _Chordata_
+
+The backbone of any Hoon expression is a scaffolding of _runes_, which are essentially mathematical relationships between daughter components.  If nouns are nouns, then runes are verbs:  they describe what nouns do.
+
+For instance, when we called a function earlier (or, in Hoon parlance, _slammed a gate_), we needed to provide the [`%-` cenhep](https://urbit.org/docs/hoon/reference/rune/cen#-cenhep) rune with two bits of information, a function name and the values to associate with it:
+
+```
+%-
+  add
+  [1 2]
+```
+
+`++add` expects precisely two values (or _arguments_), which are provided by `%-` in the neighboring child expression.  There's really no limit to the complexity of Hoon expressions:  they can track deep and wide.  They also don't care much about layout, which leaves you a lot of latitude.  The only hard-and-fast rule is that there are single spaces (_ace_) and everything else (_gap_).
+
+```
+%-
+  add
+  [%-(add [1 2]) 3]
+```
+
+(Notice that inside of the `[]` cell notation we are using a slightly different form of the `%-` rune call.  In general, there are several ways to use many runes, and we will introduce these gradually.)
+
+(While this requirement is rather stiff, we'll see more expressive ways to write Hoon code after you're comfortable using runes.)
+
+For instance, here are some of the standard library functions which have a similar architecture:
+
+- [`++add`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (addition)
+- [`++sub`](https://urbit.org/docs/hoon/reference/stdlib/1a#sub) (subtraction, positive results only—what happens if you subtract past zero?)
+- [`++mul`](https://urbit.org/docs/hoon/reference/stdlib/1a#mul) (multiplication)
+- [`++div`](https://urbit.org/docs/hoon/reference/stdlib/1a#div) (integer division, no remainder)
+- [`++pow`](https://urbit.org/docs/hoon/reference/stdlib/1a#pow) (power or exponentiation)
+- [`++mod`](https://urbit.org/docs/hoon/reference/stdlib/1a#add) (modulus, remainder after integer division)
+- [`++dvr`](https://urbit.org/docs/hoon/reference/stdlib/1a#dvr) (integer division with remainder)
+- [`++max`](https://urbit.org/docs/hoon/reference/stdlib/1a#max) (maximum of two numbers)
+- [`++min`](https://urbit.org/docs/hoon/reference/stdlib/1a#min) (minimum of two numbers)
+
+
+> ### Writing Incorrect Code
+>
+> At the Dojo, you can attempt to operate using the wrong values; for instance, `++add` doesn't know how to add three numbers at the same time.
 >
 > ```
-> 1-b
-> 1-c (compiling compiler, wait a few minutes)
-> ride: parsing
-> ride: compiling
-> ride: compiled
-> 1-d
-> 1-e
-> ride: parsing
-> ride: compiling
-> ride: compiled
-> 1-f ride: parsing
-> ride: compiling
-> ride: compiled
-> 1-g
-> arvo: assembly
-> arvo: assembled
+> > %-  
+>  add  
+>  [1 2 3]  
+> -need.@  
+> -have.[@ud @ud]  
+> nest-fail  
+> dojo: hoon expression failed
+> ```
+>
+> So this statement above is _syntactically_ correct (for the `%-` rune) but in practice fails because the expected input arguments don't match.  Any time you see a `need`/`have` pair, this is what it means.
+{: .callout}
+
+Any Hoon program is architected around runes.  If you have used another programming language, you can see these as analogous to keywords, although they also make explicit what most language syntax parsers leave implicit.  Hoon aims at a parsimony of representation while leaving latitude for aesthetics.  In other words, Hoon strives to give you a unique characteristic way of writing a correct expression, but it leaves you flexibility in how you lay out the components to maximize readability.
+
+We are only going to introduce a handful of runes in this lesson, but by the time we're done you'll know the twenty or twenty-five runes that yield 80% of the capability.
+
+> ### Identifying Unknown Runes
+>
+> Here is a (lightly-edited) snippet of Hoon code from the OS itself.  Anything written after a `::` colcol is a _comment_ and is ignored by the computer.  (Comments are useful for human-language explanations.)
+> 
+> ```
+> %-  send
+> ::  forwards compatibility with next-dill
+> ?@  p.kyz  [%txt p.kyz ~]
+> ?:  ?=  %hit  -.p.kyz
+>   [%txt ~]
+> ?.  ?=  %mod  -.p.kyz
+>   p.kyz
+> =/  =@c
+>   ?@  key.p.kyz  key.p.kyz
+>     ?:  ?=  ?(%bac %del %ret)  -.key.p.kyz 
+>       `@`-.key.p.kyz
+>     ~-
+> ?:  ?=  %met  mod.p.kyz  [%met c]  [%ctl c]
 > ```
 > 
-> - 1-b: activate the compiler gate  
-> - 1-c: compile the compiler source  
-> - 1-d: recompile the compiler (enabling reflection)  
-> - 1-e: get the type of the kernel core  
-> - 1-f: compile Arvo source against the kernel core  
-> - 1-g: create the Arvo kernel with subject of the kernel core
+> 1. Mark each rune.
+> 2. For each rune, find its corresponding children.  (You don't need to know what a rune does to identify how things slot together.)
+> 3. Consider these questions:
+>     - Is every pair of punctuation marks a rune?
+>     - How can you tell a rune from other kinds of marks?
+> 
+> One clue:  every rune in Hoon (except for one, not in the above code) has _at least one child_.
+{: .challenge}
+
+> ### Inferring Rune Behavior
 >
-> After this, Arvo has been assembled. The lifecycle evaluation of the bootstrap sequence has been completed now.
+> Here is a snippet of Hoon code from the OS itself.
+> 
+> ```
+> =.  moz
+> %+  weld  moz
+> ^-  list
+> :~  [hen %lsip %e %init ~]
+>     [hen %lsip %d %init ~]
+>     [hen %lsip %g %init ~]
+>     [hen %lsip %c %init ~]
+>     [hen %lsip %a %init ~]
+> ==
+> ```
+> 
+> What does the `==` tistis do for the `:~` colsig?
+{: .challenge}
+
+
+##  Preserving Values with Faces
+
+Unlike many procedural programming languages, a Hoon expression only knows what it has been told.  This means that as soon as we calculate a value, it returns and falls back into the ether.
+
+```
+%-  sub  [5 1]
+```
+
+Right now, we don't have a way of preserving values for subsequent use in a more complicated Hoon expression.
+
+We are going to store the value as a variable, or in Hoon, “pin a face to the subject”.
+
+When we used `++add` or `++sub`, we basically wanted an immediate answer.  There's not much more to say than `5 + 1`.  In contrast, pinning a face accepts three daughter expressions:  a name (or face), a value, and the rest of the program.
+
+```
+=/  perfect-number  28
+%-  add  [perfect-number 10]
+```
+
+As a tree, the above program looks like this:
+
+```
+                =/
+             /  |   \
+perfect-number  28   %-
+                    /  \
+                  add  :-
+                      /  \
+         perfect-number   10
+```
+
+This is a little bit strange in the Dojo because subsequent expressions can't see the locally-defined name for a value, although it works quite well in long-form code.  The Dojo offers a workaround to retain named values:
+
+```
+=perfect-number 28
+%-  add  [perfect-number 10]
+```
+
+The difference is that the Dojo “pin” is permanent until deleted:
+
+```
+=perfect-number
+```
+
+rather than only effective for the daughter expressions of a `=/` tisfas rune.  (We also won't be able to use this Dojo pin in a regular Hoon program.)
+
+> ### A Large Power of Two
 >
-> Later, Arvo refers to itself as metamorphosed. Arvo now sheds its larval form. This means that it has acquired a single home in the kernel and has identity, entropy, and the standard library. At this point, the kernel and userspace have been built.
+> Create two numbers named `two` and `twenty`, with appropriate values, using the `=/` tisfas rune.
+> 
+> Then use these values to calculate 2²⁰ with `++pow` and `%-` cenhep.
+{: .challenge}
+
+
+##  Holding Things
+
+Atoms are well and fine for relatively simple data, but we already know about cells as pairs of nouns.  How else can we think of collections of data?
+
+### Cells
+
+A cell is formally a pair of two objects, but as long as the second (right-hand) object is a cell, these can be written stacked together:
+
+```
+> [1 [2 3]]
+[1 2 3]
+> [1 [2 [3 4]]]
+[1 2 3 4]
+```
+
+This convention keeps the notation from getting too cluttered.  For now, let's call this a “running cell” because it consists of several cells run together.
+
+There's some subtlety to this, but mostly these read to the right, i.e. `[1 2 3]` is the same as `[1 [2 3]]`.
+
+> Enter the following cells:
 >
-> - [https://groups.google.com/a/urbit.org/g/dev/c/ESrqJb3Ol54/m/bns0S1QkBAAJ?pli=1](https://groups.google.com/a/urbit.org/g/dev/c/ESrqJb3Ol54/m/bns0S1QkBAAJ?pli=1)
+> ```
+> [1 2 3]
+> [1 [2 3]]
+> [[1 2] 3]
+> [[1 2 3]]
+> [1 [2 [3]]]
+> [[1 2] [3 4]]
+> [[[1 2] [3 4]] [[5 6] [7 8]]]
+> ```
+{: .challenge}
 
-Once you have a `dojo>` prompt, the system is ready to go and waiting on input.
-
-Two fakeships can communicate with each other on the same machine, but have no awareness of the broader Urbit network.  We won't need to use this capability in Hoon School Live, but it can be helpful when developing networked apps on Gall later.
-
-
-##  Filesystem Coordination
-
-In pragmatic terms, an Urbit ship is what results when you successfully boot a new ship.  What you see is an apparently-empty folder.
-
-```sh
-$ ls zod
-$
-```
-
-Contrast this with what the `+ls %` command shows you from inside of your Urbit:
-
-```hoon
-> +ls %
-app/ desk/bill gen/ lib/ mar/ sur/ sys/ ted/
-```
-
-Urbit organizes its internal view of data and files as _desks_, which are associated collections of code and data.  These are not visible to the host operating system unless you explicitly mount them, and changes on one side are not made clear to the other until you “commit” them.  (Think of Dropbox, except that you have to explicitly synchronize to see changes somewhere else.)
-
-Inside of your ship (“Mars”), you can mount a particular desk to the host operating system (“Earth”):
-
-```hoon
-> |mount %base
-```
-
-Now check what happens outside of your ship:
-
-```sh
-$ ls zod
-base/
-$ ls zod/base
-app/  desk.bill gen/ lib/ mar/ sur/ sys/ ted/
-```
-
-If we make a change in the folder on Earth, the contents will only update on Mars if we explicitly tell the two systems to coordinate.
-
-On Earth:
-
-```sh
-$ cp zod/base/desk.bill zod/base/desk.txt
-```
-
-On Mars:
-
-```hoon
-> |commit %base
-+ /~zod/base/2/desk/txt
-```
-
-You can verify the contents of the copied files are the same using the `+cat` command:
-
-```hoon
-> +cat %/desk/bill
-> +cat %/desk/txt
-```
-
-(Dojo does know what a `bill` file is, so it displays the contents slightly formatted.)
-
-From Lesson 2 onwards, we will use this mode to store persistent code as files, editing on Earth and then synchronizing to Mars.
-
-### What Makes a Folder into a Ship?
-
-There appears to be nothing special about the `zod/` folder that `urbit` created.  In fact, there is a hidden folder which contains the system log and state.  (Show a hidden folder or file using `ls -a` at the Earth-side command line.)  You can investigate it (but don't change anything!):
-
-```sh
-$ cd zod
-$ ls -a
-base  .http-ports  .urb/  .vere.lock
-$ ls .urb
-bhk/ chk/ get/ log/ put/
-$ ls .urb/chk/
-north.bin  south.bin
-```
-
-These files contain all of the information necessary for the Urbit runtime program `urbit` to maintain and operate your ship's log, process new events, and persist the system state.
-
-### Discretion is the Better Part of Valor
-
-You will inevitably lobotimize your fakeship as you learn to develop programs in Hoon.  Such is life.  To save time, you should back up your fakeship now.  You will be able to restore it more quickly if you don't need to reboot it from scratch again.
-
-```sh
-$ cp -r zod zod-backup
-```
-
-Finally, to close your ship at any time, either type `|exit` or `Ctrl`+`d` to send the stop signal.  When you start your ship again (with `urbit zod` only), it will resume at the exact event from which you left off.
+Are they all the same?  We'll revisit cell structure in Lesson 3 and see why not.
 
 
-##  Text Editors
+### Text
 
-There are many fine development environments and text editors to choose from.  While it doesn't do much good, starting out, to just tell you to pick one you like, you can check out the most popular text editors and integrated developer environments (IDEs) as a reasonable proxy of usefulness.  [By popularity in 2021](https://insights.stackoverflow.com/survey/2021#most-popular-technologies-new-collab-tools), the following are the most popular IDEs (stripping out single-platform IDEs):
+There are two ways to represent text in Urbit:  `cord`s (`@t` aura atoms) and `tape`s (lists of individual characters).
 
-- [Visual Studio Code](https://code.visualstudio.com/) (if you don't have a strong opinion, use this one or the open-source [VSCodium](https://vscodium.com/))
-- [Notepad++](https://notepad-plus-plus.org/)
-- [Vim](https://www.vim.org/)/[Neovim](https://neovim.io/) (hard for beginners but very powerful)
-- [Sublime Text](https://www.sublimetext.com/)
-- [Atom](https://atom.io/) (good GitHub integration)
-- [Xcode](https://developer.apple.com/xcode/)
-- [Emacs](https://www.gnu.org/software/emacs/) (hard for beginners but very powerful)
-- [TextMate](https://macromates.com/)
+Why represent text?  What does that mean?  We have to have a way of distinguishing words that mean something to Hoon (like `list`) from words that mean something to a human or a process (like `'hello world'`).
+
+Right now, all you need to know is that there are (at least) two valid ways to write text:
+
+- `'with single quotes'` as a `cord`.
+- `"with double quotes"` as a `tape`.
+
+We will use these incidentally for now and explain their characteristics in Lesson 3.
 
 
-##  Pronouncing Hoon
+##  Make a Decision
 
-Hoon uses _runes_, or two-letter ASCII digraphs, to describe its structure.  (These are analogous to keywords in other programming languages.)  Because there has not really been a standard way of pronouncing, say, `#` (hash, pound, number, sharp, hatch) or `!` (exclamation point, bang, shriek, pling), the authors of Urbit decided to adopt a three-letter mnemonic to uniquely refer to each.
+The final rune we will use today will allow us to select between two different Hoon expressions, like picking a fork in a road.  Any computational process requires the ability to distinguish options.  For this, we first require a basis for discrimination:  truthness (_not_ “truthiness”).
 
-It is highly advisable for you to learn these pronunciations, as the documentation and other developers employ them frequently.  For instance, a rune like `|=` is called a “bartis”, and you will find it designated as such in the docs, in the source code, and among the developers.
+Essentially, we have to be able to decide whether or not some value or expression evaluates as `%.y` _true_ (in which case we will do one thing) or `%.n` _false_ (in which case we do another).  At this point, our basic expressions are always mathematical; later on we will check for existence, for equality of two values, etc.
+
+- [`++gth`](https://urbit.org/docs/hoon/reference/stdlib/1a#gth) (greater than `>`)
+- [`++lth`](https://urbit.org/docs/hoon/reference/stdlib/1a#lth) (less than `<`)
+- [`++gte`](https://urbit.org/docs/hoon/reference/stdlib/1a#gte) (greater than or equal to `≥`)
+- [`++lte`](https://urbit.org/docs/hoon/reference/stdlib/1a#lte) (less than or equal to `≤`)
+
+If we supply these with a pair of numbers to a `%-` cenhep call, we can see if the expression is considered `%.y` true or `%.n` false.
 
 ```
-ace	␣ (1 space)
-bar	|
-bas	\
-buc	$
-cab	_
-cen	%
-col	:
-com	,
-doq	"
-dot	.
-fas	/
-gal	<
-gap	␣␣ (>1 space or line break)
-gar	>
-hax	#
-hep	-
-kel	{
-ker	}
-ket	^
-lus	+
-mic	;
-pal	(
-pam	&
-par	)
-pat	@
-sel	[
-ser	]
-sig	~
-soq	'
-tar	*
-tic	`
-tis	=
-wut	?
-zap	!
+> %-  gth  [5 6]
+%.n
+> %-  lth  [7 6]
+%.n
+> %-  gte  [7 6]
+%.y
+> %-  lte  [7 7]
+%.y
 ```
 
-- [Urbit Docs, “Reading Hoon Aloud”](https://urbit.org/docs/hoon/hoon-school/hoon-syntax#reading-hoon-aloud)
+Given a test expression like those above, we can use the `?:` wutcol rune to decide between the two possible alternatives.  `?:` wutcol accepts three children:  a true/false statement, an expression for the `%.y` true case, and an expression for the `%.n` false case.
+
+```
+in Hoon:
+
+?:  %-  gth  5  6
+  'yes'
+'no'
+
+in tree form:
+
+         ?:
+     /    |   \
+    %-  'yes'  'no'
+   /  \ 
+ gth  :-
+     /  \
+    5    6
+```
+
+[Piecewise mathematical functions](https://en.wikipedia.org/wiki/Piecewise) require precisely this functionality.  For instance, the Heaviside function is a piecewise mathematical function which is equal to zero for inputs less than zero and one for inputs greater than or equal to zero.
+
+<img src="https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}" title="https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}" />
+
+`https://latex.codecogs.com/svg.image?H(x):=%20\begin{cases}1,%20&%20x%20%3E%200%20\\0,%20&%20x%20\le%200\end{cases}`
+
+_However_, we don't yet know how to represent a negative value yet!  (This is an inconvenience we won't resolve for a while, alas, although I address it briefly in the video.)  All of the decimal values we have used thus far are unsigned (non-negative) values, `@ud`.  For now, the easiest solution is to just translate the Heaviside function so it activates at a different value:
+
+<img src="https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}" title="https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}" />
+
+`https://latex.codecogs.com/svg.image?H_{10}(x):=%20\begin{cases}1,%20&%20x%20%3E%2010%20\\0,%20&%20x%20\le%2010\end{cases}`
+
+Thus equipped, we can evaluate the Heaviside function for particular values of `x`:
+
+```
+=/  x  10
+?:  %-  gte  [x 10]
+  1
+0
+```
+
+(Notably, we don't know yet how to store this capability for future use on as-yet-unknown values of `x`; we'll see how to do that in Lesson 2.)
+
+Carefully map how the runes in that statement relate to each other, and notice how the taller structure makes it relatively easier to read and understand what's going on.
+
+> ### “Absolute” Value
+>
+> Implement a version of the absolute value function, $|x|$, similar to the Heaviside implementation above.  (Translate it to 10 as well since we still can't deal with negative numbers; call this $|x|_{10}$.)
+> 
+> <img src="https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases}&space;x-10,&space;&&space;x&space;>&space;10&space;\\&space;10-x,&space;&&space;10-x&space;\le&space;10&space;\end{cases}" title="https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases} x-10, & x > 10 \\ 10-x, & 10-x \le 10 \end{cases}" />
+>
+> `https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases} x-10, & x > 10 \\ 10-x, & 10-x \le 10 \end{cases}`
+>
+> Test it on a few values like 8, 9, 10, 11, and 12.
+{: .challenge}
