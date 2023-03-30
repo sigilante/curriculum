@@ -29,6 +29,10 @@ keypoints:
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/A-intro"
 - "https://developers.urbit.org/guides/core/hoon-school/B-syntax"
+feedback: "https://forms.gle/BBdhuhoUWxcHzqxu6"
+homework: "https://forms.gle/EZjRxMpb1tdjKS557"
+video: "https://youtu.be/KNjdmH7OwJA"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl0.md"
 ---
 
 #   Hoon Syntax
@@ -36,7 +40,12 @@ readings:
 
 ![](https://i.dailymail.co.uk/i/pix/2015/02/02/2541F2DB00000578-0-This_Holden_utility_was_seized_by_police_for_Hooning_in_Tennant_-a-24_1422867990080.jpg)
 
-The way this will work:  we will have regular video meetings that will be posted.  I will talk through and teach material based on these notes.  I also suggest readings (see the bottom of the header block) from the written Hoon School docs.  These are optional but provide a slightly different perspective on the material.  You are also welcome to investigate older videos, but be aware that I may have changed the sequence or explanation of some material.
+The way this will work:  we will have regular video meetings that will be posted.  Jack and I will talk through and teach material based on these notes.  We also suggest readings (see the bottom of the header block) from the written Hoon School docs.  These are optional but provide a slightly different perspective on the material.  You are also welcome to investigate older videos, but be aware that we may have changed the sequence or explanation of some material.  There will be a homework assignment associated with each lesson.  You will need to complete seven of the eight to be considered a finisher.
+
+At the end of today's lesson, we will have some Q&A time and we will send you a quick feedback form with a single question.
+
+If you have not programmed before, «discussion».
+
 
 #   Hoon Syntax
 
@@ -171,11 +180,11 @@ _Everything_ in Hoon (and Nock, and Urbit) is a noun.  The Urbit OS itself is a 
 > ```
 >
 > the first being an atom, the second being a cell.  All cells and atoms (and hence all nouns) have the same structure and display even if they are much more complicated than these.
-{: .challenge}
+
 
 ### Atoms
 
-If an atom is a nonzero number, how do we represent anything else?  Hoon provides an “aura” or tag which lets you treat a number as text, time, date, Urbit address, IP address, and much more.
+If an atom is a nonnegative number, how do we represent anything else?  Hoon provides an “aura” or tag which lets you treat a number as text, time, date, Urbit address, IP address, and much more.
 
 An aura always begins with `@` pat, which denotes an atom (as opposed to a cell, `^` ket).  The next letter or letters tells you what kind of representation you want the value to have.
 
@@ -235,7 +244,7 @@ This second way of using `^-` is actually what the tic mark version for converti
 > ```
 > 
 > (You may see an error particular with `@t`, due to some binary sequences being valid UTF-8 text and others not.)
-{: .challenge}
+
 
 ### Cells
 
@@ -356,13 +365,13 @@ We are only going to introduce a handful of runes in this lesson, but by the tim
 >     - How can you tell a rune from other kinds of marks?
 > 
 > One clue:  every rune in Hoon (except for one, not in the above code) has _at least one child_.
-{: .challenge}
+
 
 > ### Inferring Rune Behavior
 >
 > Here is a snippet of Hoon code from the OS itself.
 > 
-> ```
+> ```hoon
 > =.  moz
 > %+  weld  moz
 > ^-  list
@@ -375,7 +384,7 @@ We are only going to introduce a handful of runes in this lesson, but by the tim
 > ```
 > 
 > What does the `==` tistis do for the `:~` colsig?
-{: .challenge}
+
 
 
 ##  Preserving Values with Faces
@@ -429,7 +438,7 @@ rather than only effective for the daughter expressions of a `=/` tisfas rune.  
 > Create two numbers named `two` and `twenty`, with appropriate values, using the `=/` tisfas rune.
 > 
 > Then use these values to calculate 2²⁰ with `++pow` and `%-` cenhep.
-{: .challenge}
+
 
 
 ##  Holding Things
@@ -462,7 +471,6 @@ There's some subtlety to this, but mostly these read to the right, i.e. `[1 2 3]
 > [[1 2] [3 4]]
 > [[[1 2] [3 4]] [[5 6] [7 8]]]
 > ```
-{: .challenge}
 
 Are they all the same?  We'll revisit cell structure in Lesson 3 and see why not.
 
@@ -559,4 +567,3 @@ Carefully map how the runes in that statement relate to each other, and notice h
 > `https://latex.codecogs.com/svg.image?|x|_{10}:=\begin{cases} x-10, & x > 10 \\ 10-x, & 10-x \le 10 \end{cases}`
 >
 > Test it on a few values like 8, 9, 10, 11, and 12.
-{: .challenge}
