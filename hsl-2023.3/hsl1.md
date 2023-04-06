@@ -62,21 +62,20 @@ Hoon developers often employ irregular forms, sometimes called â€œsugar syntaxâ€
 
 You should get used to reading and interpreting these forms and we will start to use them actively during this lesson.
 
-> ### Converting Between Forms
->
-> Convert each of the following irregular forms into the correct regular runic syntax.
->
-> 1. `(add 1 2)`
-> 2. ``@ub`16`
-> 3. `[%lorem %ipsum]`
-> 4. `[%lorem %ipsum %dolor]` (can do two ways)
->
-> Convert each of the following regular forms into the correct irregular syntax.
->
-> 1. :-  %lemon  %jello
-> 2. %-  pow  :-  2  16
-> 3. ^-  @p  ^-  @  256
-{: .challenge}
+### Converting Between Forms
+
+Convert each of the following irregular forms into the correct regular runic syntax.
+
+1. `(add 1 2)`
+2. `` `@ub`16 ``
+3. `[%lorem %ipsum]`
+4. `[%lorem %ipsum %dolor]` (can do two ways)
+
+Convert each of the following regular forms into the correct irregular syntax.
+
+1. `:-  %lemon  %jello`
+2. `%-  pow  :-  2  16`
+3. `^-  @p  ^-  @  256`
 
 
 ##  Deferring Computations
@@ -331,6 +330,7 @@ a
 
 ### The Process
 
+0. Tell your host OS and Urbit to start synchronizing by typing `|mount %base` in the Dojo.
 1. Open a text editor.
 2. Copy the gate above into the text editor.  (Double-check that two-space gaps are still gaps; some text editors chew them up into single-space aces.)
 3. Save the gate as `square.hoon` in the `base/gen` folder of your fakeship.
