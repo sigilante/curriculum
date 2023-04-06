@@ -52,7 +52,7 @@ mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl1.md"
 
 ##  A Spoonful of Sugar
 
-In Lesson 1, we rigorously adhered to the regular syntax of runes so that you could get used to using them.  In fact, the only two irregular forms we used were these:
+In Lesson 0, we rigorously adhered to the regular syntax of runes so that you could get used to using them.  In fact, the only two irregular forms we used were these:
 
 - Cell definition `[a b]` which represents the `:-` colhep rune, `:-  a  b`
 - Aura application ``@ux`500`` which represents a double `^-` kethep, `^-  @ux  ^-  @  500`.  (Why two `^-`s?)
