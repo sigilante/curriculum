@@ -36,7 +36,7 @@ mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl0.md"
 ---
 
 #   Hoon Syntax
-##  Hoon School Lesson 1
+##  Hoon School Lesson 0
 
 ![](https://i.dailymail.co.uk/i/pix/2015/02/02/2541F2DB00000578-0-This_Holden_utility_was_seized_by_police_for_Hooning_in_Tennant_-a-24_1422867990080.jpg)
 
