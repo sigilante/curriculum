@@ -41,10 +41,14 @@ keypoints:
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/D-gates"
 - "https://developers.urbit.org/guides/core/hoon-school/E-types"
+feedback: "https://forms.gle/BBdhuhoUWxcHzqxu6"
+homework: "https://forms.gle/NTPfqj4L6jUT5ohg8"
+video: "https://youtu.be/AkLt5t1QE1A"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl1.md"
 ---
 
 #   Hoon Conventions
-##  Hoon School Lesson 2
+##  Hoon School Lesson 1
 
 ##  A Spoonful of Sugar
 
