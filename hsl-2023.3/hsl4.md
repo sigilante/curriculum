@@ -1,638 +1,608 @@
 ---
-title: "Working with Text & Lists"
+title: "Subject-Oriented Programming"
 teaching: 45
 exercises: 15
 nodes:
-- "140"
-- "145"
-- "160"
+- "150"
+- "153"
+- "155"
 objectives:
-- "Use lists to organize data."
-- "Convert between kinds of lists (e.g. tapes)."
-- "Diagram lists as binary trees."
-- "Operate on list elements using `snag`, `find`, `weld`, etc."
-- "Import a library using `/+` faslus."
-- "Create a new library in `/lib`."
-- "Review Unicode text structure."
-- "Distinguish cords and tapes and their characteristics."
-- "Transform and manipulate text using text conversion arms:
-  - `++crip`: convert `tape` to `cord` (`tape`→`cord`)
-  - `++trip`: convert `cord` to `tape` (`cord`→`tape`)
-  - `++cass`: convert upper-case text to lower-case (`tape`→`tape`)
-  - `++cuss`: convert lower-case text to upper-case (`tape`→`tape`)
-  - [`++scot`](https://urbit.org/docs/reference/library/4m/#scot): render `dime` as `cord` (`dime`→`cord`)
-  - [`++scow`](https://urbit.org/docs/reference/library/4m/#scow): render `dime` as `tape` (`dime`→`tape`)
-- "Interpolate text."
-- "Employ sigpam logging levels."
+- "Build cores for deferred use and with custom samples."
+- "Identify the `$` buc arm in several structures and its role."
+- "Identify the structure of a door and relate it to a core."
+- "Pull an arm in a door."
+- "Identify the role of a desk in the Clay filesystem."
+- "Identify the components of a beak."
+- "Identify filesystem locations (including desks)."
+- "Identify the components of a path."
 runes:
-- "`/+`"
-- "~& >>>"
+- "`!:`"
+- "`|^`"
+- "`|.`"
+- "`|:`"
+- "`|_`"
+- "`%~`"
+- "`$_`"
 keypoints:
-- "There are four basic representations of text in Urbit:  cords, knots, terms, and tapes."
-- "Lists organize data for collective analysis or application."
-- "There is a suite of tools for working with lists."
-- "A library is an importable core of code."
-- "Gates that produce gates (like `list` v. (list)`) form an extremely common and important pattern in Hoon."
+- "Core patterns can be used to build many kinds of customized gates."
+- "The door is a common configuration for an Urbit core."
+- "The arms of doors are gate-builders."
+- "A desk in Clay organizes collections of code and data resources."
+- "A path in Clay describes a unique access path to a resource."
+- "The beak describes the current triplet of ship, desk, and timestamp for the filesystem."
 readings:
-- "https://developers.urbit.org/guides/core/hoon-school/G-trees"
+- "https://developers.urbit.org/guides/core/hoon-school/O-subject" (first section)
+- "https://developers.urbit.org/guides/core/hoon-school/K-doors"
 ---
 
+#   Subject-Oriented Programming
 
-##  Text in Hoon
+##  The Subject
 
-We've incidentally used `'messages written as cords'` and `"as tapes"`, but aside from taking a brief look at how tapes work with tree addressing, we haven't discussed why these differ or how text works more broadly.
+Before we talk about a single line of Hoon today, I want to talk about the subject-oriented programming paradigm.
 
-For one thing, there are four basic ways to represent text in Urbit:
+Classically, programming styles are categorized into:
 
-- `@t`, a `cord`, which is an atom (single value)
-- `@ta`, a `knot` or ASCII text, which is an atom (single value)
-- `@tas`, a `term` or ASCII text symbol
-- `tape`, which is a `(list @t)`
+1. Imperative:  focused on _control_ flow, recipe-like steps.
+2. Declarative:  focused on _data_ flow than control flow; think of database queries or regular expressions, if you've worked with them.
+3. Functional:  focused on composition of functions and expressions as a logical tree (subcategory of declarative programming).
+4. Object-Oriented:  focused on relationships between entities containing data and code that pass messages to each other to control what happens.
 
-This is more ways than many languages support:  most languages simply store text directly as a character array, or list of characters in memory.  This most closely approximates a `tape`.
+Sometimes these map to languages but you can basically do any of them in any language (if you're really willing to kick against the pricks sometimes).  The affordances and tools tend to facilitate one way over others though.
 
-### `@t` `cord`
+Subject-oriented programming combines aspects of object-oriented programming and functional programming.  You can think of it as a functional language with strict scoping rules.  If I lost you there, that's fine, we'll come back to this point.
 
-What is a written character? Essentially it is a representation of human semantic content (not sound strictly). (Note that I do not refer to _alphabets_, which prescribe a particular relationship of sound to symbol: there are ideographic and logographic scripts, syllabaries, and other representations. Thus, _characters_ not _letters_.) Characters can be composed—particularly in ideographic languages like Chinese.
+The _subject_ of any Hoon expression is basically the binary tree which spawned it.  In essence, subject-oriented programming is a way of fusing context, stack, and variable scope into one.  Subject-oriented programming means that this scope or limit of what you can see, kind of like a horizon, is all you really have to take into account.
 
-![](https://i.pinimg.com/originals/36/b4/9c/36b49ca6f50fe2b13665eb74c86774eb.jpg)
+### Wing Resolution
 
-One way to handle text is to assign a code value to each letter, then represent these as subsequent values in memory:
+We've had to jump through some (small) hoops to make our values visible to subsequent expressions in the Dojo.  This is because the Dojo can _either_ manually pin a value into the subject (using `=name` syntax) or evaluate a full Hoon expression including values (using `=/` tisfas syntax).
 
-```
-65  83  67  73  73
-A   S   C   I   I
-```
-
-The numeric values used for each letter are the [ASCII](https://en.wikipedia.org/wiki/ASCII) standard, which defines 128 unique characters (2⁷ = 128).
-
-> ### ASCII
-> 
-> ![](https://cs.smu.ca/~porter/csc/ref/asciifull.gif)
-> 
-> The American Standard Code for Information Interchange was
-> developed to allow digital devices to communicate over
-> telecomms interfaces in the 1960s.  It has since become the
-> _de facto_ standard for representing the basic Latin alphabet.
-> 
-> Unfortunately, ASCII doesn't support enough characters in 2⁷
-> slots to represent many diacritics and special characters,
-> standard in many languages.  This led to a longstanding but
-> unsatisfactory system of [code pages](https://en.wikipedia.org/wiki/Code_page)
-> and ultimately to Unicode.
-> 
-> [Code page 437](https://en.wikipedia.org/wiki/Code_page_437),
-> for instance, is frequently known as "extended ASCII" and will
-> look familiar to anyone who has worked with DOS, OS/2, or
-> other pre-Windows IBM-compatible systems. (I practically had
-> this memorized back when I started programming.)
-> 
-> ![](https://upload.wikimedia.org/wikipedia/commons/f/f8/Codepage-437.png)
-{: .callout}
-
-It's very helpful to use the `@ux` aura if you are trying to see the internal structure of a `cord`.  Since the ASCII values align at the 8-bit wide characters, you can see each character delineated by a hexadecimal pair.
+We saw a little bit of wing resolution in Lesson 3:
 
 ```hoon
-> `@ux`'HELLO'
-0x4f.4c4c.4548
-> `@ub`'HELLO'
-0b100.1111.0100.1100.0100.1100.0100.0101.0100.1000
-```
+> =data [a=[aa=[aaa=[1 2] bbb=[3 4]] bb=[5 6]] b=[7 8]]
 
-You can think of this a couple of different ways.  One way is to simple think of them as chained together, with the first letter in the rightmost position.  Another is to think of them as values multipled by a “place value”:
-
-| Letter | ASCII | Place | “Place Value” |
-| ------ | ----- | ----- | ------------- |
-| `H`    | 0x48  | 0     | 2⁰ = 1 → 0x48 |
-| `E`    | 0x45  | 1     | 2⁸ = 256 = 0x100 → 0x4500 |
-| `L`    | 0x4c  | 2     | 2¹⁶ = 65.536 = 0x1.0000 → 0x4c.0000 |
-| `L`    | 0x4c  | 3     | 2²⁴ = 16.777.216 = 0x100.0000 → 0x4c00.0000 |
-| `O`    | 0x4f  | 4     | 2³² = 4.294.967.296 = 0x1.0000.0000 → 0x4f.0000.0000 |
-
-This way, each value slots in after the preceding value.
-
-Special characters (non-ASCII, beyond the standard keyboard, basically) are represented using a more complex numbering convention.  Unicode defines a standard specification for _code points_ or numbers assigned to characters, and a few specific bitwise _encodings_ (such as the ubiquitous UTF-8).
-
-Urbit uses UTF-8 for `@t` values (thus both `cord` and `tape`).
-
-> ### Unicode (A Brief Aside)
-> 
-> Unicode separates code points from encoding. Unicode only 
-> specifies the former.
-> 
-> ```
-> U+010F  ď   LATIN SMALL LETTER D WITH CARON
-> ```
-> 
-> Unicode defines a codespace of 1,114,112 code points in the 
-> range 0x0 to 0x10.ffff. There are about 170,000 characters 
-> specified currently.
-> 
-> [UTF-8](https://en.wikipedia.org/wiki/UTF-8) is a variable-
-> byte encoding, using one to four bytes to represent any
-> possible Unicode address.  The first part of UTF-8 matches
-> ASCII so they are intercompatible with each other.
-> 
-> ![](https://raw.githubusercontent.com/sigilante/curriculum/master/img/hsl/misc_encoding__mabrov_utf0.png)
-> 
-> ![](https://raw.githubusercontent.com/sigilante/curriculum/master/img/hsl/misc_encoding__mabrov_utf1.png)
-> 
-> ![](https://raw.githubusercontent.com/sigilante/curriculum/master/img/hsl/misc_encoding__mabrov_utf2.png)
-> 
-> ![](https://raw.githubusercontent.com/sigilante/curriculum/master/img/hsl/misc_encoding__mabrov_utf3.png)
-> 
-> ![](https://raw.githubusercontent.com/sigilante/curriculum/master/img/hsl/misc_encoding__mabrov_utf4.png)
->
-> -   [Computerphile on Unicode](https://www.youtube.com/watch?v=MijmeoH9LT4)
-> -   [Mojibake](https://en.wikipedia.org/wiki/Mojibake), the result of interpreting text with the wrong encoding (pronounce it _mo-ji-ba-ke_)
-> -   [Big list of naughty strings](https://github.com/minimaxir/big-list-of-naughty-strings), strings that tend to cause encoding and parsing problems with many software packages and libraries.
-{: .callout}
-
-### `(list @t)` `tape`
-
-There are some tools to work with atom `cord`s of text, but most of the time it is more convenient to unpack the atom into a `tape`.  A `tape` splits out the individual characters from a `cord` into a `list` of `@t` values.
-
-![](./binary-tree-tape.png)
-
-We've hinted a bit at the structure of `list`s before; for now the main thing you need to know is that they are cells which end in a `~` sig.  So rather than have all of the text values stored sequentially in a single atom, they are stored sequentially in a rightwards-branching binary tree of cells.
-
-> ### Lists
->
-> There are many tools for manipulating text using standard
-> string tools.  We'll take a look at those in the next major
-> section after “Text”.
-{: .callout}
-
-Later on, we'll look at how to convert between the forms of text and the advantages and disadvantages of each.
-
-> ### Can You Trick Hoon?
->
-> If a `~` marks the end of a `tape`, can it occur earlier in the
-> `tape`?  (Make sure to distinguish the _character_ `~` from the
-> _value_ `~`.)
->
-> > ### Solution
-> >
-> > ```hoon
-> > > `(list @t)`['a' 'b' ~ ~]  
-> > mint-nice  
-> > -need.?(%~ [i=@t t=*''])  
-> > -have.[@t @t %~ %~]  
-> > nest-fail  
-> > dojo: hoon expression failed
-> > ```
-> {: .solution}
-{: .challenge}
-
-
-### `@ta` `knot`
-
-If we restrict the character set to certain ASCII characters instead of UTF-8, we can use this restricted representation for system labels as well (such as URLs, file system paths, permissions).  `@ta` `knot`s and `@tas` `term`s both fill this role for Hoon.
-
-```hoon
-> `@ta`'hello'
-~.hello
-```
-
-Every valid `@ta` is a valid `@t`, but `@ta` does not permit spaces or a number of other characters.  (See `++sane`, discussed below.)
-
-### `@tas` `term`
-
-A further tweak of the ASCII-only concept, the `@tas` `term` permits only “text constants”, values that 
-
-> [`@tas` permits only] a restricted text atom for Hoon constants. The only characters permitted are lowercase ASCII letters, `-`, and `0-9`, the latter two of which cannot be the first character. The syntax for `@tas` is the text itself, always preceded by `%`. The empty `@tas` has a special syntax, `$`.
-
-`term`s are rarely used for message-like text, but they are used all the time for internal labels in code.  They differ from regular text in a couple of key ways that can confuse you until you're used to them.
-
-For instance, a `@tas` value is also a mold, and the value will _only_ match its own mold, so they are commonly used with type unions to filter for acceptable values.
-
-```hoon
-> ^-  @tas  %5  
-mint-nice  
--need.@tas  
--have.%5  
-nest-fail  
-dojo: hoon expression failed  
-> ^-  ?(%5)  %5  
-%5
-```
-
-For instance, imagine creating a function to ensure that only a certain [classical element]() can pass through a gate:
-
-```hoon
-|=  input=@t
-=<
-(validate-element input)
-|%
-+$  element  ?(%earth %air %fire %water)
-++  validate-element
-  |=  incoming=@t
-  %-  element  incoming
---
-```
-
-##  Text Operations
-
-The most common needs for text-based data in programming are to _produce_ text, _manipulate_ text, or _analyze_ text.
-
-### Producing Text
-
-String interpolation puts the result of an expression into a `tape`:
-
-```hoon
-> "{<(add 5 6)>} is the answer."
-"11 is the answer."
-```
-
-`++weld` can be used to glue two `tape`s together:
-
-```hoon
-> (weld "Hello" "Mars!")
-"HelloMars!"
-```
-
-```hoon
-|=  [t1=tape t2=tape]
-^-  tape
-(weld t1 t2)
-```
-
-### Manipulating Text
-
-Common operations include:
-
-- `++crip`: convert `tape` to `cord` (`tape`→`cord`)
-- `++trip`: convert `cord` to `tape` (`cord`→`tape`)
-- `++cass`: convert upper-case text to lower-case (`tape`→`tape`)
-- `++cuss`: convert lower-case text to upper-case (`tape`→`tape`)
-
-
-### Analyzing Text
-
-You can:
-
-1. Search
-2. Tokenize
-3. Convert into data
-
-#### Search
-
-- [`++find`](https://urbit.org/docs/hoon/reference/stdlib/2b#find) `[nedl=(list) hstk=(list)]` locates a sublist (`nedl`, needle) in the list (`hstk`, haystack)
-
-> ### Count the Number of Characters in Text
->
-> There is a built-in `++lent` function that counts the number
-> of characters in a `tape`.  Build your own `tape`-length
-> character counting function without using `++lent`. 
-> 
-> You may find the [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutsig) rune to be helpful.  It tells you whether a value is `~` or not.  (How would you do this with a regular `?:` wutcol?)
-{: .challenge}
-
-#### Tokenize/Parse
-
-To _tokenize_ text is to break it into pieces according to some rule.  For instance, to count words one needs to break at some delimiter.
-
-The full parser for Hoon text is very sophisticated.  There are a lot of rules to deciding what is and isn't a rune, and how the various parts of an expression relate to each other.  (Remember `!,` zapcom?)  We don't need that level of power to work with basic text operations, so we'll instead use basic `list` tools whenever we need to extract or break text apart.
-
-> ### Parsing Text
->
-> Hoon has a very powerful text parsing engine, built to compile
-> Hoon itself.  However, it tends to be quite obscure to new
-> learners.  We can build a simple one using `list` tools, as
-> you'll see in the next section.
-{: .callout}
-
-#### Convert
-
-If you have a Hoon value and you want to convert it into text as such, use `++scot` and `++scow`.  These call for a value of type `$dime`, which means the `@tas` equivalent of a regular aura.  These are labeled as returning `cord`s (`@t`s) but in practice seem to return `knot`s (`@ta`s).
-
-- [`++scot`](https://urbit.org/docs/reference/library/4m/#scot): render `dime` as `cord` (`dime`→`cord`); include any necessary aura transformation.
-
-    ```hoon
-    > `@t`(scot %ud 54.321)
-    '54.321'
-    > `@t`(scot %ux 54.000)  
-    '0xd2f0'
-    ```
-
-    ```hoon
-    > (scot %p ~sampel-palnet)
-    ~.~sampel-palnet
-    > `@t`(scot %p ~sampel-palnet)
-    '~sampel-palnet'
-    ```
-
-- [`++scow`](https://urbit.org/docs/reference/library/4m/#scow): render `dime` as `tape` (`dime`→`tape`); otherwise identical to `++scot`.
-
-[`++sane`](https://urbit.org/docs/hoon/reference/stdlib/4b#sane) is used to check the validity of a possible text string as a `knot` or `term`.  The usage of `++sane` will feel a bit strange to you:  it doesn't apply directly to the text you want to check, but it produces a gate that checks for the aura (as `%ta` or `%tas`).  (The gate-builder is a fairly common pattern in Hoon.)  `++sane` is also not infallible yet.
-
-```hoon
-> ((sane %ta) 'ångstrom')  
-%.n  
-> ((sane %ta) 'angstrom')  
-%.y  
-> ((sane %tas) 'ångstrom')  
-%.n  
-> ((sane %tas) 'angstrom')  
-%.y
-```
-
-Why is this sort of check necessary?  Two reasons:
-
-1.  `@ta` `knot`s and `@tas` `term`s have strict rules, such as being ASCII-only.
-2.  Not every sequence of bits has a conversion to a text representation.  That is, ASCII and Unicode have structural rules that limit the possible conversions which can be made.  If things don't work, you'll get a `%bad-text` response.
-
-    ```hoon
-    > 0x1234.5678.90ab.cdef  
-    0x1234.5678.90ab.cdef  
-    [%bad-text "[39 239 205 171 144 120 86 52 92 49 50 39 0]"]
-    ```
-
-There's a minor bug in Dojo that will let you produce an erroneous `term` (`@tas`):
-
-```hoon
-> `@tas`'hello mars'
-%hello mars
-```
-
-Since a `@tas` cannot include a space, this is formally incorrect, as `++sane` reveals:
-
-```hoon
-> ((sane %tas) 'hello')  
-%.y
-> ((sane %tas) 'hello mars')
-%.n
-```
-
-
-##  List Operations
-
-The `tape` is a special kind of `list`, actually a `(list @t)`.  Other lists can contain other atom types, generic atoms, other lists (lists of lists), or even generic nouns.
-
-A `list` is an ordered arrangement of elements ending in a `~` (null).  Most lists have the same kind of content in every element (for instance, a `(list @rs)`, a list of numbers with a fractional part), but some lists have many kinds of things within them.  Some lists are even empty.
-
-```hoon
-> `(list @)`['a' %b 100 ~]
-~[97 98 100]
-```
-
-(Notice that all values are converted to the specified aura, in this case the empty aura.)
-
-A `list` is built with the `list` mold.  (Remember that a mold is a type and can be used as an enforcer:  it attempts to convert any data it receives into the given structure, and crashes if it fails to do so.)
-
-Lists are commonly written with a shorthand `~[]`:
-
-```hoon
-> `(list)`~['a' %b 100]
-~[97 98 100]
-```
-
-```hoon
-> `(list (list @ud))`~[~[1 2 3] ~[4 5 6]]
-~[~[1 2 3] ~[4 5 6]]
-```
-
-If something has the same _structure_ as a `list` but hasn't been explicitly labeled as such, then Hoon won't always recognize it as a `list`.  In such cases, you'll need to explicitly mark it as such:
-
-```hoon
-> [3 4 5 ~]
-[3 4 5 ~]
-> `(list @ud)`[3 4 5 ~]
-~[3 4 5]
-> -:!>([3 4 5 ~])
-#t/[@ud @ud @ud %~]
-> -:!>(`(list @ud)`[3 4 5 ~])
-#t/it(@ud)
-```
-
-(See also [`++limo`](https://urbit.org/docs/hoon/reference/stdlib/2b#limo) which marks a null-terminated tuple as a `list`.)
-
-Using `~[]` still doesn't mark it as a `list`, unfortunately, which can lead to some confusion:
-
-```hoon
-> -:!>(~['a' %b 100])
-#t/[@t %b @ud %~]
-> -:!>(`(list)`~['a' %b 100])
-#t/it(*)
-```
-
-Notice that the type from the type spear `-:!>` shows up as `it()`, short for an “iterator”, or type that can potentially continue as long as the pattern matches.
-
-> ### What is the Structure of a `list` of `list`s?
->
-> Draw a binary tree representing the actual tree location of
-> values in this data structure:
-> 
-> ```hoon
-> `(list (list @ud))`~[~[1 2 3] ~[4 5 6] ~[7 8 9]]
-> ```
-{: .challenge}
-
-Once you have your data in the form of a `list`, there are a lot of tools to manipulate and analyze them:
-
-- [`++flop`](https://urbit.org/docs/hoon/hoon-school/lists#flop) reverses the order of the elements (exclusive of the `~`):
-  
-    ```hoon
-    > (flop ~[1 2 3 4 5])
-    ~[5 4 3 2 1]
-    ```
-
-- [`++sort`](https://urbit.org/docs/hoon/hoon-school/lists#sort) uses a `list` and a comparison function (like `++lth`) to order things:
-
-    ```hoon
-    > (sort ~[1 3 5 2 4] lth)
-    ~[1 2 3 4 5]
-    ```
-
-- [`++snag`](https://urbit.org/docs/hoon/hoon-school/lists#snag) takes a index and a `list` to grab out a particular element (note that it starts counting at zero):
-
-    ```hoon
-    > (snag 0 `(list @)`~[11 22 33 44])
-    11
-    > (snag 1 `(list @)`~[11 22 33 44])
-    22
-    > (snag 3 `(list @)`~[11 22 33 44])
-    44
-    > (snag 3 "Hello!")
-    'l'
-    > (snag 1 "Hello!")
-    'e'
-    > (snag 5 "Hello!")
-    '!'
-    ```
-
-There are a couple of sometimes-useful `list` builders:
-
-- [`++gulf`](https://urbit.org/docs/hoon/reference/stdlib/2b#gulf) spans between two numeric values (inclusive of both):
-
-    ```hoon
-    > (gulf 5 10)  
-    ~[5 6 7 8 9 10]
-    ```
-
-- [`++reap`](https://urbit.org/docs/hoon/reference/stdlib/2b#reap) repeats a value many times in a `list`:
-
-    ```hoon
-    > (reap 5 0x0)  
-    ~[0x0 0x0 0x0 0x0 0x0]
-    > (reap 8 'a')  
-    <|a a a a a a a a|>  
-    > `tape`(reap 8 'a')  
-    "aaaaaaaa"
-    > (reap 5 (gulf 5 10))  
-    ~[~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10] ~[5 6 7 8 9 10]]  
-    ```
-
-Once you have a `list` (including a `tape`), there are a lot of manipulation tools you can use to extract data from it or modify it:
-
-- [`++find`](https://urbit.org/docs/hoon/reference/stdlib/2b#find) `[nedl=(list) hstk=(list)]` locates a sublist (`nedl`, needle) in the list (`hstk`, haystack)
-- [`++snag`](https://urbit.org/docs/hoon/reference/stdlib/2b#snag) `[a=@ b=(list)]` produces the element at an index in the list (zero-indexed)
-- [`++snap`](https://urbit.org/docs/hoon/reference/stdlib/2b#snap) `[a=(list) b=@ c=*]` replaces the element at an index in the list (zero-indexed) with something else
-- [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) `[a=@ b=(list)]` produces the first _a_ elements from the front of the list
-- [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b#slag) `[a=@ b=(list)]` produces the last _a_ elements from the end of the list
-- [`++weld`](https://urbit.org/docs/hoon/reference/stdlib/2b#weld) `[a=(list) b=(list)]` glues two `list`s together (_not_ a single item to the end)
-
-There are a few more that you should pick up eventually, but these are enough to get you started.
-
-Using what we know to date, most operations that we would do on a collection of data require a trap.  However, there are some cool aggregators and applicators:
-
-- [`++roll`](https://urbit.org/docs/hoon/reference/stdlib/2b#roll) `[a=(list) b=gate]` slams a two-argument gate from left to right across a list.
-
-    For instance, to obtain the sum of a list of numbers, use it with `++add`:
-    
-    ```hoon
-    (roll (gulf 1 5) add)
-    ```
-    
-    You could even build a factorial this way:
-    
-    ```hoon
-    |=  n=@ud
-    (roll (gulf 1 n) mul)
-    ```
-    
-    (Due to internal optimizations, this is actually much faster than the ones we have written to date!)
-
-- [`++turn`](https://urbit.org/docs/hoon/reference/stdlib/2b#turn) `[a=(list) b=gate]` produces a new list with the gate applied to each element of the original.
-
-    ```hoon
-    (turn (gulf 65 90) @t)
-    ```
-    
-    Include the factorial function from a moment ago:
-    
-    ```hoon
-    (turn (gulf 1 20) factorial)
-    ```
-
-A few operations in Hoon actually require a `lest`, a `list` guaranteed to be non-null (that is, `^-  (list)  ~` is excluded).
-
-```hoon
-> =/  list=(list @)  ~[1 2 3]
- i.list
--find.i.list
-find-fork
-dojo: hoon expression failed
-```
-
-This can be done by testing whether the value is null, either directly with `?:` wutcol or using the specialized [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#_-wutsig) rune.
-
-```hoon
-> =/  list=(list @)  ~[1 2 3]
- ?~  list  !!
- i.list
+> -:aaa.aa.a.data
 1
 ```
 
-> ### Break Text at a Space
->
-> Let's build a parser to split a long `tape` into smaller
-> `tape`s at single spaces.  That is, given a `tape`
-> 
-> ```
-> "the sky above the port was the color of television tuned to a dead channel"
-> ```
-> 
-> the gate should yield
-> 
-> ```
-> ~["the" "sky" "above" "the" ...]
-> ```
-> 
-> To complete this, you'll need [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) and [`++slag`](https://urbit.org/docs/hoon/reference/stdlib/2b#slag) (who sound like
-> villainous henchmen from a children's cartoon.
-> > ### Solution
-> >
-> > ```hoon
-> > =/  ex  "the sky above the port was the color of television tuned to a dead channel"  
-> > =/  index  0  
-> > =/  result  *(list tape)  
-> > |-  ^-  (list tape)  
-> > ?:  =(index (lent ex))  
-> >   result  
-> > ?:  =((snag index ex) ' ')  
-> >   $(index 0, ex `tape`(slag +(index) ex), result (weld result ~[`tape`(scag index ex)]))    
-> > $(index +(index))
-> > ```
-{: .challenge}
+How does an expression like this actually resolve?  Hoon doesn't know whether a particular value is a face or an arm name until it conducts a search looking for name matches.  If it finds a face first, the value of the face is returned.  If it finds an arm first, the arm will be evaluated and the product returned.
 
-=/  ex  "the sky above the port was the color of television tuned to a dead channel"  
-=/  index  0  
-=/  result  *(list tape)  
-|-  
- ?:  =(index (lent ex))  result  
- :: one case is this is a regular character  
- :: one case is this is a space  
- ?:  =(' ' (snag index ex))  
-   %=  $  
-     index  +(index)  
-     result  (weld result (scag index ex))  
-   ==  
- $(index +(index))
+The names are breadcrumbs as a “wing” or limb search path.  (There is one critical difference between address-based search paths and name-based search paths:  address-based search paths always return the value as data, never as code.  Use name-based search paths if you need to evaluate it as an expression.)
 
-##  Building Your Own Library
+> Urbit does not use the lambda calculus, an environment or symbol table, or linking. Because it pushes name resolution out of the fundamental interpreter and up into the language, it can play many more namespace juggling tricks.
 
-As an addendum to our discussion about cores last week, let's take some of the code we've built above for processing text and turn them into a library we can use in another generator.
+There is no restriction against using the same face name for multiple limbs of the subject. This is one way in which faces aren't like ordinary variables:
 
-> ### Build a Library
->
-> Take the space-breaking code and the element-counting code 
-> gates from above and include them in a `|%` barcen core.  Save
-> this file as `lib/text.hoon` in the `%base` desk and commit.
->
-> Produce a generator `gen/text-user.hoon` which accepts a `tape`
-> and returns the number of words in the text (separated by 
-> spaces).  (How would you obtain this from those two 
-> operations?)
-{: .challenge}
-
-### Logging
-
-The most time-honored method of debugging is to simply output relevant values at key points throughout a program in order to make sure they are doing what you think they are doing.  For this, we introduced `~&` sigpam recently.
-
-The `~&` sigpam rune offers some finer-grained output options than just printing a simple value to the screen.  For instance, you can use it with string interpolation to produce detailed error messages.
-
-There are also `>` modifiers which can be included to mark “debugging levels”, really just color-coding the output:
-
-1.  No `>`:  regular
-2.  `>`:  information
-3.  `>>`:  warning
-4.  `>>>`:  error
-
-(Since all `~&` sigpam output is a side effect of the compiler, it doesn't map to the Unix [`stdout`/`stderr` streams](https://en.wikipedia.org/wiki/Standard_streams) separately; it's all `stdout`.)
-
-You can use these to differentiate messages when debugging or otherwise auditing the behavior of a generator or library.  Try these in your own Dojo:
+`^` skips the first _n_ matches in the subject.  What this means to you is that the _n_ “nearest” names are skipped first, so what `^` does is pull a name from an outer core.  (Naturally, you only use this when you know what you’re looking for in the subject.)  `^$` is one way of setting up a `%=` cenhep loop/recursion with two nested `|-` barket traps, for instance.
 
 ```hoon
-> ~&  'Hello Mars!'  ~  
-~  
->   'Hello Mars!'  
-> ~&  >  'Hello Mars!'  ~  
-~  
->>  'Hello Mars!'  
-> ~&  >>  'Hello Mars!'  ~  
-~  
->>> 'Hello Mars!'  
-> ~&  >>>  'Hello Mars!'  ~  
-~
+> double:[double=123 c]
+123
+
+> ^double:[double=123 c]
+24
+
+> ^double:[double=123 double=456 c]
+456
+
+> ^^double:[double=123 double=456 c]
+24
+```
+
+- [Hoon School, “The Subject and Its Legs”](https://urbit.org/docs/hoon/hoon-school/the-subject-and-its-legs)
+
+> ## Improving Debugging
+>
+> The [`!:` zapcol](https://urbit.org/docs/hoon/reference/rune/zap#-zapcol) rune turns on a stack trace, or table of data 
+> related to a crash, in the event that the daughter expression 
+> fails.  `!:` zapcol is frequently used at the top of a 
+> generator to help track and guide debugging.
+{: .callout}
+
+
+##  More Cores
+
+Cores store code (`battery`) and data (`payload`).  Although gates are a type of core, other cores can be used to build gates to carry out particular operations.  Since Hoon is very rigorous about type constraints and type checking, as you have been discovering to your chagrin in the homework, we will use gate-building cores to satisfy this rigor.  (In the last lesson, we saw the `list` and `sane` gate-building arms.)
+
+### Building Gates on Demand
+
+For instance, most of the time when we have called a gate, the gate has already existed:
+
+```hoon
+> =inc |=(a=@ud (add 1 a))
+> (inc 10)
+11
+```
+
+In this case, `inc` is a gate which already exists in the subject, and Hoon looks up the name in the current subject, then slots the payload into the battery arm `$` and evaluates the expression.
+
+We could also skip producing the gate ahead of time and build it on-demand right where we use it:
+
+```hoon
+> (|=(a=@ud (add 1 a)) 123)
+124
+> (|=(a=@ud (mul 2 a)) 123)
+246
+```
+
+Although it rarely matters to us much, the standard library arms `++add`, `++mul`, etc. are more like the second:  they are gates built on demand by the arms.
+
+Let's build a core which has arms to modify values in a characteristic way by building gates.  In the Dojo:
+
+```hoon
+=c |%
+++  add-10
+  |=  a=@ud
+  (add a 10)
+++  sub-10
+  |=  a=@ud
+  (sub a 10)
+++  mul-10
+  |=  a=@ud
+  (mul a 10)
+++  div-10
+  |=  a=@ud
+  (div a 10)
+++  mul-20
+  |=  a=@ud
+  (add (mul-10 a) (mul-10 a))
+--
+```
+
+We use these by locating them in the core `c` with `:` col limb resolution:
+
+```hoon
+> (add-10:c 6)
+16
+> (sub-10:c 16)
+6
+> (mul-10:c 16)
+160
+> (div-10:c 160)
+16
+```
+
+### What's in the Payload?
+
+The `payload` contains the data necessary for a core to evaluate its expressions.  Formally, the `payload` itself is also a cell of two standard parts:  `[sample context]`.
+
+- `sample` refers to the input arguments.
+- `context` refers to the effective subject including the parent core.
+
+When you type a core name at the Dojo prompt, the pretty-printer displays a summary of known information:
+
+```hoon
+> dec  
+<1.hkg [a=@ <46.hgz 1.pnw %140>]>
+```
+
+Let's dissect this.  Since the top-level description is a cell of `[battery payload]`, it makes sense that the head of `++dec` is the battery:
+
+```hoon
+> -:dec  
+[ 11  
+ [ 1.851.876.717  
+   [ 1  
+     [1 1.717.658.988]  
+     7  
+     [0 1]  
+     8  
+     [1 1 100 101 99 114 101 109 101 110 116 45 117 110 100 101 114 102 108 111 119 0]  
+     9  
+     2  
+     0  
+     1  
+   ]  
+   0  
+   1  
+ ]  
+ 6  
+ [5 [1 0] 0 6]  
+ [0 0]  
+ 8  
+ [1 0]  
+ 8  
+ [1 6 [5 [0 30] 4 0 6] [0 6] 9 2 10 [6 4 0 6] 0 1]  
+ 9  
+ 2  
+ 0  
+ 1  
+]
+```
+
+As this is Nock code, it's rather hard for us to do anything with directly, but there it is.
+
+Let's look at the `payload`, at the tail or address `+3` of the core's tree:
+
+```hoon
+> +3:dec  
+[a=0 <46.hgz 1.pnw %140>]
+```
+
+Now this is a cell again, `[sample context]`.  Let's see the `sample` alone:
+
+```hoon
+> +6:dec
+a=0
+```
+
+(The pretty-printer now resolves the aura of the input value to the bunt of the mold.)
+
+The `context` is the current system subject, which has 46 arms and refers to Hoon version 140K:
+
+```hoon
+> +7:dec
+<46.hgz 1.pnw %140>
+```
+
+> ##  Examining `battery`s
+> 
+> Recall that as we saw a moment ago, the `battery` of any gate
+> refers to the code, located at the address `+2` or `-`:
+> 
+> ```hoon
+> > -:add
+> [6 [5 [1 0] 0 12] [0 13] 9 2 10 [6 [8 [9 2.398 0 7] 9 2 10 [6 0 28] 0 2] 4 0 13] 0 1]
+> ```
+{: .callout}
+
+> ##  Examining `sample`s
+> 
+> You can check out the default `sample` of any gate by name:
+> 
+> ```hoon
+> > +6:add
+> [a=0 b=0]
+> ```
+{: .callout}
+
+Every arm of a core is evaluated with its parent core as the subject.  `.` is the subject, so `..` is the subject of a given arm (second dot being wing resolution).  You can check details of the parent core using the `..` syntax `..add`.  This trick is used when producing agents that have highly nested operations (search `..` in the `/app` directory), or when composing [jets](https://urbit.org/docs/vere/jetting#edit-the-hoon-source-code), for instance.
+
+### Modifying Gate Behavior
+
+Sometimes you need to modify parts of a core (like a gate) on-the-fly to get the desired behavior.  For instance, if you are using `++roll` to calculate the multiplicative product of the elements of a list, this “just works”:
+
+```hoon
+> (roll `(list @ud)`~[10 12 14 16 18] mul)  
+483.840
+```
+
+In contrast, if you do the same thing to a list of numbers with a fractional part (`@rs` floating-point values), the naïve operation will fail:
+
+```hoon
+> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mul:rs)  
+.0
+```
+
+Why is this?  Let's peek inside the gates and see.  Since we know a core is a cell of `[battery payload]`, let's take a look at the `payload`:
+
+```hoon
+> +:mul  
+[[a=1 b=1] <46.hgz 1.pnw %140>]  
+> +:mul:rs  
+[[a=.0 b=.0] <21.hqd [r=?(%d %n %u %z) <51.qbt 123.zao 46.hgz 1.pnw %140>]>]
+```
+
+The correct behavior for `++mul:rs` is really to multiply starting from one, not zero, so that `++roll` doesn't wipe out the entire product.
+
+If we want to set the default sample to have a different value than the bunt of the type, we can use the [`$_` buccab](https://urbit.org/docs/hoon/reference/rune/buc#-buccab) rune, whose irregular form is simply `_`.
+
+```hoon
+> =mmul |=([a=_.1 b=_.1] (mul:rs a b))
+> (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
+> .483840
+```
+
+> ##  Custom Samples
+> 
+> The [`|:` barcol](https://urbit.org/docs/hoon/reference/rune/bar#-barcol) rune also allows you to build a new gate (core) 
+> with a custom sample.  For instance, we can take the original 
+> `++mul:rs` gate and give it a sample with default values of 
+> `.1`:
+>
+> ```hoon
+> > =mmul |:([a=`@rs`.1 b=`@rs`.1] (mul:rs a b))
+> > (roll `(list @rs)`~[.10 .12 .14 .16 .18] mmul)
+> .483840
+> ```
+> 
+> It allows you to do the same thing as `$_` buccab in a 
+> different way.
+{: .callout}
+
+
+##  Doors
+- "Identify the structure of a door and relate it to a core."
+- "Pull an arm in a door."
+
+Doors are another kind of core whose arms evaluate to make gates.  The difference is that a door also has its own sample.  A door is the most general case of a function in Hoon.  (You could say a "gate-building core" or a "function-building function" to clarify what these are.)
+
+Doors are created with the [`|_` barcab](https://urbit.org/docs/hoon/reference/rune/bar#_-barcab) rune.  Doors get used for a few different purposes in the standard library:
+
+- instrumenting and storing persistent data structures like `map`s (Lesson 6, Lesson 7)
+- implementing state machines (Lesson 8)
+
+One BIG pitfall for thinking about doors is thinking of them as “containing” gates, as if they were more like “objects”.  Instead, think of them the same way as you think of gates, just that they can be altered at a higher level.
+
+Here's a mathematical example.  If we wanted to calculate a quadratic polynomial, _y = a x² + b x + c_, then we need to know two kinds of things:  the unknown or variable _x_, AND the parameters _a_, _b_, and _c_.
+
+If we were to build this as a gate, we would need to pass in four parameters:
+
+```hoon
+=poly-gate |=  [x=@ud a=@ud b=@ud c=@ud]
+(add (add (mul a (mul x x)) (mul b x)) c)
+```
+
+Any time we call the gate, we have to provide all four values:  one unknown, three parameters.  But there's a sense in which we want to separate the three parameters and only call the gate with one _x_ value.  One way to accomplish this is to wrap the gate inside of another:
+
+```hoon
+=wrapped-gate |=  [x=@ud]
+=/  a  5
+=/  b  4
+=/  c  3
+(poly-gate x a b c)
+```
+
+> ##  Currying
+> 
+> If we instead used the _currying_ gate builders, [`++cury`](https://urbit.org/docs/hoon/reference/stdlib/2n#cury) and 
+> [`++curr`](https://urbit.org/docs/hoon/reference/stdlib/2n#curry), we could build these up into a gate with a single sample a
+> different way.  Consider this a stretch exercise if you're
+> interested.
+{: .challenge}
+
+If we built this as a door instead, we could push the parameters out to a more outer layer of abstraction.  In this case, the parameters are the sample of the door, while the arm `++quad` builds a gate that corresponds to those parameters and only accepts one unknown variable `x`.
+
+```hoon
+=poly |_  [a=@ud b=@ud c=@ud]
+++  quad
+  |=  x=@ud
+  (add (add (mul a (mul x x)) (mul b x)) c)
+--
+```
+
+This will be used in two steps:  a gate-building step then a gate usage step.
+
+We produce a gate from a door's arm using the [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#-censig) rune, almost always used in its irregular form, `~()`.
+
+```hoon
+~(quad poly [5 4 3])
+```
+
+By itself, not so useful.  We could pin it into the Dojo, for instance, to use later.
+
+Our ultimate goal is to use the built gate on particular data, e.g.,
+
+```hoon
+> (~(quad poly [5 4 3]) 2)
+31
+```
+
+By hand:  5×2² + 4×2 + 3 = 31, so that's correct.
+
+Doors will enable us to build some very powerful data storage tools over the next couple of lessons.
+
+> ##  Adding an Arm
+> 
+> Add an arm to the door which calculates the linear function
+> _a×x + b_.
+> 
+> Add another arm which calculates the derivative of the first
+> quadratic function, _2×a×x + b_.
+{: .challenge}
+
+In the above example we created a door `poly` with sample `[a=@ud b=@ud c=@ud]`.  If we investigated, we would find that the initial value of each is `0`, the bunt value of `@ud`.  What if we wish to define a door with a chosen sample value directly?  We can make use of the `$_` rune, whose irregular form is simply `_`.  To create the door `poly` with the sample set to have certain values in the Dojo, we would write
+
+```unknown
+> =poly |_  [a=_5 b=_4 c=_3]
+++  quad
+  |=  x=@ud
+  (add (add (mul a (mul x x)) (mul b x)) c)
+--
+
+> (quad:poly 2)  
+31
+```
+
+- [Hoon School, “Doors”](https://urbit.org/docs/hoon/hoon-school/doors#doors) is worth a read.
+
+
+### A Few Ramifications of Cores and Doors
+
+[`|^` barket](https://urbit.org/docs/hoon/reference/rune/bar#-barket) is an example of what we can call a _convenience rune_, similar to the idea of sugar syntax (irregular syntax to make writing certain things out in a more expressive manner).  `|^` barket produces a core with _at least_ a `$` buc arm and computes it immediately.  (So it's a bit like a trap in the regard of computing immediately.)
+
+This code calculates the volume of a cylinder, _A=πr²h_.
+
+```hoon
+=volume-of-cylinder |^
+(mul:rs (area-of-circle .2.0) height)
+++  area-of-circle
+  |=  r=@rs
+  (mul:rs r (mul:rs pi r))
+++  pi  .3.1415926
+++  height  .10.0
+--
+```
+
+Since all of the values either have to be pinned ahead of time or made available as arms, a `|^` barket would probably be used inside of a gate.  Of course, since it is a core with a `$` buc arm, one could also use it recursively to calculate values like the factorial.
+
+---
+
+If you read the docs, you'll find that a [`|-` barhep](https://urbit.org/docs/hoon/reference/rune/bar#-barhep) rune “produces a trap (a core with one arm `$`) and evaluates it.”  So a trap actually evaluates to a `|%` barcen core with an arm `$`:
+
+```hoon
+:: count to five
+=/  index  1
+|-
+?:  =(index 5)  index
+$(index +(index))
+```
+
+actually translates to
+
+```hoon
+:: count to five
+=/  index  1
+=<  $
+|%
+++  $
+  ?:  =(index 5)  index
+  %=  $
+    index  +(index)
+  ==
+--
+```
+
+You can also create a trap for later use with the [`|.` bardot](https://urbit.org/docs/hoon/reference/rune/bar#-bardot) rune.  It's quite similar, but without the `=<($...` part then it doesn't get evaluated immediately.
+
+```hoon
+> =forty-two |.(42)
+> $:forty-two
+42
+> (forty-two)
+42
+```
+
+---
+
+What is a gate?  It is a door with only one arm `$` buc, and whenever you invoke it then that default arm's expression is referred to and evaluated.
+
+A _gate_ and a _trap_ are actually very similar:  a [gate](https://urbit.org/docs/hoon/reference/rune/bar#-bartis) simply has a sample (and can actively change when evaluated or via a `%=` cenhep), whereas a trap does not (and can _only_ be passively changed via something like `%=` cenhep).
+
+In fact, to relate slamming a gate back to working with doors, `%-` cenhep and friends all evaluate to [`%~` censig](https://urbit.org/docs/hoon/reference/rune/cen#cenhep) on the `$` buc arm.
+
+
+##  Paths on Mars
+
+An Earth filesystem orients itself around some key metaphor:
+
+- Windows machines organize the world by drive, e.g. `C:\`.
+- Unix machines (including macOS and Linux) organize the world from `/`, the root directory.
+
+On Mars, we treat a filesystem as a way of organizing arbitrary access to blocks of persistent data.  There are some concessions to Earth-style filesystems, but Clay (Urbit's filesystem) organizes everything with respect to a `desk`, a discrete collection of static data on a particular ship.  Of course, like everything else in Hoon, a desk is a tree as well.
+
+> ##  Desks as Branches
+> 
+> If you are comfortable with version control systems like Git,
+> then thinking of the Clay filesystem as a version control
+> repository may be a fruitful metaphor for you.
+> 
+> In this case, we think of a desk as an independent branch of
+> data on the ship, with its own apps, marks, structure files,
+> libraries, generators, and so forth.
+> 
+> A desk is actually a series of numbered commits, and each time
+> you `|commit` a file with changes, you'll see a new revision
+> number listed after the ship and the desk name, but before the
+> folder and file path.
+> 
+> You can access an older version of a file in Clay by referring
+> to the revision number you are looking for instead of the
+> timestamp, e.g. `/~zod/base/2/gen/boxcar/hoon`.
+{: .callout}
+
+Whenever we access something in Clay, we provide three pieces of information before the path:  the ship, the desk, and the timestamp.  Typically we are looking for the most up-to-date version of a file, so our triplet consists of our ship name, the desk name (defaulting to `%base`), and the current time.
+
+Two of these can be queried at any time:
+
+- `our` always contains the ship's identity, as a `@p`.
+- `now` resolves to the current system time, as a `@da`.
+
+The “current” desk is a Dojo concept, since for Clay we can access any desk at any time (with permission).
+
+
+We call this triplet the `beak`.  It can be manually constructed using the parts above, or more commonly used with the `/` fas prefix and `=` tis signs for the three components:
+
+```hoon
+> /===  
+[~.~zod ~.base ~.~2022.4.5..20.34.15..6e5c ~]  
+```
+
+(You'll also sometimes see `%` cen stand in for the whole.  So much for consistency!)
+
+The beak is a `(list @ta)` or `(list knot)`.  The pretty-printer may catch and format it a little different depending on how you present it, but they are all commensurate:
+
+```hoon
+> /===  
+[~.~zod ~.base ~.~2022.4.4..22.03.03..43c1 ~]  
+> `(list @ta)`/===  
+/~zod/base/~2022.4.4..22.04.36..9f37
+> `(list knot)`/===  
+/~zod/base/~2022.4.4..22.03.55..7f76  
+```
+
+Swapping out a value for one of the equals signs allows you to talk about (hypothetical) other beaks:
+
+```
+> /=sandbox=
+[~.~zod %sandbox ~.~2022.4.5..20.34.18..1d2b ~]
+> /~nec==
+[~.~nec ~.base ~.~2022.4.5..20.37.28..cf3e ~]
+> /==(@da 0)
+[~.~zod ~.base ~292277024401-.1.1 ~]
+```
+
+(You can write any path, whether or not it exists; you cannot, of course, access data at any path because most paths don't exist, just as most possible street addresses do not exist.)
+
+At this point in Urbit's history, most interesting changes to Clay are done on Earth and then synchronized back to Mars via `|commit`.  The `cat` generator can show you the contents of a file at a particular path in Clay:
+
+```hoon
+> +cat /===/gen/trouble/hoon  
+/~zod/base/~2022.4.5..20.42.06..2ad6/gen/trouble/hoon  
+/-  *hood  
+:-  %say  
+|=  $:  [now=@da eny=@uvJ bec=beak]  
+       [arg=~ ~]  
+   ==  
+[%tang (report-vats p.bec now)]
+```
+
+The `ls` generator does something similar:
+
+```hoon
+> +ls /===/gen
+ acme/domain-validation/hoon
+ agents/hoon
+ aqua/
+ aqua-export/hoon
+ azimuth/
+ azimuth-block/hoon
+ ...
+```
+
+### Working Across Desks
+
+Desks organize collections of files on Urbit:  data files, libraries, marks, agents, etc.  So far everything we have done has taken place on the `%base` desk.
+
+You can see the desks available on your system with the `+vats` generator.
+
+```hoon
+> +vats
+```
+
+Any of these can be `|mount`ed to Earth and `|commit`ed on demand.
+
+Of course, since `%base` is our default working desk, we haven't had to create or arrange any other desks.  If we were to do so, we could mark a desk as public for distribution and share it with the world.  That's our objective now.
+
+#### Invoking Code on a Desk
+
+Let's take a look at how to run a generator (or thread) on another desk than `%base`.  A standard install has a few desks:  `%bitcoin`, `%garden`, `%landscape`.  You can invoke a particular desk's version of a generator by prefixing the desk name with `!` zap:
+
+```hoon
+> +landscape!tally
+
+tallied your activity score! find the results below.  
+to show non-anonymized resource identifiers, +tally |  
+counted from groups and channels that you are hosting.  
+groups are listed with their member count.  
+channels are listed with activity from the past week:  
+ - amount of top-level content  
+ - amount of unique authors  
+  
+the date is ~2022.5.5..19.22.40..cf63  
+you are in 0 group(s):  
+  
+you are hosting 0 group(s):
 ```
