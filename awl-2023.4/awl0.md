@@ -11,7 +11,7 @@ keypoints: []
 readings: []
 homework: []
 mirror: "https://github.com/sigilante/curriculum/blob/master/awl-2023.4/awl0.md"
-video: "https://youtu.be/_XoqgRWawo4"
+video: "https://youtu.be/1XOrqhGyr74"
 ---
 
 #   🖧 `awl0`. Server Actions
