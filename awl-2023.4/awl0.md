@@ -10,7 +10,7 @@ runes: []
 keypoints: []
 readings: []
 homework: []
-mirror: "https://github.com/sigilante/curriculum/blob/master/awl-2023.3/awl0.md"
+mirror: "https://github.com/sigilante/curriculum/blob/master/awl-2023.4/awl0.md"
 video: ""
 ---
 
