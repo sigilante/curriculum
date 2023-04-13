@@ -37,6 +37,10 @@ keypoints:
 - "Values at addresses in a tree can be unambiguously located several ways."
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/F-cores"
+feedback: "https://forms.gle/4pCFdN79VcMJr3s3A"
+homework: "https://forms.gle/CwKxDhpDaLZLHPTz6"
+video:  "https://youtu.be/A5fRAbyrc7M"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl2.md"
 ---
 
 # Repeating Yourself & Addressing
@@ -96,9 +100,9 @@ It is frequently helpful, when constructing these, to be able to output the valu
 =/  sum  0
 |-
 ~&  "counter:"
-~&  >  counter
-~&  >>  "sum:"
-~&  >>>  sum
+~&  counter
+~&  "sum:"
+~&  sum
 ?:  (gth counter 5)
   sum
 %=  $
@@ -139,7 +143,6 @@ n
 ```
 
 - We are using the `=` irregular syntax for `.=` dottis, test for equality of two values.****
-- We are using the `+` irregular syntax for `.+` dotlus, increment a value (add one to a value).
 - Why do we return the result (`product` in Hoon parlance) at 1 instead of 0?
 
 #### Lists
