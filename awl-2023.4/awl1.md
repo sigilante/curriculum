@@ -320,7 +320,83 @@ This arm accepts a session ID and a command resulting from `++command-parser`.  
 
 `%sole-effect`s are head-tagged by time and produce a variety of terminal effects, from text to bells, colors, and other screen effects.
 
-- [“Command-Line Apps”](https://developers.urbit.org/guides/additional/cli-tutorial)
+Here is an agent that will accept a single character and produce a line with varying random colors of that character.
+
+**`/app/track7.hoon`**
+
+```hoon
+/+  default-agent, dbug, shoe, sole
+|%
++$  versioned-state
+  $%  state-0
+  ==
++$  state-0  %0
++$  card  card:agent:shoe
++$  command  @t
+--
+%-  agent:dbug
+=|  state-0
+=*  state  -
+^-  agent:gall
+%-  (agent:shoe command)
+^-  (shoe:shoe command)
+|_  =bowl:gall
++*  this     .
+    default  ~(. (default-agent this %|) bowl)
+    leather  ~(. (default:shoe this command) bowl)
+++  on-init   on-init:default
+++  on-save   !>(state)
+++  on-load
+  |=  old=vase
+  ^-  (quip card _this)
+  `this(state !<(state-0 old))
+++  on-poke   on-poke:default
+++  on-peek   on-peek:default
+++  on-arvo   on-arvo:default
+++  on-watch  on-watch:default
+++  on-leave  on-leave:default
+++  on-agent  on-agent:default
+++  on-fail   on-fail:default
+++  command-parser
+  |=  =sole-id:shoe
+  ^+  |~(nail *(like [? command]))
+  (stag & (boss 256 (more gon qit)))
+++  on-command
+  |=  [=sole-id:shoe =command]
+  ^-  (quip card _this)
+  :_  this
+  ^-  (list card)
+  :~  :+  %shoe  ~
+  ^-  shoe-effect:shoe
+  :-  %sole
+  ^-  sole-effect:sole  :-  %klr
+  ^-  styx
+  =/  idx  0
+  =|  fx=styx
+  =/  rng  ~(. og eny:bowl)
+  |-
+  ?:  =(80 idx)  fx
+  =^  huer  rng  (rads:rng 256)
+  =^  hueg  rng  (rads:rng 256)
+  =^  hueb  rng  (rads:rng 256)
+  %=  $
+    idx  +(idx)
+    fx   `styx`(weld fx `styx`~[[[`%br ~ `[r=`@ux`huer g=`@ux`hueg b=`@ux`hueb]] command ~]])
+  ==  ==
+++  can-connect
+  |=  =sole-id:shoe
+  ^-  ?
+  ?|  =(~zod src.bowl)
+      (team:title [our src]:bowl)
+  ==
+++  on-connect     on-connect:leather
+++  on-disconnect  on-disconnect:leather
+++  tab-list       tab-list:leather
+--
+```
+
+- [~lagrev-nocfep, `sigilante/track7`](https://github.com/sigilante/track7)
+- [App Guide, “Command-Line Apps”](https://developers.urbit.org/guides/additional/cli-tutorial)
 
 
 ##  Tutorial:  Building a CLI App
@@ -407,7 +483,6 @@ This arm pushes values onto the stack, displays the stack, then checks to parse 
   ^-  (quip card _this)
   =/  old-stack  (weld stack ~[command])
   =/  new-stack  (process:rpnlib old-stack)
-  !:
   :_  this(stack new-stack)
   :~  [%shoe ~ sole+klr+~[(crip "{<old-stack>} →")]]
       [%shoe ~ sole+klr+~[[[`%br ~ `%g] (crip "{<new-stack>}") ~]]]
@@ -510,6 +585,8 @@ gall: booted %rpn
 ~[.-0.99999994 .1] →
 ~[.-1]
 ```
+
+- [~lagrev-nocfep, `sigilante/rpn`](https://github.com/sigilante/rpn)
 
 
 ##  Exercises
