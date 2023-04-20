@@ -15,7 +15,7 @@ objectives:
 - "Create a new library in `/lib`."
 - "Review Unicode text structure."
 - "Distinguish cords and tapes and their characteristics."
-- "Transform and manipulate text using text conversion arms:
+- "Transform and manipulate text using text conversion arms:"
   - "++crip: convert `tape` to `cord` (`tape`→`cord`)"
   - "++trip: convert `cord` to `tape` (`cord`→`tape`)"
   - "++cass: convert upper-case text to lower-case (`tape`→`tape`)"
