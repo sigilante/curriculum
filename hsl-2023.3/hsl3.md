@@ -35,6 +35,10 @@ keypoints:
 - "Gates that produce gates (like `list` v. (list)`) form an extremely common and important pattern in Hoon."
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/G-trees"
+feedback: "https://forms.gle/BfvkzrUEdEwD5QXGA"
+homework: "https://forms.gle/qP2w9ez36kgZm36d7"
+video: "https://youtu.be/WPNq5pOfGWs"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl3.md"
 ---
 
 
