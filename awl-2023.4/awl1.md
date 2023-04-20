@@ -397,6 +397,7 @@ Here is an agent that will accept a single character and produce a line with var
 
 - [~lagrev-nocfep, `sigilante/track7`](https://github.com/sigilante/track7)
 - [App Guide, “Command-Line Apps”](https://developers.urbit.org/guides/additional/cli-tutorial)
+- [~palfun-foslup, `urbit/urbit` branch `tui-toys`](https://github.com/urbit/urbit/tree/wip/tui-toys/pkg/demo)
 
 
 ##  Tutorial:  Building a CLI App
