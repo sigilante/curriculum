@@ -43,7 +43,7 @@ The elements of Leek include:
 
 * `%scape` (anonymizing circle) passes the message around random `%bulb` agents in a circle of comets on a mutual whitelist.  This occurs for some Tor-like number of hops to random comets in the associated bulb until emitting the now-anonymized message to a target forum.
 
-* The front-end chat UI should be based on `%hut`.  Since this relies on known ship membership, one way to handle anonymization is to 
+* The front-end chat UI should be based on `%hut`.  Since this relies on known ship membership, one way to handle anonymization is to emit everything through a particular planet or one of several (as exit gateway from the bulb).
 
 The size of a bulb should be considered carefully:  too few comets means fewer comets to “hack”; too many comets means messages are too sparse and can be traced more easily.
 
