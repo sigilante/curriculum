@@ -264,7 +264,7 @@ This doesn't rise to the level of a CLI agent, but it points in the right direct
 ```
 
 
-##  `%shoe`
+##  `%shoe` CLI Session Manager
 
 `%shoe` is responsible to manage attached agent sessions.  It adds a few arms to the standard Gall agent, namely:
 
@@ -314,11 +314,48 @@ where the unfamiliar parser components are:
 This arm accepts a session ID and a command resulting from `++command-parser`.  It produces a regular `(quip card _this)` so you can modify agent state and produce effects here.
 
 
-##  `%sole`
+##  `%sole` Effects
 
 `%sole` is responsible for producing effects.  If you want to yield effects to the command line from your CLI agent (which you often do), this is a great place to work.
 
 `%sole-effect`s are head-tagged by time and produce a variety of terminal effects, from text to bells, colors, and other screen effects.
+
+
+##  `$styx` Styled Text String
+
+A `klr` effect uses a `styx`, or styled text string.  The relevant data structures are in `/sys/lull.hoon`:
+
+```hoon
++$  deco  ?(~ %bl %br %un)                              ::  text decoration
++$  stye  (pair (set deco) (pair tint tint))            ::  decos/bg/fg
++$  styl  %+  pair  (unit deco)                         ::  cascading style
+          (pair (unit tint) (unit tint))                ::
++$  styx  (list $@(@t (pair styl styx)))                ::  styled text       
++$  tint  $@  ?(%r %g %b %c %m %y %k %w %~)             ::  text color
+          [r=@uxD g=@uxD b=@uxD]                        ::  24bit true color
+```
+
+- `$deco` is a text decoration, here `%bl` blinking, `%br` bright (bold), and `%un` underlined.
+- `$tint` is a color, either explicitly the terminal red/green/blue/cyan etc. or a 24-bit true color value.
+- `$stye` composes these into a style which will be applied to a string.
+- `$styl` similarly composes styles together.
+- `$styx` pairs styles with cords.
+
+This means that composing styled text correctly can require explicitly nesting statements in rather a complicated way.
+
+For instance, to produce a bold string with hex color `#123456`, we could produce the `sole-effect`:
+
+```hoon
+^-  sole-effect:sole
+:-  %klr
+^-  styx
+~[[[`%br ~ `[r=0x12 g=0x34 b=0x56]] 'Hello Mars!' ~]]
+```
+
+- [~ropdeb-sormyr, "Styled output - requirements and progress" ~2016.8.2 Urbit fora post](https://github.com/urbit/fora-posts/blob/0238536650dfc284f14295d350f9acada0341480/archive/posts/~2016.8.2..21.19.29..2ab8~.md)
+
+
+##  Agent Logic
 
 Here is an agent that will accept a single character and produce a line with varying random colors of that character.
 
@@ -398,6 +435,7 @@ Here is an agent that will accept a single character and produce a line with var
 - [~lagrev-nocfep, `sigilante/track7`](https://github.com/sigilante/track7)
 - [App Guide, “Command-Line Apps”](https://developers.urbit.org/guides/additional/cli-tutorial)
 - [~palfun-foslup, `urbit/urbit` branch `tui-toys`](https://github.com/urbit/urbit/tree/wip/tui-toys/pkg/demo)
+- [~hocbud-soclur `ed`](https://github.com/crides/ed.hoon)
 
 
 ##  Tutorial:  Building a CLI App
