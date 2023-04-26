@@ -14,7 +14,7 @@ readings:
   - "https://developers.urbit.org/guides/additional/cli-tutorial"
 homework: []
 mirror: []
-video: []
+video: "https://youtu.be/tmsf0vIWBlg"
 ---
 
 #   ✂ `awl1`. Command Line
