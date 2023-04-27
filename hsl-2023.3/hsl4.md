@@ -26,14 +26,19 @@ runes:
 keypoints:
 - "Core patterns can be used to build many kinds of customized gates."
 - "The door is a common configuration for an Urbit core."
-- "The arms of doors are gate-builders."
+- "The arms of doors are generally gate-building gates."
 - "A desk in Clay organizes collections of code and data resources."
 - "A path in Clay describes a unique access path to a resource."
 - "The beak describes the current triplet of ship, desk, and timestamp for the filesystem."
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/O-subject" (first section)
 - "https://developers.urbit.org/guides/core/hoon-school/K-doors"
+feedback: "https://forms.gle/8aBhqn2xQeY6MvjB8"
+homework: "https://forms.gle/mbVnsKNQAX93cLk58"
+video: "https://youtu.be/JKMPO71Fb6E"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl4.md"
 ---
+
 
 #   Subject-Oriented Programming
 
