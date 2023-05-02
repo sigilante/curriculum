@@ -154,10 +154,10 @@ In Urbit, all values are static and never change.  (This is why we â€œoverwriteâ
 
 We'll build a color `map`, from a `@tas` of a [color's name](https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors) to its HTML hexadecimal representation as a `@ux` hex value.
 
-We can produce a `map` from a `list` of key-value cells using the [`++malt`](https://urbit.org/docs/hoon/reference/stdlib/2l#malt) gate:
+We can produce a `map` from a `list` of key-value cells using the [`++my`](https://urbit.org/docs/hoon/reference/stdlib/2l#my) gate:
 
 ```hoon
-> =colors (malt ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
+> =colors (my ~[[%red 0xed.0a3f] [%yellow 0xfb.e870] [%green 0x1.a638] [%blue 0x66ff]])
 ```
 
 We could designate the mold of this as a `(map @tas @ux)`, altho examine the type spear and see why this isn't completely correct.  In fact, due to the way `@tas` `term`s work, it's more convenient to explicitly supertype the key mold when defining the `map` in the first place:
@@ -245,10 +245,10 @@ A `set` is rather like a `list` except that each entry can only be represented o
 
 `set` operations are provided by `++in`.  Most names are similar to `map`/`++by` operations when applicable.
 
-[`++silt`](https://urbit.org/docs/hoon/reference/stdlib/2l#silt) produces a `set` from a `list`:
+[`++sy`](https://urbit.org/docs/hoon/reference/stdlib/2l#sy) produces a `set` from a `list`:
 
 ```hoon
-> =primes (silt ~[2 3 5 7 11 13])
+> =primes (sy ~[2 3 5 7 11 13])
 ```
 
 `++put:in` adds a value to a `set` (and null-ops when the value is already present):
@@ -327,18 +327,6 @@ Rather than unwrap a `unit`, one can modify gates to work with `unit`s directly 
 (There are several others tools listed [on that page](https://urbit.org/docs/hoon/reference/stdlib/2a) which may be potentially useful to you.)
 
 A `+$vase` is a pair of type and value, such as that returned by `!>` zapgar.  A `vase` is useful when transmitting data in a way that may lose its type information.
-
-### `jar` and `jug`
-
-`map`s and `set`s are frequently used in the standard library and in the extended ecosystem (such as in `graph-store`).  There are a couple of common patterns which recur often enough that they have their own names:
-
-- [`++jar`](https://urbit.org/docs/hoon/reference/stdlib/2o#jar) is a mold for a `map` of `list`s.
-
-- [`++jug`](https://urbit.org/docs/hoon/reference/stdlib/2o#jug) is a mold for a `map` of `set`s.
-
-(There's an example in the slides of a `jar`.)
-
-These are supported by the [`++ja`](https://urbit.org/docs/hoon/reference/stdlib/2j#ja) core and the [`++ju`](https://urbit.org/docs/hoon/reference/stdlib/2j#ju) core.
 
 
 ##  Example:  Caesar Cipher
