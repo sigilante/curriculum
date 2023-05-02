@@ -339,7 +339,7 @@ Save this as `caesar.hoon` in `/gen`:
 !:
 |=  [msg=tape steps=@ud]
 =<
-=.  msg  (cass msg)
+=/  msg  (cass msg)
 :-  (shift msg steps)
     (unshift msg steps)
 ::
@@ -392,7 +392,6 @@ Save this as `caesar.hoon` in `/gen`:
   ^-  (map @t @t)
   =|  chart=(map @t @t)
   ?.  =((lent key-position) (lent value-result))
-  ~|  %uneven-lengths  !!
   |-
   ?:  |(?=(~ key-position) ?=(~ value-result))
   chart
@@ -412,9 +411,7 @@ The commentary is dense, but I've added some remarks above which hopefully decom
 
 There are four runes in this which we haven't seen yet:
 
-- `=,` tiscom modifies a leg in the subject, similar to `=/` tisfas (Lesson 8)
 - `=|` tisbar introduces a named noun to the subject, like a `=/` tisfas that just has the bunt (Lesson 8)
-- `~|` sigbar is a “tracing printf”, which only outputs a message if the code crashes (Lesson 9)
 - `?|` wutbar in its irregular `|()` form, a logical `OR` operation (Lesson 7)
 
 We also didn't look at [`++trim`](https://urbit.org/docs/hoon/reference/stdlib/4b#trim), which splits the first set of characters off of a `tape` (similar to [`++scag`](https://urbit.org/docs/hoon/reference/stdlib/2b#scag) except returning both sides back to you as a cell).
