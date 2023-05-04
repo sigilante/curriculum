@@ -391,7 +391,7 @@ Save this as `caesar.hoon` in `/gen`:
   |=  [key-position=tape value-result=tape]
   ^-  (map @t @t)
   =|  chart=(map @t @t)
-  ?.  =((lent key-position) (lent value-result))
+  ?.  =((lent key-position) (lent value-result))  !!
   |-
   ?:  |(?=(~ key-position) ?=(~ value-result))
   chart
