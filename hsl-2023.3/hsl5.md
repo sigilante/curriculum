@@ -25,6 +25,10 @@ readings:
 - "https://developers.urbit.org/guides/core/hoon-school/K-doors"
 - "https://developers.urbit.org/guides/core/hoon-school/L-struct"
 - "https://developers.urbit.org/guides/core/hoon-school/M-typecheck"
+feedback: "https://forms.gle/PRfFUhrmMYcacafb8"
+homework: "https://forms.gle/gTP8raxRMbosxP9z6"
+video: "https://youtu.be/XInL-fpLK4w"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl5.md"
 ---
 
 #   Molding Values, Using Doors
@@ -393,7 +397,7 @@ Save this as `caesar.hoon` in `/gen`:
   =|  chart=(map @t @t)
   ?.  =((lent key-position) (lent value-result))  !!
   |-
-  ?:  |(?=(~ key-position) ?=(~ value-result))
+  ?:  |(?=(~ key-position) ?=(~ value-result))  !!
   chart
   $(chart (~(put by chart) i.key-position i.value-result), key-position t.key-position, value-result t.value-result)
 ::  Cycle an alphabet around, e.g. from
