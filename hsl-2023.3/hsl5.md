@@ -397,7 +397,7 @@ Save this as `caesar.hoon` in `/gen`:
   =|  chart=(map @t @t)
   ?.  =((lent key-position) (lent value-result))  !!
   |-
-  ?:  |(?=(~ key-position) ?=(~ value-result))  !!
+  ?:  |(?=(~ key-position) ?=(~ value-result))
   chart
   $(chart (~(put by chart) i.key-position i.value-result), key-position t.key-position, value-result t.value-result)
 ::  Cycle an alphabet around, e.g. from
