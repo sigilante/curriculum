@@ -31,11 +31,14 @@ keypoints:
 - "Good Hoon style weights heavier expressions to the bottom.  Use `?.` wutdot to discretionally control this."
 - "Switch statements allow you to make decisions based on possible elements of a type union (e.g. of terms)."
 - "Gates can be manipulated to accept different numbers of arguments, or applied across multiple values, using functional programming arms."
-- "Formatted text can be produced using `tank`s."
 readings:
 - "https://developers.urbit.org/guides/core/hoon-school/J-stdlib-text" (Text Operations:  Producing Text)
 - "https://developers.urbit.org/guides/core/hoon-school/N-logic"
 - "https://developers.urbit.org/guides/core/hoon-school/Q-func"
+feedback: "https://forms.gle/39y5DT19Ys5m1Hed8"
+homework: "https://forms.gle/pNvaatNw15H3ZfjX8"
+video: "https://youtu.be/F2O4cslUK_I"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl6.md"
 ---
 
 #   The Standard Library
@@ -68,7 +71,7 @@ Arvo and the vanes provide system services which you won't need until you start 
 
 - `hoon.hoon` provides the language fundamentals for the Hoon parser and builder.  (Some of this functionality is housed in the filesystem handler `clay.hoon` as well.)
 - `lull.hoon` contains structures and services necessary to bootstrap Arvo.
-- `zuse.hoon` provides a variety data parsing and representation structures.
+- `zuse.hoon` provides a variety of data parsing and representation structures.
 - `arvo.hoon` instruments the basic Arvo event loop.
 - Vane files provide per-vane service cores and molds.
 
@@ -139,7 +142,7 @@ Most of these are internal Arvo conventions, such as conversion between Unix-epo
 To convert a `@ux` hexadecimal value to a `cord`:
 
 ```hoon
-> (en:base16:mimes:html [3 0x12.3456])  
+> (en:base16:mimes:html [3 0x12.3456])
 '123456'
 ```
 
@@ -173,7 +176,7 @@ Conditional decision-making:
 
 Assertions:
 
-- [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion (`%.y%` or crash).
+- [`?>` wutgar](https://urbit.org/docs/hoon/reference/rune/wut#-wutgar) is a positive assertion (`%.y` or crash).
 - [`?<` wutgal](https://urbit.org/docs/hoon/reference/rune/wut#-wutgal) is a negative assertion (`%.n` or crash).
 - [`?~` wutsig](https://urbit.org/docs/hoon/reference/rune/wut#-wutket) asserts non-null.
 - [`?^` wutket](https://urbit.org/docs/hoon/reference/rune/wut#-wutket) asserts cell.
