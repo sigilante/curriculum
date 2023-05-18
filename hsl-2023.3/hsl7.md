@@ -212,33 +212,39 @@ There are a few runes for modifying the subject and chaining deferred computatio
 - [`;<` micgal](https://urbit.org/docs/hoon/reference/rune/mic#-micgal) sequences two computations, particularly for an asynchronous event like a remote system call.  (Used in threads.)
 - [`;~` micsig](https://urbit.org/docs/hoon/reference/rune/mic#-micsig) produces a pipeline, a way of piping the output of one gate into another in a chain.  (This is particularly helpful when parsing text.)
 
-### Example:  Bank Account as a Door
+### Example:  Tiny Agent
 
-This door essentially replaces the sample of the door with new values as each transaction proceeds.  This is similar to how a Gall agent will modify its own state over time.
+Although we won't get into agents fully in this lesson, we want to give you a taste of what it's like working with them.
 
-Unlike a Gall agent, however, this generator has no persistence:  once run, it starts from scratch again.
+The tiny agent is a door, which takes a sample called balance. It has an arm on-init, which we can think of as initializing the agent. That arm takes as input a @ud, and simply sets balance to that in the current subject (the tiny-agent door). The on-poke arm takes as input a cell, the head of which is either a %add or a %sub, and the tail of which is a @ud. Next we have a switch statement. Based on the value of this mark, we either add the input value to the balance, or subtract it. Finally, we have an arm called on-peek which simply returns the balance.
+
+The next part of the code is an example of how one might use the tiny-agent door. In each line, we are making a new copy of the tiny agent by invoking its arm.
+
+Feel free to play around with the operations. This is a simple database which responds to actions and reports its value. Unlike a Gall agent, however, this generator has no persistence:  once run, it starts from scratch again.
 
 ```
 =>
 |%
-++  my-tiny-agent
-  |_  =balance
+++  tiny-agent
+  |_  balance=@ud
   ++  on-init
-    |=  newbal=@ud
-    .(balance newbal)
+    |=  a=@ud
+    .(balance a)
   ++  on-poke
+    |=  [mark=?(%add %sub) a=@ud]
+    ?-  mark
+      %add  .(balance (add balance a))
+      %sub  .(balance (sub balance a))
+      ==
   ++  on-peek
+    balance
   --
 --
-=/  agent  ~(on-init my-tiny-agent input-args)
-=/  agent  (on-poke:agent other-input-args)
+=/  agent  ~(on-init tiny-agent 10)
+=/  agent  (on-poke:agent [%add 5])
+=/  agent  (on-poke:agent [%sub 1])
 on-peek:agent
 ```
-
-
-<!-- ~littel-fodrex: the construction ~(. new-account 1.000) does indeed work, without the need to pin a copy of the door to a face. and i think i understand why so that's exciting -->
-
-- Commentary at [“1.8.1 Bank Account”](https://urbit.org/docs/hoon/hoon-school/bank-account)
 
 ### Example:  Random Numbers (`=^` tisket)
 
