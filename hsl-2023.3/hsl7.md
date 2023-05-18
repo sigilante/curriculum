@@ -26,6 +26,10 @@ readings:
 - "https://developers.urbit.org/guides/core/hoon-school/O-subject"
 - "https://developers.urbit.org/guides/core/hoon-school/P-stdlib-io"
 - "https://developers.urbit.org/guides/core/hoon-school/Q-func"
+feedback: "https://forms.gle/3KvwjNutnxtrLu1v9"
+homework: "https://forms.gle/GsW2JUKKqNdPP9JK8"
+video: "https://youtu.be/K7o8DSfF4xg"
+mirror: "https://github.com/sigilante/curriculum/blob/master/hsl-2023.3/hsl7.md"
 ---
 
 #   Managing State & Computations
@@ -92,8 +96,6 @@ We can modify the boilerplate code to allow arguments to be passed into a `%say
 Naked generators are limited because they have no way of accessing data that exists in Arvo, such as the date and time or pieces of fresh entropy.  In `%say` generators, however, we can access that kind of subject by identifying them in the gate's sample, which we only specified as `*` in the previous few examples. But we can do more with `%say` generators if we do more with that sample.  Any valid sample will follow this 3-tuple scheme:
 
 `[[now=@da eny=@uvJ bec=beak] [list of unnamed arguments] [list of named arguments]]`
-
-TODO: null-terminated tuple
 
 This entire structure is a noun, which is why `*` is a valid sample if we wish to not use any of the information here in a generator. But let's look at each of these three elements, piece by piece.
 
@@ -216,28 +218,23 @@ This door essentially replaces the sample of the door with new values as each tr
 
 Unlike a Gall agent, however, this generator has no persistence:  once run, it starts from scratch again.
 
-```hoon
-:-  %say
-|=  *
-:-  %noun
-=<  =~  new-account
-      (deposit 100)
-      (deposit 100)
-      (withdraw 50)
-      balance
-    ==
+```
+=>
 |%
-++  new-account
-  |_  balance=@ud
-  ++  deposit
-    |=  amount=@ud
-    +>.$(balance (add balance amount))
-  ++  withdraw
-    |=  amount=@ud
-    +>.$(balance (sub balance amount))
+++  my-tiny-agent
+  |_  =balance
+  ++  on-init
+    |=  newbal=@ud
+    .(balance newbal)
+  ++  on-poke
+  ++  on-peek
   --
 --
+=/  agent  ~(on-init my-tiny-agent input-args)
+=/  agent  (on-poke:agent other-input-args)
+on-peek:agent
 ```
+
 
 <!-- ~littel-fodrex: the construction ~(. new-account 1.000) does indeed work, without the need to pin a copy of the door to a face. and i think i understand why so that's exciting -->
 
@@ -386,10 +383,3 @@ Functional programmers frequently rely on three design patterns to produce opera
 2. Reduce. The Reduce operation applies a function as a sequence of pairwise operations to each item, resulting in one summary value. The standard library arms that accomplish this are [`++roll`](https://developers.urbit.org/reference/hoon/stdlib/2b#roll) and [`++reel`](https://developers.urbit.org/reference/hoon/stdlib/2b#reel) for a `list`, [`++rep:in`](https://developers.urbit.org/reference/hoon/stdlib/2h#repin) for a `set`, and [`++rep:by`](https://developers.urbit.org/reference/hoon/stdlib/2i#repby) for a `map`.  
 
 3. Filter. The Filter operation applies a true/false function to each member of a collection, resulting in some number of items equal to or fewer than the size of the original set. In Hoon, the library arms that carry this out include [`++skim`](https://developers.urbit.org/reference/hoon/stdlib/2b#skim), [`++skid`](https://developers.urbit.org/reference/hoon/stdlib/2b#skid), [`++murn`](https://developers.urbit.org/reference/hoon/stdlib/2b#murn) for a `list`, and [`++rib:by`](https://developers.urbit.org/reference/hoon/stdlib/2i#ribby) for a `map`.
-
-
-##  Tying Things Together:  App Preview
-
-Given that Hoon is a pure functional programming language (albeit with runtime hints, `~` sig runes), how can we make stateful applications?
-
-TODO
