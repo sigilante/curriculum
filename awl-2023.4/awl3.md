@@ -503,21 +503,22 @@ In this lesson, we'll conclude by producing the database superstructure and some
 ```hoon
 |%
 +$  key  @tas
-+$  value  $%(xml json yaml txt)
-+$  xml   [%xml body=html]
-+$  json  [%json body=json]
-+$  yaml  [%yaml body=@t]
-+$  txt   [%txt body=@t]
++$  value
+  $%  [%xml body=manx]
+      [%json body=json]
+      [%yaml body=@t]
+      [%txt body=@t]
+  ==
 +$  store  (map key value)
 +$  cursor  @ud
 +$  action
-  $:  [%create =key =value]
+  $%  [%create =key =value]
       [%retrieve =key]
       [%update =key =value]
       [%destroy =key]
   ==
 +$  result
-  $:  [%store =store]
+  $%  [%store =store]
       [%value =value]
       [%delete =key]
   ==
@@ -605,7 +606,7 @@ Later on we'll look at how to generate multi-key retrieval actions.  [`+$cursor`
     ==
   ::
       %retrieve
-    :_  thi
+    :_  this
     :~  [%give %fact ~[/store] %rkyv-result !>(value+(~(get by store) key.act))]
         [%give %kick ~[/store] ~]
     ==
@@ -634,9 +635,8 @@ Later on we'll look at how to generate multi-key retrieval actions.  [`+$cursor`
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ?+    path  (on-watch:def path)
+  ?+    path  (on-watch:default path)
       [%store ~]
-    ?>  (~(has in friends) src.bowl)
     :_  this
     :~  [%give %fact ~ %rkyv-result !>(store+store)]
     ==
