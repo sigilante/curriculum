@@ -503,11 +503,11 @@ In this lesson, we'll conclude by producing the database superstructure and some
 ```hoon
 |%
 +$  key  @tas
-+$  value  ?(xml json yaml txt)
-+$  xml   ,[%xml body=html]
-+$  json  ,[%json body=json]
-+$  yaml  ,[%yaml body=@t]
-+$  txt   ,[%txt body=@t]
++$  value  $%(xml json yaml txt)
++$  xml   [%xml body=html]
++$  json  [%json body=json]
++$  yaml  [%yaml body=@t]
++$  txt   [%txt body=@t]
 +$  store  (map key value)
 +$  cursor  @ud
 +$  action
