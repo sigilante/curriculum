@@ -14,8 +14,8 @@ readings:
   - "https://github.com/matthew-levan/band"
   - "https://github.com/belisarius222/poast"
 homework: []
-mirror: []
-video: []
+mirror: "https://github.com/sigilante/curriculum/blob/master/awl-2023.4/awl5.md"
+video: "https://youtu.be/_17WtyEEz6I"
 ---
 
 #   🖵 `awl5`.  Front End.
